@@ -244,6 +244,8 @@ export type ShareDialogueOptions = DialogueOptions & {
   shareFrameEnabled: boolean;
   /** Determines if sharing manifests is enabled */
   shareManifestsEnabled: boolean;
+  /** Custom embed uri */
+  embedUri?: string;
 };
 
 export type ShareDialogueContent = DialogueContent & {
