@@ -549,7 +549,7 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
     this.helpDialogue = new HelpDialogue(this.$helpDialogue);
 
     this.$moreInfoDialogue = $(
-      '<div class="overlay moreInfo" aria-hidden="true"></div>'
+      '<div class="overlay moreInfo" aria-hidden="true" role="dialog" tabindex="0"></div>'
     );
     this.shell.$overlays.append(this.$moreInfoDialogue);
     this.moreInfoDialogue = new MoreInfoDialogue(this.$moreInfoDialogue);
