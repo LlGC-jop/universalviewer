@@ -51,7 +51,7 @@ export class MoreInfoDialogue extends Dialogue<
     );
     this.$content.append(this.$title);
 
-    this.$metadata = $('<article class="iiif-metadata-component"></article>');
+    this.$metadata = $('<article class="iiif-metadata-component default"></article>');
     this.$content.append(this.$metadata);
 
     this.metadataComponent = new MetadataComponent({
