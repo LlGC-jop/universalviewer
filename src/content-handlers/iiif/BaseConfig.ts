@@ -111,6 +111,8 @@ export type Options = {
 
   /** A default animation duration */
   animationDuration?: number;
+
+  mobileFooterPosition?: string;
 };
 
 type Locale = {

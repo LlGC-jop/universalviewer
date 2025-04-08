@@ -11,7 +11,8 @@
     "rightPanelEnabled": true,
     "clickToZoomEnabled": false,
     "saveUserSettings": true,
-    "animationDuration": 250
+    "animationDuration": 250,
+    "mobileFooterPosition": "bottom"
   },
   "modules": {
     "avCenterPanel": {

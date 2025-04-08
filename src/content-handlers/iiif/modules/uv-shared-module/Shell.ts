@@ -63,7 +63,11 @@ export class Shell extends BaseView<BaseConfig> {
     this.$element.append(this.$footerPanel);
 
     this.$mobileFooterPanel = $('<div class="mobileFooterPanel"></div>');
-    this.$element.append(this.$mobileFooterPanel);
+    if ('top' === this.extensionHost?.options.data.config.options.mobileFooterPosition) {
+      this.$element.prepend(this.$mobileFooterPanel);
+    } else {
+      this.$element.append(this.$mobileFooterPanel);
+    }
 
     this.$overlays = $('<div class="overlays"></div>');
     this.$element.append(this.$overlays);

@@ -43,7 +43,8 @@
     "theme": "uv-en-GB-theme",
     "tokenStorage": "session",
     "useArrowKeysToNavigate": false,
-    "zoomToSearchResultEnabled": true
+    "zoomToSearchResultEnabled": true,
+    "mobileFooterPosition": "bottom"
   },
   "modules": {
     "restrictedDialogue": {
