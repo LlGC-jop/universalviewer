@@ -89,13 +89,13 @@ const DownloadDialogue = ({
   useEffect(() => {
     if (open) {
       let top: number;
-      if('top' === mobileFooterPosition && parent.clientWidth < 768) {
+      if ("top" === mobileFooterPosition && parent.clientWidth < 768) {
         top = 36;
       } else {
         top =
-        parent.clientHeight -
-        ref.current!.clientHeight -
-        triggerButton.clientHeight;
+          parent.clientHeight -
+          ref.current!.clientHeight -
+          triggerButton.clientHeight;
       }
 
       let left: number =

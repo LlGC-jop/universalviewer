@@ -699,7 +699,7 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
         onShowTermsOfUse: () => {
           this.closeActiveDialogue();
           this.extensionHost.publish(IIIFEvents.SHOW_TERMS_OF_USE);
-        }
+        },
       })
     );
   }
