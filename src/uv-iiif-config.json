@@ -12,7 +12,7 @@
     "clickToZoomEnabled": false,
     "saveUserSettings": true,
     "animationDuration": 250,
-    "mobileFooterPosition": "bottom"
+    "mobileFooterPosition": "top"
   },
   "modules": {
     "avCenterPanel": {
