@@ -669,6 +669,7 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
         sequence: this.helper.getCurrentSequence(),
         termsOfUseEnabled: this.data.config!.options.termsOfUseEnabled,
         triggerButton: dialogueTriggerButton as HTMLElement,
+        mobileFooterPosition: this.data.config!.options.mobileFooterPosition,
         getCroppedImageDimensions: (canvas: Canvas) => {
           return this.getCroppedImageDimensions(canvas, this.getViewer());
         },
@@ -698,7 +699,7 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
         onShowTermsOfUse: () => {
           this.closeActiveDialogue();
           this.extensionHost.publish(IIIFEvents.SHOW_TERMS_OF_USE);
-        },
+        }
       })
     );
   }

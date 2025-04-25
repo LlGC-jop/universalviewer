@@ -49,6 +49,7 @@ const DownloadDialogue = ({
   sequence,
   termsOfUseEnabled,
   triggerButton,
+  mobileFooterPosition,
 }: {
   canvases: Canvas[];
   confinedImageSize: number;
@@ -77,6 +78,7 @@ const DownloadDialogue = ({
   sequence: Sequence;
   termsOfUseEnabled: boolean;
   triggerButton: HTMLElement;
+  mobileFooterPosition: string | undefined;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ top: "0px", left: "0px" });
@@ -86,10 +88,15 @@ const DownloadDialogue = ({
 
   useEffect(() => {
     if (open) {
-      const top: number =
+      let top: number;
+      if('top' === mobileFooterPosition && parent.clientWidth < 768) {
+        top = 36;
+      } else {
+        top =
         parent.clientHeight -
         ref.current!.clientHeight -
         triggerButton.clientHeight;
+      }
 
       let left: number =
         triggerButton.getBoundingClientRect().left -
