@@ -1,33 +1,23 @@
-const $ = require("jquery");
-import { AnnotationGroup, AnnotationRect } from "@iiif/manifold";
-import { Async, Bools, Dimensions } from "@edsilv/utils";
-import {
-  Canvas,
-  IExternalResource,
-  IExternalImageResourceData,
-  IExternalResourceData,
-  Annotation,
-  AnnotationBody,
-  Service,
-} from "manifesto.js";
-import { debounce, sanitize } from "../../../../Utils";
-import { ViewingDirection } from "@iiif/vocabulary";
-import { IIIFEvents } from "../../IIIFEvents";
-import { XYWHFragment } from "../uv-shared-module/XYWHFragment";
-import { CenterPanel } from "../uv-shared-module/CenterPanel";
-import { CroppedImageDimensions } from "../../extensions/uv-openseadragon-extension/CroppedImageDimensions";
-import { OpenSeadragonExtensionEvents } from "../../extensions/uv-openseadragon-extension/Events";
-import { IOpenSeadragonExtensionData } from "../../extensions/uv-openseadragon-extension/IOpenSeadragonExtensionData";
-import OpenSeadragon from "openseadragon";
-import OpenSeadragonExtension from "../../extensions/uv-openseadragon-extension/Extension";
-import "@openseadragon-imaging/openseadragon-viewerinputhook";
-import { MediaType } from "@iiif/vocabulary/dist-commonjs";
-import { Events } from "../../../../Events";
-import { Config } from "../../extensions/uv-openseadragon-extension/config/Config";
+const $ = require('jquery');
+import { AnnotationGroup, AnnotationRect } from '@iiif/manifold';
+import { Async, Bools, Dimensions } from '@edsilv/utils';
+import { Canvas, IExternalResource, IExternalImageResourceData, IExternalResourceData, Annotation, AnnotationBody, Service } from 'manifesto.js';
+import { debounce, sanitize } from '../../../../Utils';
+import { ViewingDirection } from '@iiif/vocabulary';
+import { IIIFEvents } from '../../IIIFEvents';
+import { XYWHFragment } from '../uv-shared-module/XYWHFragment';
+import { CenterPanel } from '../uv-shared-module/CenterPanel';
+import { CroppedImageDimensions } from '../../extensions/uv-openseadragon-extension/CroppedImageDimensions';
+import { OpenSeadragonExtensionEvents } from '../../extensions/uv-openseadragon-extension/Events';
+import { IOpenSeadragonExtensionData } from '../../extensions/uv-openseadragon-extension/IOpenSeadragonExtensionData';
+import OpenSeadragon from 'openseadragon';
+import OpenSeadragonExtension from '../../extensions/uv-openseadragon-extension/Extension';
+import '@openseadragon-imaging/openseadragon-viewerinputhook';
+import { MediaType } from '@iiif/vocabulary/dist-commonjs';
+import { Events } from '../../../../Events';
+import { Config } from '../../extensions/uv-openseadragon-extension/config/Config';
 
-export class OpenSeadragonCenterPanel extends CenterPanel<
-  Config["modules"]["openSeadragonCenterPanel"]
-> {
+export class OpenSeadragonCenterPanel extends CenterPanel<Config['modules']['openSeadragonCenterPanel']> {
   controlsVisible: boolean = false;
   currentAnnotationRect: AnnotationRect;
   currentBounds: XYWHFragment | null;
@@ -67,11 +57,11 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
   }
 
   create(): void {
-    this.setConfig("openSeadragonCenterPanel");
+    this.setConfig('openSeadragonCenterPanel');
 
     super.create();
 
-    this.viewerId = "osd" + new Date().getTime();
+    this.viewerId = 'osd' + new Date().getTime();
     this.$viewer = $('<div id="' + this.viewerId + '" class="viewer"></div>');
     this.$content.prepend(this.$viewer);
 
@@ -79,30 +69,24 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
       this.overlayAnnotations();
     });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.SETTINGS_CHANGE,
-      (args: ISettings) => {
-        this.viewer.gestureSettingsMouse.clickToZoom = args.clickToZoomEnabled;
-        this.viewer.controlsFadeLength = this.getControlsFadeLength();
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.SETTINGS_CHANGE, (args: ISettings) => {
+      this.viewer.gestureSettingsMouse.clickToZoom = args.clickToZoomEnabled;
+      this.viewer.controlsFadeLength = this.getControlsFadeLength();
+    });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.OPEN_EXTERNAL_RESOURCE,
-      (resources: IExternalResource[]) => {
-        this.whenResized(async () => {
-          if (!this.isCreated) {
-            // uv may have reloaded
-            this.createUI();
-          }
-          this.isLoaded = false;
-          await this.openMedia(resources);
-          this.isLoaded = true;
-          this.extensionHost.publish(Events.EXTERNAL_RESOURCE_OPENED);
-          this.extensionHost.publish(Events.LOAD);
-        });
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.OPEN_EXTERNAL_RESOURCE, (resources: IExternalResource[]) => {
+      this.whenResized(async () => {
+        if (!this.isCreated) {
+          // uv may have reloaded
+          this.createUI();
+        }
+        this.isLoaded = false;
+        await this.openMedia(resources);
+        this.isLoaded = true;
+        this.extensionHost.publish(Events.EXTERNAL_RESOURCE_OPENED);
+        this.extensionHost.publish(Events.LOAD);
+      });
+    });
 
     this.extensionHost.subscribe(IIIFEvents.CLEAR_ANNOTATIONS, () => {
       this.whenCreated(() => {
@@ -111,23 +95,17 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
       });
     });
 
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.NEXT_SEARCH_RESULT,
-      () => {
-        this.whenCreated(() => {
-          this.nextAnnotation();
-        });
-      }
-    );
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.NEXT_SEARCH_RESULT, () => {
+      this.whenCreated(() => {
+        this.nextAnnotation();
+      });
+    });
 
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.PREV_SEARCH_RESULT,
-      () => {
-        this.whenCreated(() => {
-          this.prevAnnotation();
-        });
-      }
-    );
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.PREV_SEARCH_RESULT, () => {
+      this.whenCreated(() => {
+        this.prevAnnotation();
+      });
+    });
 
     this.extensionHost.subscribe(OpenSeadragonExtensionEvents.ZOOM_IN, () => {
       this.whenCreated(() => {
@@ -153,23 +131,17 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
       });
     });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.SET_TARGET,
-      (target: XYWHFragment) => {
-        this.whenLoaded(() => {
-          this.fitToBounds(target, false);
-        });
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.SET_TARGET, (target: XYWHFragment) => {
+      this.whenLoaded(() => {
+        this.fitToBounds(target, false);
+      });
+    });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.SET_ROTATION,
-      (rotation: number) => {
-        this.whenLoaded(() => {
-          this.viewer.viewport.setRotation(rotation);
-        });
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.SET_ROTATION, (rotation: number) => {
+      this.whenLoaded(() => {
+        this.viewer.viewport.setRotation(rotation);
+      });
+    });
   }
 
   whenCreated(cb: () => void): void {
@@ -208,17 +180,11 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
       this.viewer.autoHideControls = false;
     };
 
-    const buttons = [
-      this.$zoomInButton,
-      this.$zoomOutButton,
-      this.$goHomeButton,
-      this.$rotateButton,
-      this.$adjustImageButton,
-    ];
+    const buttons = [this.$zoomInButton, this.$zoomOutButton, this.$goHomeButton, this.$rotateButton, this.$adjustImageButton];
 
     buttons.forEach((button) => {
-      button.on("focus", disableAutoHide);
-      button.on("focusout", enableAutoHide);
+      button.on('focus', disableAutoHide);
+      button.on('focusout', enableAutoHide);
     });
   }
 
@@ -226,14 +192,10 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
     this.$spinner = $('<div class="spinner"></div>');
     this.$content.append(this.$spinner);
 
-    this.showAdjustImageButton = Bools.getBool(
-      this.config.options.showAdjustImageControl,
-      false
-    );
+    this.showAdjustImageButton = Bools.getBool(this.config.options.showAdjustImageControl, false);
 
     // Transparent pixel
-    const pixel =
-      "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
+    const pixel = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
 
     this.viewer = OpenSeadragon({
       // id: this.viewerId,
@@ -242,40 +204,24 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
       showNavigationControl: true,
       showNavigator: true,
       showRotationControl: true,
-      showHomeControl: Bools.getBool(
-        this.config.options.showHomeControl,
-        false
-      ),
+      showHomeControl: Bools.getBool(this.config.options.showHomeControl, false),
       showFullPageControl: false,
       defaultZoomLevel: this.config.options.defaultZoomLevel || 0,
       maxZoomPixelRatio: this.config.options.maxZoomPixelRatio || 2,
       controlsFadeDelay: this.config.options.controlsFadeDelay || 250,
       controlsFadeLength: this.getControlsFadeLength(),
-      navigatorPosition:
-        this.config.options.navigatorPosition || "BOTTOM_RIGHT",
-      navigatorHeight: "100px",
-      navigatorWidth: "100px",
+      navigatorPosition: this.config.options.navigatorPosition || 'BOTTOM_RIGHT',
+      navigatorHeight: '100px',
+      navigatorWidth: '100px',
       animationTime: this.config.options.animationTime || 1.2,
       visibilityRatio: this.config.options.visibilityRatio || 0.5,
-      constrainDuringPan: Bools.getBool(
-        this.config.options.constrainDuringPan,
-        false
-      ),
-      immediateRender: Bools.getBool(
-        this.config.options.immediateRender,
-        false
-      ),
+      constrainDuringPan: Bools.getBool(this.config.options.constrainDuringPan, false),
+      immediateRender: Bools.getBool(this.config.options.immediateRender, false),
       blendTime: this.config.options.blendTime || 0,
-      autoHideControls: Bools.getBool(
-        this.config.options.autoHideControls,
-        true
-      ),
+      autoHideControls: Bools.getBool(this.config.options.autoHideControls, true),
       prefixUrl: null,
       gestureSettingsMouse: {
-        clickToZoom: Bools.getBool(
-          this.extension.data.config!.options.clickToZoomEnabled,
-          true
-        ),
+        clickToZoom: Bools.getBool(this.extension.data.config!.options.clickToZoomEnabled, true),
       },
       navImages: {
         zoomIn: {
@@ -328,30 +274,21 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
     const debouncedDoubleClick = debounce((e: any) => {
       const canvas: Canvas = that.extension.helper.getCurrentCanvas();
       var viewportPoint = that.viewer.viewport.pointFromPixel(e.position);
-      var imagePoint = that.viewer.viewport.viewportToImageCoordinates(
-        viewportPoint.x,
-        viewportPoint.y
-      );
+      var imagePoint = that.viewer.viewport.viewportToImageCoordinates(viewportPoint.x, viewportPoint.y);
       this.extensionHost.publish(OpenSeadragonExtensionEvents.DOUBLECLICK, {
-        target: `${canvas.id}#xywh=${Math.round(imagePoint.x)},${Math.round(
-          imagePoint.y
-        )},1,1`,
+        target: `${canvas.id}#xywh=${Math.round(imagePoint.x)},${Math.round(imagePoint.y)},1,1`,
       });
     }, 100);
 
     this.viewer.addViewerInputHook({
       hooks: [
         {
-          tracker: "viewer",
-          handler: "dblClickHandler",
+          tracker: 'viewer',
+          handler: 'dblClickHandler',
           hookHandler: (e) => {
             const settings: ISettings = this.extension.getSettings();
-            const pagingAvailable: boolean =
-              this.extension.helper.isPagingAvailable();
-            if (
-              (pagingAvailable && !settings.pagingEnabled) ||
-              !pagingAvailable
-            ) {
+            const pagingAvailable: boolean = this.extension.helper.isPagingAvailable();
+            if ((pagingAvailable && !settings.pagingEnabled) || !pagingAvailable) {
               if (this.config.options.doubleClickAnnotationEnabled) {
                 debouncedDoubleClick(e);
               }
@@ -362,52 +299,52 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
     });
 
     let $oldZoomIn = this.$viewer.find('div[title="Zoom in"]');
-    this.$zoomInButton = $("<button />").append($oldZoomIn.contents());
+    this.$zoomInButton = $('<button />').append($oldZoomIn.contents());
     this.$zoomInButton.insertAfter($oldZoomIn);
     $oldZoomIn.remove();
-    this.$zoomInButton.attr("tabindex", 0);
-    this.$zoomInButton.attr("title", this.content.zoomIn);
-    this.$zoomInButton.attr("aria-label", this.content.zoomIn);
-    this.$zoomInButton.addClass("zoomIn viewportNavButton");
+    this.$zoomInButton.attr('tabindex', 0);
+    this.$zoomInButton.attr('title', this.content.zoomIn);
+    this.$zoomInButton.attr('aria-label', this.content.zoomIn);
+    this.$zoomInButton.addClass('zoomIn viewportNavButton');
 
     this.onAccessibleClick(this.$zoomInButton, () => {
       this.zoomIn();
     });
 
     let $oldZoomOut = this.$viewer.find('div[title="Zoom out"]');
-    this.$zoomOutButton = $("<button />").append($oldZoomOut.contents());
+    this.$zoomOutButton = $('<button />').append($oldZoomOut.contents());
     this.$zoomOutButton.insertAfter($oldZoomOut);
     $oldZoomIn.remove();
-    this.$zoomOutButton.attr("tabindex", 0);
-    this.$zoomOutButton.attr("title", this.content.zoomOut);
-    this.$zoomOutButton.attr("aria-label", this.content.zoomOut);
-    this.$zoomOutButton.addClass("zoomOut viewportNavButton");
+    this.$zoomOutButton.attr('tabindex', 0);
+    this.$zoomOutButton.attr('title', this.content.zoomOut);
+    this.$zoomOutButton.attr('aria-label', this.content.zoomOut);
+    this.$zoomOutButton.addClass('zoomOut viewportNavButton');
 
     this.onAccessibleClick(this.$zoomOutButton, () => {
       this.zoomOut();
     });
 
     let $oldGoHome = this.$viewer.find('div[title="Go home"]');
-    this.$goHomeButton = $("<button />").append($oldGoHome.contents());
+    this.$goHomeButton = $('<button />').append($oldGoHome.contents());
     this.$goHomeButton.insertAfter($oldGoHome);
     $oldGoHome.remove();
-    this.$goHomeButton.attr("tabindex", 0);
-    this.$goHomeButton.attr("title", this.content.goHome);
-    this.$goHomeButton.attr("aria-label", this.content.goHome);
-    this.$goHomeButton.addClass("goHome viewportNavButton");
+    this.$goHomeButton.attr('tabindex', 0);
+    this.$goHomeButton.attr('title', this.content.goHome);
+    this.$goHomeButton.attr('aria-label', this.content.goHome);
+    this.$goHomeButton.addClass('goHome viewportNavButton');
 
     this.onAccessibleClick(this.$goHomeButton, () => {
       this.goHome();
     });
 
     let $oldRotate = this.$viewer.find('div[title="Rotate right"]');
-    this.$rotateButton = $("<button />").append($oldRotate.contents());
+    this.$rotateButton = $('<button />').append($oldRotate.contents());
     this.$rotateButton.insertAfter($oldRotate);
     $oldRotate.remove();
-    this.$rotateButton.attr("tabindex", 0);
-    this.$rotateButton.attr("title", this.content.rotateRight);
-    this.$rotateButton.attr("aria-label", this.content.rotateRight);
-    this.$rotateButton.addClass("rotate viewportNavButton");
+    this.$rotateButton.attr('tabindex', 0);
+    this.$rotateButton.attr('title', this.content.rotateRight);
+    this.$rotateButton.attr('aria-label', this.content.rotateRight);
+    this.$rotateButton.addClass('rotate viewportNavButton');
 
     this.onAccessibleClick(this.$rotateButton, () => {
       this.rotateRight();
@@ -415,10 +352,10 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
 
     if (this.showAdjustImageButton) {
       this.$adjustImageButton = this.$rotateButton.clone();
-      this.$adjustImageButton.attr("title", this.content.adjustImage);
-      this.$adjustImageButton.attr("aria-label", this.content.adjustImage);
-      this.$adjustImageButton.switchClass("rotate", "adjustImage");
-      this.$adjustImageButton.attr("tabindex", 0);
+      this.$adjustImageButton.attr('title', this.content.adjustImage);
+      this.$adjustImageButton.attr('aria-label', this.content.adjustImage);
+      this.$adjustImageButton.switchClass('rotate', 'adjustImage');
+      this.$adjustImageButton.attr('tabindex', 0);
       this.$adjustImageButton.onPressed(() => {
         this.extensionHost.publish(IIIFEvents.SHOW_ADJUSTIMAGE_DIALOGUE);
       });
@@ -434,60 +371,52 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
       .add(this.$goHomeButton)
       .add(this.$rotateButton)
       .add(this.$adjustImageButton)
-      .on("focus", () => {
+      .on('focus', () => {
         if (this.controlsVisible) return;
         this.controlsVisible = true;
         this.viewer.setControlsEnabled(true);
       });
 
-    this.$zoomInButton.add(this.$adjustImageButton).on("blur", () => {
+    this.$zoomInButton.add(this.$adjustImageButton).on('blur', () => {
       if (!this.controlsVisible) return;
       this.controlsVisible = false;
       this.viewer.setControlsEnabled(false);
     });
 
-    this.$viewportNavButtonsContainer = this.$viewer.find(
-      ".openseadragon-container > div:not(.openseadragon-canvas):first"
-    );
+    this.$viewportNavButtonsContainer = this.$viewer.find('.openseadragon-container > div:not(.openseadragon-canvas):first');
 
     //this.$viewportNavButtonsContainer.addClass("viewportControls");
 
-    this.$viewportNavButtons =
-      this.$viewportNavButtonsContainer.find(".viewportNavButton");
+    this.$viewportNavButtons = this.$viewportNavButtonsContainer.find('.viewportNavButton');
 
     this.$canvas = $(this.viewer.canvas);
 
     // Check if we have saved settings for image adjustment
     let settings = this.extension.getSettings();
-    if (
-      this.extension.data.config?.options.saveUserSettings &&
-      settings.rememberSettings
-    ) {
+    if (this.extension.data.config?.options.saveUserSettings && settings.rememberSettings) {
       let contrastPercent = settings.contrastPercent;
       let brightnessPercent = settings.brightnessPercent;
       let saturationPercent = settings.saturationPercent;
-      (<HTMLCanvasElement>(
-        this.$canvas[0].children[0]
-      )).style.filter = `contrast(${contrastPercent}%) brightness(${brightnessPercent}%) saturate(${saturationPercent}%)`;
+      (<HTMLCanvasElement>this.$canvas[0].children[0]).style.filter = `contrast(${contrastPercent}%) brightness(${brightnessPercent}%) saturate(${saturationPercent}%)`;
     }
 
     // disable right click on canvas
-    this.$canvas.on("contextmenu", () => {
+    this.$canvas.on('contextmenu', () => {
       return false;
     });
 
-    this.$navigator = this.$viewer.find(".navigator");
+    this.$navigator = this.$viewer.find('.navigator');
     this.setNavigatorVisible();
 
     // events
 
-    this.$element.on("mousemove", () => {
+    this.$element.on('mousemove', () => {
       if (this.controlsVisible) return;
       this.controlsVisible = true;
       this.viewer.setControlsEnabled(true);
     });
 
-    this.$element.on("mouseleave", () => {
+    this.$element.on('mouseleave', () => {
       if (!this.controlsVisible) return;
       this.controlsVisible = false;
       this.viewer.setControlsEnabled(false);
@@ -496,7 +425,7 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
     // when mouse move stopped
     this.$element.on(
       //@ts-ignore
-      "mousemove",
+      'mousemove',
       () => {
         // if over element, hide controls.
         // When over prev/next buttons keep controls enabled
@@ -506,61 +435,46 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
         if (this.$nextButton.ismouseover()) {
           return;
         }
-        if (!this.$viewer.find(".navigator").ismouseover()) {
+        if (!this.$viewer.find('.navigator').ismouseover()) {
           if (!this.controlsVisible) return;
           this.controlsVisible = false;
           this.viewer.setControlsEnabled(false);
         }
       },
-      this.config.options.controlsFadeAfterInactive
+      this.config.options.controlsFadeAfterInactive,
     );
 
-    this.viewer.addHandler("tile-drawn", () => {
+    this.viewer.addHandler('tile-drawn', () => {
       this.$spinner.hide();
     });
 
     //this.viewer.addHandler("open-failed", () => {
     //});
 
-    this.viewer.addHandler("resize", (viewer: any) => {
-      this.extensionHost.publish(
-        OpenSeadragonExtensionEvents.OPENSEADRAGON_RESIZE,
-        viewer
-      );
+    this.viewer.addHandler('resize', (viewer: any) => {
+      this.extensionHost.publish(OpenSeadragonExtensionEvents.OPENSEADRAGON_RESIZE, viewer);
       this.viewerResize(viewer);
     });
 
-    this.viewer.addHandler("animation-start", (viewer: any) => {
-      this.extensionHost.publish(
-        OpenSeadragonExtensionEvents.OPENSEADRAGON_ANIMATION_START,
-        viewer
-      );
+    this.viewer.addHandler('animation-start', (viewer: any) => {
+      this.extensionHost.publish(OpenSeadragonExtensionEvents.OPENSEADRAGON_ANIMATION_START, viewer);
     });
 
-    this.viewer.addHandler("animation", (viewer: any) => {
-      this.extensionHost.publish(
-        OpenSeadragonExtensionEvents.OPENSEADRAGON_ANIMATION,
-        viewer
-      );
+    this.viewer.addHandler('animation', (viewer: any) => {
+      this.extensionHost.publish(OpenSeadragonExtensionEvents.OPENSEADRAGON_ANIMATION, viewer);
     });
 
-    this.viewer.addHandler("animation-finish", (viewer: any) => {
+    this.viewer.addHandler('animation-finish', (viewer: any) => {
       this.currentBounds = this.getViewportBounds();
 
       this.updateVisibleAnnotationRects();
 
-      this.extensionHost.publish(
-        OpenSeadragonExtensionEvents.OPENSEADRAGON_ANIMATION_FINISH,
-        viewer
-      );
+      this.extensionHost.publish(OpenSeadragonExtensionEvents.OPENSEADRAGON_ANIMATION_FINISH, viewer);
     });
 
-    this.viewer.addHandler("rotate", (args: any) => {
+    this.viewer.addHandler('rotate', (args: any) => {
       // console.log("rotate");
-      this.extensionHost.publish(
-        OpenSeadragonExtensionEvents.OPENSEADRAGON_ROTATION,
-        args.degrees
-      );
+      this.extensionHost.publish(OpenSeadragonExtensionEvents.OPENSEADRAGON_ROTATION, args.degrees);
     });
 
     this.title = this.extension.helper.getLabel();
@@ -574,42 +488,32 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
   }
 
   createNavigationButtons() {
-    const viewingDirection: ViewingDirection =
-      this.extension.helper.getViewingDirection() ||
-      ViewingDirection.LEFT_TO_RIGHT;
+    const viewingDirection: ViewingDirection = this.extension.helper.getViewingDirection() || ViewingDirection.LEFT_TO_RIGHT;
 
     this.$prevButton = $(
       `<button class="btn btn-default paging prev" title="${this.content.previousImage}">
           <i class="uv-icon-prev" aria-hidden="true"></i>
           <span class="sr-only">${this.content.previousImage}</span>
-        </button>`
+        </button>`,
     );
 
     if (this.extension.helper.isRightToLeft()) {
-      this.$prevButton
-        .prop("title", this.content.nextImage)
-        .attr("aria-label", this.content.nextImage);
+      this.$prevButton.prop('title', this.content.nextImage).attr('aria-label', this.content.nextImage);
     } else {
-      this.$prevButton
-        .prop("title", this.content.previousImage)
-        .attr("aria-label", this.content.previousImage);
+      this.$prevButton.prop('title', this.content.previousImage).attr('aria-label', this.content.previousImage);
     }
 
     this.$nextButton = $(
       `<button class="btn btn-default paging next" title="${this.content.nextImage}">
         <i class="uv-icon-next" aria-hidden="true"></i>
         <span class="sr-only">${this.content.nextImage}</span>
-      </button>`
+      </button>`,
     );
 
     if (this.extension.helper.isRightToLeft()) {
-      this.$nextButton
-        .prop("title", this.content.previousImage)
-        .attr("aria-label", this.content.previousImage);
+      this.$nextButton.prop('title', this.content.previousImage).attr('aria-label', this.content.previousImage);
     } else {
-      this.$nextButton
-        .prop("title", this.content.nextImage)
-        .attr("aria-label", this.content.nextImage);
+      this.$nextButton.prop('title', this.content.nextImage).attr('aria-label', this.content.nextImage);
     }
 
     this.viewer.addControl(this.$prevButton[0], {
@@ -622,8 +526,8 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
     switch (viewingDirection) {
       case ViewingDirection.BOTTOM_TO_TOP:
       case ViewingDirection.TOP_TO_BOTTOM:
-        this.$prevButton.addClass("vertical");
-        this.$nextButton.addClass("vertical");
+        this.$prevButton.addClass('vertical');
+        this.$nextButton.addClass('vertical');
         break;
     }
 
@@ -666,13 +570,13 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
     });
 
     // When Prev/Next buttons are focused, make sure the controls are enabled
-    this.$prevButton.add(this.$nextButton).on("focus", () => {
+    this.$prevButton.add(this.$nextButton).on('focus', () => {
       if (this.controlsVisible) return;
       this.controlsVisible = true;
       this.viewer.setControlsEnabled(true);
     });
 
-    this.$prevButton.add(this.$nextButton).on("blur", () => {
+    this.$prevButton.add(this.$nextButton).on('blur', () => {
       if (!this.controlsVisible) return;
       this.controlsVisible = false;
       this.viewer.setControlsEnabled(false);
@@ -694,12 +598,12 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
           if (services.length) {
             let id: string = services[0].id;
             let tileDescriptor = id;
-            if (!tileDescriptor.endsWith("/")) {
-              tileDescriptor += "/";
+            if (!tileDescriptor.endsWith('/')) {
+              tileDescriptor += '/';
             }
-            tileDescriptor += "tiles";
+            tileDescriptor += 'tiles';
 
-            if (id.endsWith("/")) {
+            if (id.endsWith('/')) {
               id = id.substr(0, id.length - 1);
             }
             fetch(tileDescriptor)
@@ -712,20 +616,19 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
                   tileHeight: info.tileHeight,
                   minLevel: 0,
                   maxLevel: info.levels - 1,
-                  units: "mm",
+                  units: 'mm',
                   spacing: [info.mm_x, info.mm_y],
                   getTileUrl: function (level, x, y, query) {
-                    var url =
-                      tileDescriptor + "/zxy/" + level + "/" + x + "/" + y;
+                    var url = tileDescriptor + '/zxy/' + level + '/' + x + '/' + y;
                     if (query) {
-                      url += "?" + $.param(query);
+                      url += '?' + $.param(query);
                     }
                     return url;
                   },
                 };
 
                 if (!info.mm_x) {
-                  tileSource.units = "pixels";
+                  tileSource.units = 'pixels';
                   tileSource.spacing = [1, 1];
                 }
 
@@ -746,8 +649,7 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
     this.$spinner.show();
     this.items = [];
 
-    let images: IExternalResourceData[] =
-      await this.extension.getExternalResources(resources);
+    let images: IExternalResourceData[] = await this.extension.getExternalResources(resources);
 
     const isGirder: boolean = this.extension.format === MediaType.GIRDER;
 
@@ -770,7 +672,7 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
         } else {
           // load image without tiling
           tileSource = {
-            type: "image",
+            type: 'image',
             url: data.id,
             buildPyramid: false,
           };
@@ -796,9 +698,7 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
     }
   }
 
-  getPagePositions(
-    resources: IExternalResourceData[]
-  ): IExternalResourceData[] {
+  getPagePositions(resources: IExternalResourceData[]): IExternalResourceData[] {
     let leftPage: any;
     let rightPage: any;
     let topPage: any;
@@ -869,18 +769,13 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
   openPagesHandler(): void {
     this.extensionHost.publish(OpenSeadragonExtensionEvents.OPENSEADRAGON_OPEN);
 
-    if (
-      this.extension.helper.isMultiCanvas() &&
-      !this.extension.helper.isContinuous()
-    ) {
+    if (this.extension.helper.isMultiCanvas() && !this.extension.helper.isContinuous()) {
       this.showPrevButton();
       this.showNextButton();
 
-      $(".navigator").addClass("extraMargin");
+      $('.navigator').addClass('extraMargin');
 
-      const viewingDirection: ViewingDirection =
-        this.extension.helper.getViewingDirection() ||
-        ViewingDirection.LEFT_TO_RIGHT;
+      const viewingDirection: ViewingDirection = this.extension.helper.getViewingDirection() || ViewingDirection.LEFT_TO_RIGHT;
 
       if (viewingDirection === ViewingDirection.RIGHT_TO_LEFT) {
         if (this.extension.helper.isFirstCanvas()) {
@@ -936,8 +831,7 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
   }
 
   overlayAnnotations(): void {
-    const annotations: AnnotationGroup[] =
-      this.getAnnotationsForCurrentImages();
+    const annotations: AnnotationGroup[] = this.getAnnotationsForCurrentImages();
 
     // clear existing annotations
     this.clearAnnotations();
@@ -949,27 +843,24 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
       for (let k = 0; k < rects.length; k++) {
         const rect = rects[k];
 
-        const div: HTMLElement = document.createElement("DIV");
-        div.id = "annotation-" + rect.canvasIndex + "-" + rect.resultIndex;
+        const div: HTMLElement = document.createElement('DIV');
+        div.id = 'annotation-' + rect.canvasIndex + '-' + rect.resultIndex;
 
         div.title = sanitize(rect.chars);
 
         // if it's a pin
         if (rect.width === 1 && rect.height === 1) {
-          div.className = "annotationPin";
+          div.className = 'annotationPin';
           div.onclick = (e: any) => {
             e.preventDefault();
-            this.extensionHost.publish(
-              IIIFEvents.PINPOINT_ANNOTATION_CLICKED,
-              k
-            );
+            this.extensionHost.publish(IIIFEvents.PINPOINT_ANNOTATION_CLICKED, k);
           };
-          const span: HTMLSpanElement = document.createElement("SPAN");
+          const span: HTMLSpanElement = document.createElement('SPAN');
           span.innerText = String(k + 1);
           div.appendChild(span);
         } else {
           // it's a rect
-          div.className = "annotationRect";
+          div.className = 'annotationRect';
         }
 
         this.viewer.addOverlay(div, rect);
@@ -986,17 +877,13 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
 
     // if this is the first load and there are initial bounds, fit to those.
     if (this.isFirstLoad) {
-      this.initialRotation = (<IOpenSeadragonExtensionData>(
-        this.extension.data
-      )).rotation;
+      this.initialRotation = (<IOpenSeadragonExtensionData>this.extension.data).rotation;
 
       if (this.initialRotation) {
         this.viewer.viewport.setRotation(parseInt(this.initialRotation));
       }
 
-      const xywh: string | undefined = (
-        this.extension.data as IOpenSeadragonExtensionData
-      ).xywh;
+      const xywh: string | undefined = (this.extension.data as IOpenSeadragonExtensionData).xywh;
 
       if (xywh) {
         this.initialBounds = XYWHFragment.fromString(xywh);
@@ -1017,12 +904,12 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
 
   disablePrevButton(): void {
     this.prevButtonEnabled = false;
-    this.$prevButton.addClass("disabled");
+    this.$prevButton.addClass('disabled');
   }
 
   enablePrevButton(): void {
     this.prevButtonEnabled = true;
-    this.$prevButton.removeClass("disabled");
+    this.$prevButton.removeClass('disabled');
   }
 
   hidePrevButton(): void {
@@ -1037,12 +924,12 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
 
   disableNextButton(): void {
     this.nextButtonEnabled = false;
-    this.$nextButton.addClass("disabled");
+    this.$nextButton.addClass('disabled');
   }
 
   enableNextButton(): void {
     this.nextButtonEnabled = true;
-    this.$nextButton.removeClass("disabled");
+    this.$nextButton.removeClass('disabled');
   }
 
   hideNextButton(): void {
@@ -1070,17 +957,10 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
     if (!this.viewer || !this.viewer.viewport) return null;
 
     const canvas: Canvas = this.extension.helper.getCurrentCanvas();
-    const dimensions: CroppedImageDimensions | null = (
-      this.extension as OpenSeadragonExtension
-    ).getCroppedImageDimensions(canvas, this.viewer);
+    const dimensions: CroppedImageDimensions | null = (this.extension as OpenSeadragonExtension).getCroppedImageDimensions(canvas, this.viewer);
 
     if (dimensions) {
-      const bounds: XYWHFragment = new XYWHFragment(
-        dimensions.regionPos.x,
-        dimensions.regionPos.y,
-        dimensions.region.width,
-        dimensions.region.height
-      );
+      const bounds: XYWHFragment = new XYWHFragment(dimensions.regionPos.x, dimensions.regionPos.y, dimensions.region.width, dimensions.region.height);
       return bounds.toString();
     }
 
@@ -1091,12 +971,7 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
     if (!this.viewer || !this.viewer.viewport) return null;
 
     const b: any = this.viewer.viewport.getBounds(true);
-    const bounds: XYWHFragment = new XYWHFragment(
-      Math.floor(b.x),
-      Math.floor(b.y),
-      Math.floor(b.width),
-      Math.floor(b.height)
-    );
+    const bounds: XYWHFragment = new XYWHFragment(Math.floor(b.x), Math.floor(b.y), Math.floor(b.width), Math.floor(b.height));
 
     return bounds;
   }
@@ -1119,9 +994,7 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
 
   getAnnotationsForCurrentImages(): AnnotationGroup[] {
     let annotationsForCurrentImages: AnnotationGroup[] = [];
-    const annotations: AnnotationGroup[] | null = (
-      this.extension as OpenSeadragonExtension
-    ).annotations;
+    const annotations: AnnotationGroup[] | null = (this.extension as OpenSeadragonExtension).annotations;
 
     if (!annotations || !annotations.length) return annotationsForCurrentImages;
 
@@ -1142,8 +1015,7 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
   }
 
   getAnnotationRectsForCurrentImages(): AnnotationRect[] {
-    const annotations: AnnotationGroup[] =
-      this.getAnnotationsForCurrentImages();
+    const annotations: AnnotationGroup[] = this.getAnnotationsForCurrentImages();
     if (annotations.length) {
       return annotations
         .map((x) => {
@@ -1158,35 +1030,23 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
 
   updateVisibleAnnotationRects(): void {
     // after animating, loop through all search result rects and flag their visibility based on whether they are inside the current viewport.
-    const annotationRects: AnnotationRect[] =
-      this.getAnnotationRectsForCurrentImages();
+    const annotationRects: AnnotationRect[] = this.getAnnotationRectsForCurrentImages();
 
     for (let i = 0; i < annotationRects.length; i++) {
       let rect: AnnotationRect = annotationRects[i];
       let viewportBounds: any = this.viewer.viewport.getBounds();
 
-      rect.isVisible = Dimensions.hitRect(
-        viewportBounds.x,
-        viewportBounds.y,
-        viewportBounds.width,
-        viewportBounds.height,
-        rect.viewportX,
-        rect.viewportY
-      );
+      rect.isVisible = Dimensions.hitRect(viewportBounds.x, viewportBounds.y, viewportBounds.width, viewportBounds.height, rect.viewportX, rect.viewportY);
     }
   }
 
   getAnnotationRectIndex(annotationRect: AnnotationRect): number {
-    const annotationRects: AnnotationRect[] =
-      this.getAnnotationRectsForCurrentImages();
+    const annotationRects: AnnotationRect[] = this.getAnnotationRectsForCurrentImages();
     return annotationRects.indexOf(annotationRect);
   }
 
   isZoomToSearchResultEnabled(): boolean {
-    return Bools.getBool(
-      this.extension.data.config!.options.zoomToSearchResultEnabled,
-      true
-    );
+    return Bools.getBool(this.extension.data.config!.options.zoomToSearchResultEnabled, true);
   }
 
   shouldZoomToInitialAnnotation(): boolean {
@@ -1194,15 +1054,10 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
   }
 
   prevAnnotation(): void {
-    const annotationRects: AnnotationRect[] =
-      this.getAnnotationRectsForCurrentImages();
-    const currentAnnotationRect: AnnotationRect | null = (
-      this.extension as OpenSeadragonExtension
-    ).currentAnnotationRect;
+    const annotationRects: AnnotationRect[] = this.getAnnotationRectsForCurrentImages();
+    const currentAnnotationRect: AnnotationRect | null = (this.extension as OpenSeadragonExtension).currentAnnotationRect;
 
-    const currentAnnotationRectIndex: number = currentAnnotationRect
-      ? this.getAnnotationRectIndex(currentAnnotationRect)
-      : annotationRects.length;
+    const currentAnnotationRectIndex: number = currentAnnotationRect ? this.getAnnotationRectIndex(currentAnnotationRect) : annotationRects.length;
     //const currentAnnotationRectIndex: number = this.getAnnotationRectIndex(<AnnotationRect>currentAnnotationRect);
     let foundRect: AnnotationRect | null = null;
 
@@ -1224,42 +1079,28 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
     if (foundRect && this.isZoomToSearchResultEnabled()) {
       // if the rect's canvasIndex is less than the current canvasIndex
       if (foundRect.canvasIndex < this.extension.helper.canvasIndex) {
-        (this.extension as OpenSeadragonExtension).currentAnnotationRect =
-          foundRect;
+        (this.extension as OpenSeadragonExtension).currentAnnotationRect = foundRect;
         this.navigatedFromSearch = true;
-        this.extensionHost.publish(IIIFEvents.ANNOTATION_CANVAS_CHANGE, [
-          foundRect,
-        ]);
+        this.extensionHost.publish(IIIFEvents.ANNOTATION_CANVAS_CHANGE, [foundRect]);
       } else {
         this.zoomToAnnotation(foundRect);
       }
     } else {
       this.navigatedFromSearch = true;
-      this.extensionHost.publish(
-        OpenSeadragonExtensionEvents.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE
-      );
+      this.extensionHost.publish(OpenSeadragonExtensionEvents.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE);
     }
   }
 
   nextAnnotation(): void {
-    const annotationRects: AnnotationRect[] =
-      this.getAnnotationRectsForCurrentImages();
-    const currentAnnotationRect: AnnotationRect | null = (
-      this.extension as OpenSeadragonExtension
-    ).currentAnnotationRect;
+    const annotationRects: AnnotationRect[] = this.getAnnotationRectsForCurrentImages();
+    const currentAnnotationRect: AnnotationRect | null = (this.extension as OpenSeadragonExtension).currentAnnotationRect;
 
-    const currentAnnotationRectIndex: number = currentAnnotationRect
-      ? this.getAnnotationRectIndex(currentAnnotationRect)
-      : -1;
+    const currentAnnotationRectIndex: number = currentAnnotationRect ? this.getAnnotationRectIndex(currentAnnotationRect) : -1;
     let foundRect: AnnotationRect | null = null;
 
     // if there's no currentAnnotationRect selected, index is -1.
     // adding 1 makes the index 0 of available rects for the current images.
-    for (
-      let i = currentAnnotationRectIndex + 1;
-      i < annotationRects.length;
-      i++
-    ) {
+    for (let i = currentAnnotationRectIndex + 1; i < annotationRects.length; i++) {
       const rect: AnnotationRect = annotationRects[i];
 
       // this was removed as users found it confusing.
@@ -1275,33 +1116,26 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
     if (foundRect && this.isZoomToSearchResultEnabled()) {
       // if the rect's canvasIndex is greater than the current canvasIndex
       if (foundRect.canvasIndex > this.extension.helper.canvasIndex) {
-        (this.extension as OpenSeadragonExtension).currentAnnotationRect =
-          foundRect;
+        (this.extension as OpenSeadragonExtension).currentAnnotationRect = foundRect;
         this.navigatedFromSearch = true;
-        this.extensionHost.publish(IIIFEvents.ANNOTATION_CANVAS_CHANGE, [
-          foundRect,
-        ]);
+        this.extensionHost.publish(IIIFEvents.ANNOTATION_CANVAS_CHANGE, [foundRect]);
       } else {
         this.zoomToAnnotation(foundRect);
       }
     } else {
       this.navigatedFromSearch = true;
-      this.extensionHost.publish(
-        OpenSeadragonExtensionEvents.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE
-      );
+      this.extensionHost.publish(OpenSeadragonExtensionEvents.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE);
     }
   }
 
   getAnnotationRectByIndex(index: number): AnnotationRect | null {
-    const annotationRects: AnnotationRect[] =
-      this.getAnnotationRectsForCurrentImages();
+    const annotationRects: AnnotationRect[] = this.getAnnotationRectsForCurrentImages();
     if (!annotationRects.length) return null;
     return annotationRects[index];
   }
 
   getInitialAnnotationRect(): AnnotationRect | null {
-    const annotationRects: AnnotationRect[] =
-      this.getAnnotationRectsForCurrentImages();
+    const annotationRects: AnnotationRect[] = this.getAnnotationRectsForCurrentImages();
     if (!annotationRects.length) return null;
 
     // if we've got this far it means that a reload has happened
@@ -1310,55 +1144,29 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
     // if less than, select the first annotation on the current page
     // otherwise default to the first annotation
 
-    const previousAnnotationRect: AnnotationRect | null = (
-      this.extension as OpenSeadragonExtension
-    ).previousAnnotationRect;
+    const previousAnnotationRect: AnnotationRect | null = (this.extension as OpenSeadragonExtension).previousAnnotationRect;
 
     if (!previousAnnotationRect) {
       if (this.extension.lastCanvasIndex > this.extension.helper.canvasIndex) {
-        const result = annotationRects.filter(
-          (x) => x.canvasIndex === this.extension.helper.canvasIndex
-        );
+        const result = annotationRects.filter((x) => x.canvasIndex === this.extension.helper.canvasIndex);
         return result[result.length - 1];
       }
     }
 
-    return annotationRects.filter(
-      (x) => x.canvasIndex === this.extension.helper.canvasIndex
-    )[0];
+    return annotationRects.filter((x) => x.canvasIndex === this.extension.helper.canvasIndex)[0];
   }
 
   zoomToAnnotation(annotationRect: AnnotationRect): void {
-    (this.extension as OpenSeadragonExtension).previousAnnotationRect =
-      (this.extension as OpenSeadragonExtension).currentAnnotationRect ||
-      annotationRect;
-    (this.extension as OpenSeadragonExtension).currentAnnotationRect =
-      annotationRect;
+    (this.extension as OpenSeadragonExtension).previousAnnotationRect = (this.extension as OpenSeadragonExtension).currentAnnotationRect || annotationRect;
+    (this.extension as OpenSeadragonExtension).currentAnnotationRect = annotationRect;
 
     // if zoomToBoundsEnabled, zoom to the annotation's bounds.
     // otherwise, pan into view preserving the current zoom level.
-    if (
-      Bools.getBool(
-        this.extension.data.config!.options.zoomToBoundsEnabled,
-        false
-      )
-    ) {
-      this.fitToBounds(
-        new XYWHFragment(
-          annotationRect.viewportX,
-          annotationRect.viewportY,
-          annotationRect.width,
-          annotationRect.height
-        ),
-        false
-      );
+    if (Bools.getBool(this.extension.data.config!.options.zoomToBoundsEnabled, false)) {
+      this.fitToBounds(new XYWHFragment(annotationRect.viewportX, annotationRect.viewportY, annotationRect.width, annotationRect.height), false);
     } else if (this.currentBounds) {
-      const x: number =
-        annotationRect.viewportX -
-        (this.currentBounds.w * 0.5 - annotationRect.width * 0.5);
-      const y: number =
-        annotationRect.viewportY -
-        (this.currentBounds.h * 0.5 - annotationRect.height * 0.5);
+      const x: number = annotationRect.viewportX - (this.currentBounds.w * 0.5 - annotationRect.width * 0.5);
+      const y: number = annotationRect.viewportY - (this.currentBounds.h * 0.5 - annotationRect.height * 0.5);
       const w: number = this.currentBounds.w;
       const h: number = this.currentBounds.h;
 
@@ -1372,11 +1180,9 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
   }
 
   highlightAnnotationRect(annotationRect: AnnotationRect): void {
-    const $rect = $(
-      "#annotation-" + annotationRect.canvasIndex + "-" + annotationRect.index
-    );
-    $rect.addClass("current");
-    $(".annotationRect").not($rect).removeClass("current");
+    const $rect = $('#annotation-' + annotationRect.canvasIndex + '-' + annotationRect.index);
+    $rect.addClass('current');
+    $('.annotationRect').not($rect).removeClass('current');
   }
 
   getAnnotationOverlayRects(annotationGroup: AnnotationGroup): any[] {
@@ -1386,23 +1192,18 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
       return newRects;
     }
 
-    let resource: any = this.extension.resources.filter(
-      (x) => x.index === annotationGroup.canvasIndex
-    )[0];
+    let resource: any = this.extension.resources.filter((x) => x.index === annotationGroup.canvasIndex)[0];
     let index: number = this.extension.resources.indexOf(resource);
     let offsetX: number = 0;
 
     if (index > 0) {
-      offsetX = (<IExternalImageResourceData>(
-        this.extension.resources[index - 1]
-      )).width;
+      offsetX = (<IExternalImageResourceData>this.extension.resources[index - 1]).width;
     }
 
     for (let i = 0; i < annotationGroup.rects.length; i++) {
       const searchRect: AnnotationRect = annotationGroup.rects[i];
 
-      const x: number =
-        searchRect.x + offsetX + (index > 0 ? this.config.options.pageGap : 0);
+      const x: number = searchRect.x + offsetX + (index > 0 ? this.config.options.pageGap : 0);
       const y: number = searchRect.y;
       const w: number = searchRect.width;
       const h: number = searchRect.height;
@@ -1423,12 +1224,8 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
   resize(): void {
     super.resize();
 
-    this.$viewer.height(
-      this.$content.height() - this.$viewer.verticalMargins()
-    );
-    this.$viewer.width(
-      this.$content.width() - this.$viewer.horizontalMargins()
-    );
+    this.$viewer.height(this.$content.height() - this.$viewer.verticalMargins());
+    this.$viewer.width(this.$content.width() - this.$viewer.horizontalMargins());
 
     if (!this.isCreated) return;
 
@@ -1436,72 +1233,36 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
       this.$title.text(sanitize(this.title));
     }
 
-    this.$spinner.css(
-      "top",
-      this.$content.height() / 2 - this.$spinner.height() / 2
-    );
-    this.$spinner.css(
-      "left",
-      this.$content.width() / 2 - this.$spinner.width() / 2
-    );
+    this.$spinner.css('top', this.$content.height() / 2 - this.$spinner.height() / 2);
+    this.$spinner.css('left', this.$content.width() / 2 - this.$spinner.width() / 2);
 
-    const viewingDirection: ViewingDirection =
-      this.extension.helper.getViewingDirection() ||
-      ViewingDirection.LEFT_TO_RIGHT;
+    const viewingDirection: ViewingDirection = this.extension.helper.getViewingDirection() || ViewingDirection.LEFT_TO_RIGHT;
 
     if (this.extension.helper.isRightToLeft()) {
-      this.$title.addClass("rtl");
+      this.$title.addClass('rtl');
     } else {
-      this.$title.removeClass("rtl");
+      this.$title.removeClass('rtl');
     }
 
-    if (
-      this.extension.helper.isMultiCanvas() &&
-      this.$prevButton &&
-      this.$nextButton
-    ) {
+    if (this.extension.helper.isMultiCanvas() && this.$prevButton && this.$nextButton) {
       const verticalButtonPos: number = Math.floor(this.$content.width() / 2);
 
       switch (viewingDirection) {
         case ViewingDirection.BOTTOM_TO_TOP:
-          this.$prevButton.addClass("down");
-          this.$nextButton.addClass("up");
-          this.$prevButton.css(
-            "left",
-            verticalButtonPos - this.$prevButton.outerWidth() / 2
-          );
-          this.$prevButton.css(
-            "top",
-            this.$content.height() - this.$prevButton.height()
-          );
-          this.$nextButton.css(
-            "left",
-            verticalButtonPos * -1 - this.$nextButton.outerWidth() / 2
-          );
+          this.$prevButton.addClass('down');
+          this.$nextButton.addClass('up');
+          this.$prevButton.css('left', verticalButtonPos - this.$prevButton.outerWidth() / 2);
+          this.$prevButton.css('top', this.$content.height() - this.$prevButton.height());
+          this.$nextButton.css('left', verticalButtonPos * -1 - this.$nextButton.outerWidth() / 2);
           break;
         case ViewingDirection.TOP_TO_BOTTOM:
-          this.$prevButton.css(
-            "left",
-            verticalButtonPos - this.$prevButton.outerWidth() / 2
-          );
-          this.$nextButton.css(
-            "left",
-            verticalButtonPos * -1 - this.$nextButton.outerWidth() / 2
-          );
-          this.$nextButton.css(
-            "top",
-            this.$content.height() - this.$nextButton.height()
-          );
+          this.$prevButton.css('left', verticalButtonPos - this.$prevButton.outerWidth() / 2);
+          this.$nextButton.css('left', verticalButtonPos * -1 - this.$nextButton.outerWidth() / 2);
+          this.$nextButton.css('top', this.$content.height() - this.$nextButton.height());
           break;
         default:
-          this.$prevButton.css(
-            "top",
-            (this.$content.height() - this.$prevButton.height()) / 2
-          );
-          this.$nextButton.css(
-            "top",
-            (this.$content.height() - this.$nextButton.height()) / 2
-          );
+          this.$prevButton.css('top', (this.$content.height() - this.$prevButton.height()) / 2);
+          this.$nextButton.css('top', (this.$content.height() - this.$nextButton.height()) / 2);
           break;
       }
     }
@@ -1510,8 +1271,7 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
     setTimeout(() => {
       if (this.extension.helper.isContinuous()) {
         if (this.extension.helper.isHorizontallyAligned()) {
-          const width: number =
-            this.$viewer.width() - this.$viewer.rightMargin();
+          const width: number = this.$viewer.width() - this.$viewer.rightMargin();
           this.$navigator.width(width);
         } else {
           this.$navigator.height(this.$viewer.height());
@@ -1521,7 +1281,7 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
   }
 
   setFocus(): void {
-    if (this.$canvas && !this.$canvas.is(":focus")) {
+    if (this.$canvas && !this.$canvas.is(':focus')) {
       if (this.extension.data.config!.options.allowStealFocus) {
         this.$canvas.focus();
       }
@@ -1529,9 +1289,7 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
   }
 
   setNavigatorVisible(): void {
-    const navigatorEnabled: boolean =
-      Bools.getBool(this.extension.getSettings().navigatorEnabled, true) &&
-      this.extension.isDesktopMetric();
+    const navigatorEnabled: boolean = Bools.getBool(this.extension.getSettings().navigatorEnabled, true) && this.extension.isDesktopMetric();
 
     if (this.viewer && this.viewer.navigator) {
       this.viewer.navigator.setVisible(navigatorEnabled);
@@ -1545,8 +1303,6 @@ export class OpenSeadragonCenterPanel extends CenterPanel<
   }
 
   getControlsFadeLength(): number {
-    return (<ISettings>this.extension.getSettings()).reducedAnimation
-      ? 0
-      : this.config.options.controlsFadeLength || 250;
+    return (<ISettings>this.extension.getSettings()).reducedAnimation ? 0 : this.config.options.controlsFadeLength || 250;
   }
 }

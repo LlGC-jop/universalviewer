@@ -1,10 +1,10 @@
-const $ = require("jquery");
-import { DownloadDialogue as BaseDownloadDialogue } from "../../modules/uv-dialogues-module/DownloadDialogue";
-import { DownloadOption } from "../../modules/uv-shared-module/DownloadOption";
-import { IIIFEvents } from "../../IIIFEvents";
-import { IRenderingOption } from "../../modules/uv-shared-module/IRenderingOption";
-import { Strings } from "@edsilv/utils";
-import { Canvas, Range, Annotation } from "manifesto.js";
+const $ = require('jquery');
+import { DownloadDialogue as BaseDownloadDialogue } from '../../modules/uv-dialogues-module/DownloadDialogue';
+import { DownloadOption } from '../../modules/uv-shared-module/DownloadOption';
+import { IIIFEvents } from '../../IIIFEvents';
+import { IRenderingOption } from '../../modules/uv-shared-module/IRenderingOption';
+import { Strings } from '@edsilv/utils';
+import { Canvas, Range, Annotation } from 'manifesto.js';
 
 export class DownloadDialogue extends BaseDownloadDialogue {
   $canvasOptions: JQuery;
@@ -21,7 +21,7 @@ export class DownloadDialogue extends BaseDownloadDialogue {
   }
 
   create(): void {
-    this.setConfig("downloadDialogue");
+    this.setConfig('downloadDialogue');
 
     super.create();
 
@@ -32,38 +32,34 @@ export class DownloadDialogue extends BaseDownloadDialogue {
         DownloadOption.ENTIRE_FILE_AS_ORIGINAL +
         'label" for="' +
         DownloadOption.ENTIRE_FILE_AS_ORIGINAL +
-        '"></label></li>'
+        '"></label></li>',
     );
     this.$downloadOptions.append(this.$entireFileAsOriginal);
     this.$entireFileAsOriginal.hide();
 
-    this.$downloadButton = $(
-      '<a class="btn btn-primary" href="#" tabindex="0">' +
-        this.content.download +
-        "</a>"
-    );
+    this.$downloadButton = $('<a class="btn btn-primary" href="#" tabindex="0">' + this.content.download + '</a>');
     this.$buttons.prepend(this.$downloadButton);
     this.$imageOptionsContainer = $('<li class="group image"></li>');
-    this.$imageOptions = $("<ul></ul>");
+    this.$imageOptions = $('<ul></ul>');
     this.$imageOptionsContainer.append(this.$imageOptions);
 
     this.$canvasOptionsContainer = $('<li class="group canvas"></li>');
-    this.$canvasOptions = $("<ul></ul>");
+    this.$canvasOptions = $('<ul></ul>');
     this.$canvasOptionsContainer.append(this.$canvasOptions);
 
     this.$manifestOptionsContainer = $('<li class="group manifest"></li>');
-    this.$manifestOptions = $("<ul></ul>");
+    this.$manifestOptions = $('<ul></ul>');
     this.$manifestOptionsContainer.append(this.$manifestOptions);
 
     const that = this;
 
-    this.$downloadButton.on("click", (e) => {
+    this.$downloadButton.on('click', (e) => {
       e.preventDefault();
 
       const $selectedOption: JQuery = that.getSelectedOption();
 
-      const id: string = $selectedOption.attr("id");
-      const label: string = $selectedOption.attr("title");
+      const id: string = $selectedOption.attr('id');
+      const label: string = $selectedOption.attr('title');
       let type: string = DownloadOption.UNKNOWN;
 
       if (this.renderingUrls[<any>id]) {
@@ -84,7 +80,7 @@ export class DownloadDialogue extends BaseDownloadDialogue {
 
   private _isAdaptive(): boolean {
     const format: string = this.getCurrentResourceFormat();
-    return format === "mpd" || format === "m3u8";
+    return format === 'mpd' || format === 'm3u8';
   }
 
   open(triggerButton: HTMLElement) {
@@ -92,36 +88,24 @@ export class DownloadDialogue extends BaseDownloadDialogue {
 
     const canvas: Canvas = this.extension.helper.getCurrentCanvas();
 
-    if (
-      this.isDownloadOptionAvailable(DownloadOption.ENTIRE_FILE_AS_ORIGINAL) &&
-      !this._isAdaptive()
-    ) {
-      const $input: JQuery = this.$entireFileAsOriginal.find("input");
-      const $label: JQuery = this.$entireFileAsOriginal.find("label");
-      const label: string = Strings.format(
-        this.content.entireFileAsOriginalWithFormat,
-        this.getCurrentResourceFormat()
-      );
+    if (this.isDownloadOptionAvailable(DownloadOption.ENTIRE_FILE_AS_ORIGINAL) && !this._isAdaptive()) {
+      const $input: JQuery = this.$entireFileAsOriginal.find('input');
+      const $label: JQuery = this.$entireFileAsOriginal.find('label');
+      const label: string = Strings.format(this.content.entireFileAsOriginalWithFormat, this.getCurrentResourceFormat());
       $label.text(label);
-      $input.prop("title", label);
+      $input.prop('title', label);
       this.$entireFileAsOriginal.show();
     }
     this.resetDynamicDownloadOptions();
 
     if (this.isDownloadOptionAvailable(DownloadOption.RANGE_RENDERINGS)) {
       if (canvas.ranges && canvas.ranges.length) {
-        const currentRange: Range | null =
-          this.extension.helper.getCurrentRange();
+        const currentRange: Range | null = this.extension.helper.getCurrentRange();
 
         if (currentRange) {
           this.$downloadOptions.append(this.$canvasOptionsContainer);
 
-          const renderingOptions: IRenderingOption[] =
-            this.getDownloadOptionsForRenderings(
-              currentRange,
-              this.content.entireFileAsOriginal,
-              DownloadOption.CANVAS_RENDERINGS
-            );
+          const renderingOptions: IRenderingOption[] = this.getDownloadOptionsForRenderings(currentRange, this.content.entireFileAsOriginal, DownloadOption.CANVAS_RENDERINGS);
           this.addDownloadOptionsForRenderings(renderingOptions);
         }
 
@@ -145,23 +129,17 @@ export class DownloadDialogue extends BaseDownloadDialogue {
         this.$downloadOptions.append(this.$imageOptionsContainer);
       }
       for (let i = 0; i < images.length; i++) {
-        const renderingOptions: IRenderingOption[] =
-          this.getDownloadOptionsForRenderings(
-            images[i].getResource(),
-            this.content.entireFileAsOriginal,
-            DownloadOption.IMAGE_RENDERINGS
-          );
+        const renderingOptions: IRenderingOption[] = this.getDownloadOptionsForRenderings(
+          images[i].getResource(),
+          this.content.entireFileAsOriginal,
+          DownloadOption.IMAGE_RENDERINGS,
+        );
         this.addDownloadOptionsForRenderings(renderingOptions);
       }
     }
 
     if (this.isDownloadOptionAvailable(DownloadOption.CANVAS_RENDERINGS)) {
-      const renderingOptions: IRenderingOption[] =
-        this.getDownloadOptionsForRenderings(
-          canvas,
-          this.content.entireFileAsOriginal,
-          DownloadOption.CANVAS_RENDERINGS
-        );
+      const renderingOptions: IRenderingOption[] = this.getDownloadOptionsForRenderings(canvas, this.content.entireFileAsOriginal, DownloadOption.CANVAS_RENDERINGS);
       if (renderingOptions.length) {
         this.$downloadOptions.append(this.$canvasOptionsContainer);
         this.addDownloadOptionsForRenderings(renderingOptions);
@@ -169,19 +147,14 @@ export class DownloadDialogue extends BaseDownloadDialogue {
     }
 
     if (this.isDownloadOptionAvailable(DownloadOption.MANIFEST_RENDERINGS)) {
-      let renderingOptions: IRenderingOption[] =
-        this.getDownloadOptionsForRenderings(
-          this.extension.helper.getCurrentSequence(),
-          this.content.entireDocument,
-          DownloadOption.MANIFEST_RENDERINGS
-        );
+      let renderingOptions: IRenderingOption[] = this.getDownloadOptionsForRenderings(
+        this.extension.helper.getCurrentSequence(),
+        this.content.entireDocument,
+        DownloadOption.MANIFEST_RENDERINGS,
+      );
 
       if (!renderingOptions.length && this.extension.helper.manifest) {
-        renderingOptions = this.getDownloadOptionsForRenderings(
-          this.extension.helper.manifest,
-          this.content.entireDocument,
-          DownloadOption.MANIFEST_RENDERINGS
-        );
+        renderingOptions = this.getDownloadOptionsForRenderings(this.extension.helper.manifest, this.content.entireDocument, DownloadOption.MANIFEST_RENDERINGS);
       }
 
       if (renderingOptions.length) {
@@ -194,14 +167,12 @@ export class DownloadDialogue extends BaseDownloadDialogue {
       this.$entireFileAsOriginal.hide();
     }
 
-    if (!this.$downloadOptions.find("li.option:visible").length) {
+    if (!this.$downloadOptions.find('li.option:visible').length) {
       this.$noneAvailable.show();
       this.$downloadButton.hide();
     } else {
       // select first option.
-      this.$downloadOptions
-        .find("li.option input:visible:first")
-        .prop("checked", true);
+      this.$downloadOptions.find('li.option input:visible:first').prop('checked', true);
       this.$noneAvailable.hide();
       this.$downloadButton.show();
     }

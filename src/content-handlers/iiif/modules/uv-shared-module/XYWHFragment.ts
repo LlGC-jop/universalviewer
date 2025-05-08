@@ -16,13 +16,8 @@ export class XYWHFragment {
   }
 
   static fromString(bounds: string): XYWHFragment {
-    bounds = bounds.replace("xywh=", "");
-    const boundsArr: string[] = bounds.split(",");
-    return new XYWHFragment(
-      Number(boundsArr[0]),
-      Number(boundsArr[1]),
-      Number(boundsArr[2]),
-      Number(boundsArr[3])
-    );
+    bounds = bounds.replace('xywh=', '');
+    const boundsArr: string[] = bounds.split(',');
+    return new XYWHFragment(Number(boundsArr[0]), Number(boundsArr[1]), Number(boundsArr[2]), Number(boundsArr[3]));
   }
 }

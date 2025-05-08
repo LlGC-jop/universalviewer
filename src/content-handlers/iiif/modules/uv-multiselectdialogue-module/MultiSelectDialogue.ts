@@ -1,17 +1,15 @@
-const $ = require("jquery");
-import { IIIFEvents } from "../../IIIFEvents";
-import { Dialogue } from "../uv-shared-module/Dialogue";
-import OpenSeadragonExtension from "../../extensions/uv-openseadragon-extension/Extension";
-import { Mode } from "../../extensions/uv-openseadragon-extension/Mode";
-import { Bools } from "@edsilv/utils";
-import { GalleryComponent } from "@iiif/iiif-gallery-component";
+const $ = require('jquery');
+import { IIIFEvents } from '../../IIIFEvents';
+import { Dialogue } from '../uv-shared-module/Dialogue';
+import OpenSeadragonExtension from '../../extensions/uv-openseadragon-extension/Extension';
+import { Mode } from '../../extensions/uv-openseadragon-extension/Mode';
+import { Bools } from '@edsilv/utils';
+import { GalleryComponent } from '@iiif/iiif-gallery-component';
 // import { GalleryComponent } from "../../GalleryComponent";
-import { MultiSelectState } from "@iiif/manifold";
-import { Config } from "../../extensions/uv-openseadragon-extension/config/Config";
+import { MultiSelectState } from '@iiif/manifold';
+import { Config } from '../../extensions/uv-openseadragon-extension/config/Config';
 
-export class MultiSelectDialogue extends Dialogue<
-  Config["modules"]["multiSelectDialogue"]
-> {
+export class MultiSelectDialogue extends Dialogue<Config['modules']['multiSelectDialogue']> {
   $title: JQuery;
   $gallery: JQuery;
   galleryComponent: any;
@@ -22,7 +20,7 @@ export class MultiSelectDialogue extends Dialogue<
   }
 
   create(): void {
-    this.setConfig("multiSelectDialogue");
+    this.setConfig('multiSelectDialogue');
 
     super.create();
 
@@ -33,16 +31,14 @@ export class MultiSelectDialogue extends Dialogue<
 
     this.extensionHost.subscribe(this.openCommand, () => {
       this.open();
-      const multiSelectState: MultiSelectState =
-        this.extension.helper.getMultiSelectState();
+      const multiSelectState: MultiSelectState = this.extension.helper.getMultiSelectState();
       multiSelectState.setEnabled(true);
       this.galleryComponent.set(this.data);
     });
 
     this.extensionHost.subscribe(this.closeCommand, () => {
       this.close();
-      const multiSelectState: MultiSelectState =
-        this.extension.helper.getMultiSelectState();
+      const multiSelectState: MultiSelectState = this.extension.helper.getMultiSelectState();
       multiSelectState.setEnabled(false);
     });
 
@@ -55,8 +51,7 @@ export class MultiSelectDialogue extends Dialogue<
 
     this.data = {
       helper: this.extension.helper,
-      chunkedResizingThreshold:
-        this.config.options.galleryThumbChunkedResizingThreshold,
+      chunkedResizingThreshold: this.config.options.galleryThumbChunkedResizingThreshold,
       content: this.config.content,
       debug: false,
       imageFadeInDuration: 300,
@@ -76,27 +71,23 @@ export class MultiSelectDialogue extends Dialogue<
       target: <HTMLElement>this.$gallery[0],
     });
 
-    const $selectButton: JQuery = this.$gallery.find("a.select");
-    $selectButton.addClass("btn btn-primary");
+    const $selectButton: JQuery = this.$gallery.find('a.select');
+    $selectButton.addClass('btn btn-primary');
 
     this.galleryComponent.on(
-      "multiSelectionMade",
+      'multiSelectionMade',
       (ids: string[]) => {
         this.extensionHost.publish(IIIFEvents.MULTISELECTION_MADE, ids);
         that.close();
       },
-      false
+      false,
     );
 
     this.$element.hide();
   }
 
   isPageModeEnabled(): boolean {
-    return (
-      Bools.getBool(this.config.options.pageModeEnabled, true) &&
-      (<OpenSeadragonExtension>this.extension).getMode().toString() ===
-        Mode.page.toString()
-    );
+    return Bools.getBool(this.config.options.pageModeEnabled, true) && (<OpenSeadragonExtension>this.extension).getMode().toString() === Mode.page.toString();
   }
 
   open(): void {
@@ -110,13 +101,8 @@ export class MultiSelectDialogue extends Dialogue<
   resize(): void {
     super.resize();
 
-    const $main: JQuery = this.$gallery.find(".main");
-    const $header: JQuery = this.$gallery.find(".header");
-    $main.height(
-      this.$content.height() -
-        this.$title.outerHeight() -
-        this.$title.verticalMargins() -
-        $header.height()
-    );
+    const $main: JQuery = this.$gallery.find('.main');
+    const $header: JQuery = this.$gallery.find('.header');
+    $main.height(this.$content.height() - this.$title.outerHeight() - this.$title.verticalMargins() - $header.height());
   }
 }

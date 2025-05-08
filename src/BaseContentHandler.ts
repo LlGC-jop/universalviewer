@@ -1,8 +1,8 @@
-import { IContentHandler } from "./IContentHandler";
-import { IUVOptions } from "./UniversalViewer";
-import { UVAdapter } from "./UVAdapter";
-import { Events } from "./Events";
-import { merge } from "./Utils";
+import { IContentHandler } from './IContentHandler';
+import { IUVOptions } from './UniversalViewer';
+import { UVAdapter } from './UVAdapter';
+import { Events } from './Events';
+import { merge } from './Utils';
 
 export type EventListener = {
   name: string;
@@ -10,21 +10,15 @@ export type EventListener = {
   ctx?: any;
 };
 
-type EventListenerDictionaryItem = Pick<EventListener, "cb" | "ctx">;
+type EventListenerDictionaryItem = Pick<EventListener, 'cb' | 'ctx'>;
 
-export default class BaseContentHandler<IUVData>
-  implements IContentHandler<IUVData>
-{
+export default class BaseContentHandler<IUVData> implements IContentHandler<IUVData> {
   protected _el: HTMLElement;
   private _eventListeners: {
     [key: string]: EventListenerDictionaryItem[];
   };
 
-  constructor(
-    public options: IUVOptions,
-    public adapter?: UVAdapter,
-    eventListeners?: EventListener[]
-  ) {
+  constructor(public options: IUVOptions, public adapter?: UVAdapter, eventListeners?: EventListener[]) {
     this._el = this.options.target;
 
     // add event listeners
@@ -48,9 +42,7 @@ export default class BaseContentHandler<IUVData>
 
   public fire(name: string, ...args: any[]): void {
     var data = [].slice.call(arguments, 1);
-    var evtArr = (
-      (this._eventListeners || (this._eventListeners = {}))[name] || []
-    ).slice();
+    var evtArr = ((this._eventListeners || (this._eventListeners = {}))[name] || []).slice();
     var i = 0;
     var len = evtArr.length;
 
@@ -60,11 +52,11 @@ export default class BaseContentHandler<IUVData>
   }
 
   public showSpinner(): void {
-    this._el.parentElement?.classList.remove("loaded");
+    this._el.parentElement?.classList.remove('loaded');
   }
 
   public hideSpinner(): void {
-    this._el.parentElement?.classList.add("loaded");
+    this._el.parentElement?.classList.add('loaded');
   }
 
   public async configure(config: any): Promise<any> {
@@ -95,8 +87,8 @@ export default class BaseContentHandler<IUVData>
   public resize(): void {}
 
   public dispose(): void {
-    this._el.innerHTML = "";
-    this._el.className = "";
+    this._el.innerHTML = '';
+    this._el.className = '';
     this.adapter?.dispose();
   }
 }

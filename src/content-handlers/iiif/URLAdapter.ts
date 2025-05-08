@@ -1,10 +1,10 @@
-import { UVAdapter } from "../../UVAdapter";
-import { Urls } from "@edsilv/utils";
-import { UniversalViewer } from "../../UniversalViewer";
-import { IUVData } from "../../IUVData";
-import { IIIFEvents } from "./IIIFEvents";
-import { defaultLocale } from "../../Utils";
-import { parseContentStateParameter } from "./helpers";
+import { UVAdapter } from '../../UVAdapter';
+import { Urls } from '@edsilv/utils';
+import { UniversalViewer } from '../../UniversalViewer';
+import { IUVData } from '../../IUVData';
+import { IIIFEvents } from './IIIFEvents';
+import { defaultLocale } from '../../Utils';
+import { parseContentStateParameter } from './helpers';
 
 export class URLAdapter extends UVAdapter {
   constructor(readonly: boolean = false) {
@@ -22,9 +22,9 @@ export class URLAdapter extends UVAdapter {
   }
 
   public getFragment(key: string, url: string): string | null {
-    const regex = new RegExp("#.*" + key + "=([^&]+)(&|$)");
+    const regex = new RegExp('#.*' + key + '=([^&]+)(&|$)');
     const match = regex.exec(url);
-    return match ? decodeURIComponent(match[1].replace(/\+/g, " ")) : null;
+    return match ? decodeURIComponent(match[1].replace(/\+/g, ' ')) : null;
   }
 
   public set<T>(key: string, value: T): void {
@@ -34,7 +34,7 @@ export class URLAdapter extends UVAdapter {
       } else {
         const existing = Urls.getHashParameter(key);
         if (existing !== null) {
-          Urls.setHashParameter(key, "", document);
+          Urls.setHashParameter(key, '', document);
         }
       }
     }
@@ -42,11 +42,11 @@ export class URLAdapter extends UVAdapter {
 
   public getInitialData(overrides?: IUVData<any>): IUVData<any> {
     const formattedLocales: Array<{ label?: string; name: string }> = [];
-    const locales = this.get<string>("locales", "");
+    const locales = this.get<string>('locales', '');
     if (locales) {
-      const names = locales.split(",");
+      const names = locales.split(',');
       for (let i in names) {
-        const parts = String(names[i]).split(":");
+        const parts = String(names[i]).split(':');
         formattedLocales[i] = { name: parts[0], label: parts[1] };
       }
     } else {
@@ -62,41 +62,26 @@ export class URLAdapter extends UVAdapter {
     }
 
     // if there's a iiif_content param in the qs, parse out the components of it and use those
-    const iiifContent = this.get<string>("iiif-content", "");
+    const iiifContent = this.get<string>('iiif-content', '');
 
     if (iiifContent) {
-      let iiifManifestId: string = "";
-      let canvasId: string = "";
-      let xywh: string = "";
+      let iiifManifestId: string = '';
+      let canvasId: string = '';
+      let xywh: string = '';
 
       const contentState = parseContentStateParameter(iiifContent) as any;
-      if (contentState.type === "remote-content-state") {
+      if (contentState.type === 'remote-content-state') {
         iiifManifestId = contentState.id;
       } else if (contentState && contentState.target.length) {
         const firstTarget = contentState.target[0];
-        if (
-          firstTarget.type === "SpecificResource" &&
-          firstTarget.source.type === "Canvas"
-        ) {
-          const manifestSource = (firstTarget.source.partOf || []).find(
-            (s) => s.type === "Manifest"
-          );
+        if (firstTarget.type === 'SpecificResource' && firstTarget.source.type === 'Canvas') {
+          const manifestSource = (firstTarget.source.partOf || []).find((s) => s.type === 'Manifest');
 
           // get canvas selector
-          if (
-            firstTarget.selector &&
-            firstTarget.selector.type === "BoxSelector"
-          ) {
+          if (firstTarget.selector && firstTarget.selector.type === 'BoxSelector') {
             canvasId = firstTarget.source.id;
 
-            xywh =
-              firstTarget.selector.x +
-              "," +
-              firstTarget.selector.y +
-              "," +
-              firstTarget.selector.width +
-              "," +
-              firstTarget.selector.height;
+            xywh = firstTarget.selector.x + ',' + firstTarget.selector.y + ',' + firstTarget.selector.width + ',' + firstTarget.selector.height;
           }
 
           if (manifestSource) {
@@ -112,9 +97,9 @@ export class URLAdapter extends UVAdapter {
         canvasId: canvasId,
         canvasIndex: 0,
         rotation: 0,
-        rangeId: "",
+        rangeId: '',
         xywh: xywh,
-        target: "",
+        target: '',
         // cfi: this.get<string>("cfi", ""),
         // youTubeVideoId: this.get<string>("youTubeVideoId", ""),
         locales: formattedLocales.length ? formattedLocales : undefined,
@@ -123,15 +108,14 @@ export class URLAdapter extends UVAdapter {
     }
 
     return {
-      iiifManifestId:
-        this.get<string>("iiifManifestId") || this.get<string>("manifest"),
-      collectionIndex: numberOrUndefined(this.get<number>("c")),
-      manifestIndex: Number(this.get<number>("m", 0)),
-      canvasIndex: Number(this.get<number>("cv", 0)),
-      rotation: Number(this.get<number>("r", 0)),
-      rangeId: this.get<string>("rid", ""),
-      xywh: this.get<string>("xywh", ""),
-      target: this.get<string>("target", ""),
+      iiifManifestId: this.get<string>('iiifManifestId') || this.get<string>('manifest'),
+      collectionIndex: numberOrUndefined(this.get<number>('c')),
+      manifestIndex: Number(this.get<number>('m', 0)),
+      canvasIndex: Number(this.get<number>('cv', 0)),
+      rotation: Number(this.get<number>('r', 0)),
+      rangeId: this.get<string>('rid', ''),
+      xywh: this.get<string>('xywh', ''),
+      target: this.get<string>('target', ''),
       // cfi: this.get<string>("cfi", ""),
       // youTubeVideoId: this.get<string>("youTubeVideoId", ""),
       locales: formattedLocales.length ? formattedLocales : undefined,
@@ -140,11 +124,7 @@ export class URLAdapter extends UVAdapter {
   }
 
   public dispose(): void {
-    history.pushState(
-      "",
-      document.title,
-      window.location.pathname + window.location.search
-    );
+    history.pushState('', document.title, window.location.pathname + window.location.search);
   }
 
   public bindTo(uv: UniversalViewer) {
@@ -165,42 +145,42 @@ export class URLAdapter extends UVAdapter {
     uv.on(
       IIIFEvents.COLLECTION_INDEX_CHANGE,
       (collectionIndex) => {
-        this.set("c", collectionIndex);
+        this.set('c', collectionIndex);
       },
-      false
+      false,
     );
 
     uv.on(
       IIIFEvents.MANIFEST_INDEX_CHANGE,
       (manifestIndex) => {
-        this.set("m", manifestIndex);
+        this.set('m', manifestIndex);
       },
-      false
+      false,
     );
 
     uv.on(
       IIIFEvents.CANVAS_INDEX_CHANGE,
       (canvasIndex) => {
-        this.set("cv", canvasIndex);
+        this.set('cv', canvasIndex);
       },
-      false
+      false,
     );
 
     uv.on(
       IIIFEvents.RANGE_CHANGE,
       (range) => {
-        const rangeId = !range || typeof range === "string" ? range : range.id;
-        this.set("rid", rangeId);
+        const rangeId = !range || typeof range === 'string' ? range : range.id;
+        this.set('rid', rangeId);
       },
-      false
+      false,
     );
 
     uv.on(
       IIIFEvents.TARGET_CHANGE,
       (target) => {
-        this.set("xywh", this.getFragment("xywh", target));
+        this.set('xywh', this.getFragment('xywh', target));
       },
-      false
+      false,
     );
   }
 }

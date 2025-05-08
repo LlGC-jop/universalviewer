@@ -11,7 +11,7 @@ import {
   ShareDialogueOptions,
   FooterPanelContent,
   FooterPanelOptions,
-} from "@/content-handlers/iiif/BaseConfig";
+} from '@/content-handlers/iiif/BaseConfig';
 
 type AVCenterPanelOptions = CenterPanelOptions & {
   /** Determines if the poster image is expanded */

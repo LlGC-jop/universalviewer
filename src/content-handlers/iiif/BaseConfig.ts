@@ -1,12 +1,8 @@
-import { StorageType } from "@edsilv/utils";
-import {
-  ExpandPanel,
-  ExpandPanelContent,
-  ExpandPanelOptions,
-} from "./extensions/config/ExpandPanel";
-export { StorageType } from "@edsilv/utils";
+import { StorageType } from '@edsilv/utils';
+import { ExpandPanel, ExpandPanelContent, ExpandPanelOptions } from './extensions/config/ExpandPanel';
+export { StorageType } from '@edsilv/utils';
 
-export type MetricType = string | "sm" | "md" | "lg" | "xl";
+export type MetricType = string | 'sm' | 'md' | 'lg' | 'xl';
 
 export class Metric {
   constructor(public type: MetricType, public minWidth: number) {}

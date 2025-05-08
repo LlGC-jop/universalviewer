@@ -1,11 +1,9 @@
-const $ = require("jquery");
-import { BaseConfig } from "../../BaseConfig";
-import { IIIFEvents } from "../../IIIFEvents";
-import { Dialogue } from "./Dialogue";
+const $ = require('jquery');
+import { BaseConfig } from '../../BaseConfig';
+import { IIIFEvents } from '../../IIIFEvents';
+import { Dialogue } from './Dialogue';
 
-export class GenericDialogue extends Dialogue<
-  BaseConfig["modules"]["genericDialogue"]
-> {
+export class GenericDialogue extends Dialogue<BaseConfig['modules']['genericDialogue']> {
   acceptCallback: any;
   $acceptButton: JQuery;
   $message: JQuery;
@@ -15,7 +13,7 @@ export class GenericDialogue extends Dialogue<
   }
 
   create(): void {
-    this.setConfig("genericDialogue");
+    this.setConfig('genericDialogue');
 
     super.create();
 
@@ -31,7 +29,7 @@ export class GenericDialogue extends Dialogue<
       this.close();
     });
 
-    this.$message = $("<p></p>");
+    this.$message = $('<p></p>');
     this.$content.append(this.$message);
 
     this.$acceptButton = $(`
@@ -41,7 +39,7 @@ export class GenericDialogue extends Dialogue<
         `);
     this.$buttons.append(this.$acceptButton);
     // Hide the redundant close button
-    this.$buttons.find(".close").hide();
+    this.$buttons.find('.close').hide();
 
     this.$acceptButton.onPressed(() => {
       this.accept();

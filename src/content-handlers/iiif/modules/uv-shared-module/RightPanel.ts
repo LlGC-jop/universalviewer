@@ -1,7 +1,7 @@
-import { Bools } from "@edsilv/utils";
-import { ExpandPanel } from "../../extensions/config/ExpandPanel";
-import { IIIFEvents } from "../../IIIFEvents";
-import { BaseExpandPanel } from "./BaseExpandPanel";
+import { Bools } from '@edsilv/utils';
+import { ExpandPanel } from '../../extensions/config/ExpandPanel';
+import { IIIFEvents } from '../../IIIFEvents';
+import { BaseExpandPanel } from './BaseExpandPanel';
 
 export class RightPanel<T extends ExpandPanel> extends BaseExpandPanel<T> {
   constructor($element: JQuery) {
@@ -15,10 +15,7 @@ export class RightPanel<T extends ExpandPanel> extends BaseExpandPanel<T> {
   init(): void {
     super.init();
 
-    const shouldOpenPanel: boolean = Bools.getBool(
-      this.extension.getSettings().rightPanelOpen,
-      this.options.panelOpen
-    );
+    const shouldOpenPanel: boolean = Bools.getBool(this.extension.getSettings().rightPanelOpen, this.options.panelOpen);
 
     if (shouldOpenPanel) {
       this.toggle(true);
@@ -37,22 +34,18 @@ export class RightPanel<T extends ExpandPanel> extends BaseExpandPanel<T> {
     });
 
     this.extensionHost.subscribe(IIIFEvents.TOGGLE_LEFT_PANEL, () => {
-      if (this.extension.isMetric("sm") && this.isExpanded) {
+      if (this.extension.isMetric('sm') && this.isExpanded) {
         this.toggle(true);
       }
     });
   }
 
   getTargetWidth(): number {
-    return this.isExpanded
-      ? this.options.panelCollapsedWidth
-      : this.options.panelExpandedWidth;
+    return this.isExpanded ? this.options.panelCollapsedWidth : this.options.panelExpandedWidth;
   }
 
   getTargetLeft(): number {
-    return this.isExpanded
-      ? this.$element.parent().width() - this.options.panelCollapsedWidth
-      : this.$element.parent().width() - this.options.panelExpandedWidth;
+    return this.isExpanded ? this.$element.parent().width() - this.options.panelCollapsedWidth : this.$element.parent().width() - this.options.panelExpandedWidth;
   }
 
   toggleFinish(): void {
@@ -69,7 +62,7 @@ export class RightPanel<T extends ExpandPanel> extends BaseExpandPanel<T> {
     // for some reason a 100ms timeout on removing open-finished solves the problem
     // this can't be in the base panel class or the timeout interferes with test running even though it works fine
     setTimeout(() => {
-      this.$element.toggleClass("open-finished");
+      this.$element.toggleClass('open-finished');
     }, 100);
   }
 
@@ -79,9 +72,9 @@ export class RightPanel<T extends ExpandPanel> extends BaseExpandPanel<T> {
 
   toggle(autoToggled?: boolean): void {
     if (this.isExpanded) {
-      this.$element.parent().removeClass("rightPanelOpen");
+      this.$element.parent().removeClass('rightPanelOpen');
     } else {
-      this.$element.parent().addClass("rightPanelOpen");
+      this.$element.parent().addClass('rightPanelOpen');
     }
 
     super.toggle(autoToggled);

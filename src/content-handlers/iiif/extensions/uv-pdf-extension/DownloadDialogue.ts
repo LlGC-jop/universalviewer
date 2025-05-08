@@ -1,5 +1,5 @@
-import { DownloadDialogue as BaseDownloadDialogue } from "../../modules/uv-dialogues-module/DownloadDialogue";
-import { DownloadOption } from "../../modules/uv-shared-module/DownloadOption";
+import { DownloadDialogue as BaseDownloadDialogue } from '../../modules/uv-dialogues-module/DownloadDialogue';
+import { DownloadOption } from '../../modules/uv-shared-module/DownloadOption';
 
 export class DownloadDialogue extends BaseDownloadDialogue {
   constructor($element: JQuery) {
@@ -7,7 +7,7 @@ export class DownloadDialogue extends BaseDownloadDialogue {
   }
 
   create(): void {
-    this.setConfig("downloadDialogue");
+    this.setConfig('downloadDialogue');
 
     super.create();
   }
@@ -17,7 +17,7 @@ export class DownloadDialogue extends BaseDownloadDialogue {
 
     this.addEntireFileDownloadOptions();
 
-    if (!this.$downloadOptions.find("li:visible").length) {
+    if (!this.$downloadOptions.find('li:visible').length) {
       this.$noneAvailable.show();
     } else {
       // select first option.

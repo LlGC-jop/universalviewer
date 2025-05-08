@@ -1,4 +1,4 @@
-import { DownloadOption } from "./DownloadOption";
+import { DownloadOption } from './DownloadOption';
 
 export interface IRenderingOption {
   type: DownloadOption;

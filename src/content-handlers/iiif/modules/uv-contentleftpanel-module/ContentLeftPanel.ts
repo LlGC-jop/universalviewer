@@ -1,28 +1,21 @@
-const $ = require("jquery");
-import { createElement } from "react";
-import { createRoot, Root } from "react-dom/client";
-import ThumbsView from "./ThumbsView";
-const ViewingDirectionEnum =
-  require("@iiif/vocabulary/dist-commonjs/").ViewingDirection;
+const $ = require('jquery');
+import { createElement } from 'react';
+import { createRoot, Root } from 'react-dom/client';
+import ThumbsView from './ThumbsView';
+const ViewingDirectionEnum = require('@iiif/vocabulary/dist-commonjs/').ViewingDirection;
 // const ViewingHintEnum = require("@iiif/vocabulary/dist-commonjs/").ViewingHint;
-import { Bools } from "@edsilv/utils";
-import { ViewingHint, ViewingDirection } from "@iiif/vocabulary/dist-commonjs/";
-import { IIIFEvents } from "../../IIIFEvents";
-import { GalleryView } from "./GalleryView";
-import OpenSeadragonExtension from "../../extensions/uv-openseadragon-extension/Extension";
-import { LeftPanel } from "../uv-shared-module/LeftPanel";
-import { Mode } from "../../extensions/uv-openseadragon-extension/Mode";
-import { TreeView } from "./TreeView";
-import {
-  LanguageMap,
-  Thumb,
-  TreeNode,
-  TreeNodeType,
-  Range,
-} from "manifesto.js";
-import { AnnotationGroup, TreeSortType } from "@iiif/manifold";
-import { isVisible } from "../../../../Utils";
-import { ContentLeftPanel as ContentLeftPanelConfig } from "../../extensions/config/ContentLeftPanel";
+import { Bools } from '@edsilv/utils';
+import { ViewingHint, ViewingDirection } from '@iiif/vocabulary/dist-commonjs/';
+import { IIIFEvents } from '../../IIIFEvents';
+import { GalleryView } from './GalleryView';
+import OpenSeadragonExtension from '../../extensions/uv-openseadragon-extension/Extension';
+import { LeftPanel } from '../uv-shared-module/LeftPanel';
+import { Mode } from '../../extensions/uv-openseadragon-extension/Mode';
+import { TreeView } from './TreeView';
+import { LanguageMap, Thumb, TreeNode, TreeNodeType, Range } from 'manifesto.js';
+import { AnnotationGroup, TreeSortType } from '@iiif/manifold';
+import { isVisible } from '../../../../Utils';
+import { ContentLeftPanel as ContentLeftPanelConfig } from '../../extensions/config/ContentLeftPanel';
 
 export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
   $bottomOptions: JQuery;
@@ -60,7 +53,7 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
   }
 
   create(): void {
-    this.setConfig("contentLeftPanel");
+    this.setConfig('contentLeftPanel');
 
     super.create();
 
@@ -118,7 +111,7 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
     });
 
     this.extensionHost.subscribe(IIIFEvents.TREE_NODE_SELECTED, () => {
-      if (this.extension.isMetric("sm")) {
+      if (this.extension.isMetric('sm')) {
         this.toggle(true);
       }
     });
@@ -133,14 +126,10 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
     this.$tabs = $('<div class="tabs"></div>');
     this.$main.append(this.$tabs);
 
-    this.$treeButton = $(
-      '<a class="index tab" tabindex="0">' + this.content.index + "</a>"
-    );
+    this.$treeButton = $('<a class="index tab" tabindex="0">' + this.content.index + '</a>');
     this.$tabs.append(this.$treeButton);
 
-    this.$thumbsButton = $(
-      '<a class="thumbs tab" tabindex="0">' + this.content.thumbnails + "</a>"
-    );
+    this.$thumbsButton = $('<a class="thumbs tab" tabindex="0">' + this.content.thumbnails + '</a>');
     this.$tabs.append(this.$thumbsButton);
 
     this.$tabsContent = $('<div class="tabsContent"></div>');
@@ -152,9 +141,7 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
     this.$topOptions = $('<div class="top"></div>');
     this.$options.append(this.$topOptions);
 
-    this.$treeSelect = $(
-      '<select aria-label="' + this.content.manifestRanges + '"></select>'
-    );
+    this.$treeSelect = $('<select aria-label="' + this.content.manifestRanges + '"></select>');
     this.$topOptions.append(this.$treeSelect);
 
     this.$bottomOptions = $('<div class="bottom"></div>');
@@ -169,22 +156,16 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
     this.$treeViewOptions = $('<div class="treeView"></div>');
     this.$leftOptions.append(this.$treeViewOptions);
 
-    this.$sortByLabel = $(
-      '<span class="sort">' + this.content.sortBy + "</span>"
-    );
+    this.$sortByLabel = $('<span class="sort">' + this.content.sortBy + '</span>');
     this.$treeViewOptions.append(this.$sortByLabel);
 
     this.$sortButtonGroup = $('<div class="btn-group"></div>');
     this.$treeViewOptions.append(this.$sortButtonGroup);
 
-    this.$sortByDateButton = $(
-      '<button class="btn" tabindex="0">' + this.content.date + "</button>"
-    );
+    this.$sortByDateButton = $('<button class="btn" tabindex="0">' + this.content.date + '</button>');
     this.$sortButtonGroup.append(this.$sortByDateButton);
 
-    this.$sortByVolumeButton = $(
-      '<button class="btn" tabindex="0">' + this.content.volume + "</button>"
-    );
+    this.$sortByVolumeButton = $('<button class="btn" tabindex="0">' + this.content.volume + '</button>');
     this.$sortButtonGroup.append(this.$sortByVolumeButton);
 
     this.$views = $('<div class="views"></div>');
@@ -207,11 +188,11 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
       this.updateTreeTabBySelection();
     });
 
-    this.$sortByDateButton.on("click", () => {
+    this.$sortByDateButton.on('click', () => {
       this.sortByDate();
     });
 
-    this.$sortByVolumeButton.on("click", () => {
+    this.$sortByVolumeButton.on('click', () => {
       this.sortByVolume();
     });
 
@@ -223,7 +204,7 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
         this.openTreeView();
       },
       true,
-      true
+      true,
     );
 
     this.onAccessibleClick(
@@ -232,26 +213,26 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
         this.openThumbsView();
       },
       true,
-      true
+      true,
     );
 
     this.setTitle(this.content.title);
 
-    this.$sortByVolumeButton.addClass("on");
+    this.$sortByVolumeButton.addClass('on');
 
     var tabOrderConfig: string = this.options.tabOrder;
 
     if (tabOrderConfig) {
       // sort tabs
       tabOrderConfig = tabOrderConfig.toLowerCase();
-      tabOrderConfig = tabOrderConfig.replace(/ /g, "");
-      var tabOrder: string[] = tabOrderConfig.split(",");
+      tabOrderConfig = tabOrderConfig.replace(/ /g, '');
+      var tabOrder: string[] = tabOrderConfig.split(',');
 
-      if (tabOrder[0] === "thumbs") {
+      if (tabOrder[0] === 'thumbs') {
         this.$treeButton.before(this.$thumbsButton);
-        this.$thumbsButton.addClass("first");
+        this.$thumbsButton.addClass('first');
       } else {
-        this.$treeButton.addClass("first");
+        this.$treeButton.addClass('first');
       }
     }
   }
@@ -276,13 +257,7 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
     if (topRanges.length > 1) {
       for (let i = 0; i < topRanges.length; i++) {
         const range: Range = topRanges[i];
-        this.$treeSelect.append(
-          '<option value="' +
-            range.id +
-            '">' +
-            LanguageMap.getValue(range.getLabel()) +
-            "</option>"
-        );
+        this.$treeSelect.append('<option value="' + range.id + '">' + LanguageMap.getValue(range.getLabel()) + '</option>');
       }
     }
 
@@ -307,7 +282,7 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
       this.$treeViewOptions.hide();
     }
 
-    if (this.$treeSelect.find("option").length) {
+    if (this.$treeSelect.find('option').length) {
       this.$treeSelect.show();
     } else {
       this.$treeSelect.hide();
@@ -319,8 +294,8 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
     this.treeView.treeData = this.getTreeData();
     this.treeView.databind();
     this.selectCurrentTreeNode();
-    this.$sortByDateButton.addClass("on");
-    this.$sortByVolumeButton.removeClass("on");
+    this.$sortByDateButton.addClass('on');
+    this.$sortByVolumeButton.removeClass('on');
     this.resize();
   }
 
@@ -329,8 +304,8 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
     this.treeView.treeData = this.getTreeData();
     this.treeView.databind();
     this.selectCurrentTreeNode();
-    this.$sortByDateButton.removeClass("on");
-    this.$sortByVolumeButton.addClass("on");
+    this.$sortByDateButton.removeClass('on');
+    this.$sortByVolumeButton.addClass('on');
     this.resize();
   }
 
@@ -341,7 +316,7 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
       return treeData.data.type === TreeNodeType.COLLECTION;
     }
 
-    throw new Error("Tree not available");
+    throw new Error('Tree not available');
   }
 
   renderTree(): void {
@@ -354,14 +329,8 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
   getTreeData() {
     return {
       autoExpand: this._isTreeAutoExpanded(),
-      branchNodesExpandOnClick: Bools.getBool(
-        this.config.options.branchNodesExpandOnClick,
-        true
-      ),
-      branchNodesSelectable: Bools.getBool(
-        this.config.options.branchNodesSelectable,
-        false
-      ),
+      branchNodesExpandOnClick: Bools.getBool(this.config.options.branchNodesExpandOnClick, true),
+      branchNodesSelectable: Bools.getBool(this.config.options.branchNodesSelectable, false),
       helper: this.extension.helper,
       topRangeIndex: this.getSelectedTopRangeIndex(),
       treeSortType: this.treeSortType,
@@ -369,17 +338,12 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
   }
 
   private _isTreeAutoExpanded(): boolean {
-    const autoExpandTreeEnabled: boolean = Bools.getBool(
-      this.config.options.autoExpandTreeEnabled,
-      false
-    );
-    const autoExpandTreeIfFewerThan: number =
-      this.config.options.autoExpandTreeIfFewerThan || 0;
+    const autoExpandTreeEnabled: boolean = Bools.getBool(this.config.options.autoExpandTreeEnabled, false);
+    const autoExpandTreeIfFewerThan: number = this.config.options.autoExpandTreeIfFewerThan || 0;
 
     if (autoExpandTreeEnabled) {
       // get total number of tree nodes
-      const flatTree: TreeNode[] | null =
-        this.extension.helper.getFlattenedTree();
+      const flatTree: TreeNode[] | null = this.extension.helper.getFlattenedTree();
 
       if (flatTree && flatTree.length < autoExpandTreeIfFewerThan) {
         return true;
@@ -400,9 +364,7 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
       }
 
       const currentRange: Range = topRanges[index];
-      this.setTreeTabTitle(
-        <string>LanguageMap.getValue(currentRange.getLabel())
-      );
+      this.setTreeTabTitle(<string>LanguageMap.getValue(currentRange.getLabel()));
     } else {
       this.setTreeTabTitle(this.content.index);
     }
@@ -453,8 +415,7 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
     // let height: number;
 
     // const viewingHint: ViewingHint | null = this.getViewingHint();
-    const viewingDirection: ViewingDirection | null =
-      this.getViewingDirection();
+    const viewingDirection: ViewingDirection | null = this.getViewingDirection();
 
     // if (
     //   viewingDirection &&
@@ -474,26 +435,19 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
     const thumbs: Thumb[] = <Thumb[]>this.extension.helper.getThumbs(90);
     // this.extension.helper.getThumbs(width, height)
 
-    if (
-      viewingDirection &&
-      viewingDirection === ViewingDirectionEnum.BOTTOM_TO_TOP
-    ) {
+    if (viewingDirection && viewingDirection === ViewingDirectionEnum.BOTTOM_TO_TOP) {
       thumbs.reverse();
     }
 
     // add a search result icon for pages with results
-    const searchResults: AnnotationGroup[] | null = (<OpenSeadragonExtension>(
-      this.extension
-    )).annotations;
+    const searchResults: AnnotationGroup[] | null = (<OpenSeadragonExtension>this.extension).annotations;
 
     if (searchResults && searchResults.length) {
       for (let i = 0; i < searchResults.length; i++) {
         const searchResult: AnnotationGroup = searchResults[i];
 
         // find the thumb with the same canvasIndex and add the searchResult
-        let thumb: Thumb = thumbs.filter(
-          (t) => t.index === searchResult.canvasIndex
-        )[0];
+        let thumb: Thumb = thumbs.filter((t) => t.index === searchResult.canvasIndex)[0];
 
         if (thumb) {
           // clone the data so searchResults isn't persisted on the canvas.
@@ -504,13 +458,9 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
       }
     }
 
-    const paged: boolean =
-      !!this.extension.getSettings().pagingEnabled &&
-      this.extension.helper.isPaged();
+    const paged: boolean = !!this.extension.getSettings().pagingEnabled && this.extension.helper.isPaged();
 
-    const selectedIndices: number[] = this.extension.getPagedIndices(
-      this.extension.helper.canvasIndex
-    );
+    const selectedIndices: number[] = this.extension.getPagedIndices(this.extension.helper.canvasIndex);
 
     const settings = this.extension.getSettings();
 
@@ -520,17 +470,14 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
         paged,
         viewingDirection: viewingDirection || ViewingDirection.LEFT_TO_RIGHT,
         selected: selectedIndices,
-        truncateThumbnailLabels:
-          settings.truncateThumbnailLabels !== undefined
-            ? settings.truncateThumbnailLabels
-            : true,
+        truncateThumbnailLabels: settings.truncateThumbnailLabels !== undefined ? settings.truncateThumbnailLabels : true,
         onClick: (thumb: Thumb) => {
           this.extensionHost.publish(IIIFEvents.THUMB_SELECTED, thumb);
         },
         onKeyDown: (thumb: Thumb) => {
           this.extensionHost.publish(IIIFEvents.THUMB_SELECTED, thumb);
         },
-      })
+      }),
     );
   }
   createGalleryView(): void {
@@ -549,8 +496,7 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
   getGalleryData() {
     return {
       helper: this.extension.helper,
-      chunkedResizingThreshold:
-        this.config.options.galleryThumbChunkedResizingThreshold,
+      chunkedResizingThreshold: this.config.options.galleryThumbChunkedResizingThreshold,
       content: this.config.content,
       debug: false,
       imageFadeInDuration: 300,
@@ -570,20 +516,14 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
   isPageModeEnabled(): boolean {
     // todo: checks if the panel is being used in the openseadragon extension.
     // pass a `isPageModeEnabled` function to the panel's constructor instead?
-    if (
-      typeof (<OpenSeadragonExtension>this.extension).getMode === "function"
-    ) {
-      return (
-        Bools.getBool(this.config.options.pageModeEnabled, true) &&
-        (<OpenSeadragonExtension>this.extension).getMode().toString() ===
-          Mode.page.toString()
-      );
+    if (typeof (<OpenSeadragonExtension>this.extension).getMode === 'function') {
+      return Bools.getBool(this.config.options.pageModeEnabled, true) && (<OpenSeadragonExtension>this.extension).getMode().toString() === Mode.page.toString();
     }
     return Bools.getBool(this.config.options.pageModeEnabled, true);
   }
 
   getSelectedTree(): JQuery {
-    return this.$treeSelect.find(":selected");
+    return this.$treeSelect.find(':selected');
   }
 
   getSelectedTopRangeIndex(): number {
@@ -603,14 +543,8 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
     super.toggleFinish();
 
     if (this.isUnopened) {
-      let treeEnabled: boolean = Bools.getBool(
-        this.config.options.treeEnabled,
-        true
-      );
-      const thumbsEnabled: boolean = Bools.getBool(
-        this.config.options.thumbsEnabled,
-        true
-      );
+      let treeEnabled: boolean = Bools.getBool(this.config.options.treeEnabled, true);
+      const thumbsEnabled: boolean = Bools.getBool(this.config.options.thumbsEnabled, true);
 
       const treeData: TreeNode | null = this.getTree();
 
@@ -630,24 +564,13 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
   }
 
   defaultToThumbsView(): boolean {
-    const defaultToTreeEnabled: boolean = Bools.getBool(
-      this.config.options.defaultToTreeEnabled,
-      false
-    );
-    const defaultToTreeIfGreaterThan: number =
-      this.config.options.defaultToTreeIfGreaterThan || 0;
-    const defaultToTreeIfCollection: boolean = Bools.getBool(
-      this.config.options.defaultToTreeIfCollection,
-      false
-    );
+    const defaultToTreeEnabled: boolean = Bools.getBool(this.config.options.defaultToTreeEnabled, false);
+    const defaultToTreeIfGreaterThan: number = this.config.options.defaultToTreeIfGreaterThan || 0;
+    const defaultToTreeIfCollection: boolean = Bools.getBool(this.config.options.defaultToTreeIfCollection, false);
 
     const treeData: TreeNode | null = this.getTree();
 
-    if (
-      this.isCollection() &&
-      (defaultToTreeIfCollection ||
-        (treeData && this.extension.helper.treeHasNavDates(treeData)))
-    ) {
+    if (this.isCollection() && (defaultToTreeIfCollection || (treeData && this.extension.helper.treeHasNavDates(treeData)))) {
       return false;
     }
 
@@ -668,9 +591,9 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
   expandFullFinish(): void {
     super.expandFullFinish();
 
-    if (this.$treeButton.hasClass("on")) {
+    if (this.$treeButton.hasClass('on')) {
       this.openTreeView();
-    } else if (this.$thumbsButton.hasClass("on")) {
+    } else if (this.$thumbsButton.hasClass('on')) {
       this.openThumbsView();
     }
 
@@ -689,7 +612,7 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
     // todo: write a more generic tabs system with base tab class.
     // thumbsView may not necessarily have been created yet.
     // replace thumbsView with galleryView.
-    if (this.$thumbsButton.hasClass("on")) {
+    if (this.$thumbsButton.hasClass('on')) {
       this.openThumbsView();
     }
 
@@ -704,8 +627,8 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
       this.createTreeView();
     }
 
-    this.$treeButton.addClass("on");
-    this.$thumbsButton.removeClass("on");
+    this.$treeButton.addClass('on');
+    this.$thumbsButton.removeClass('on');
 
     this.treeView.show();
 
@@ -734,8 +657,8 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
       this.createGalleryView();
     }
 
-    this.$treeButton.removeClass("on");
-    this.$thumbsButton.addClass("on");
+    this.$treeButton.removeClass('on');
+    this.$thumbsButton.addClass('on');
 
     if (this.treeView) this.treeView.hide();
 
@@ -760,7 +683,7 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
   }
 
   selectTopRangeIndex(index: number): void {
-    this.$treeSelect.prop("selectedIndex", index);
+    this.$treeSelect.prop('selectedIndex', index);
   }
 
   getCurrentCanvasTopRangeIndex(): number {
@@ -769,7 +692,7 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
     const range: Range | null = this.extension.getCurrentCanvasRange();
 
     if (range) {
-      topRangeIndex = Number(range.path.split("/")[0]);
+      topRangeIndex = Number(range.path.split('/')[0]);
     }
 
     return topRangeIndex;
@@ -778,7 +701,7 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
   selectCurrentTreeNode(): void {
     // todo: merge selectCurrentTreeNodeByCanvas and selectCurrentTreeNodeByRange
     // the openseadragon extension should keep track of the current range instead of using canvas index
-    if (this.extension.type?.name === "uv-openseadragon-extension") {
+    if (this.extension.type?.name === 'uv-openseadragon-extension') {
       this.selectCurrentTreeNodeByCanvas();
     } else {
       this.selectCurrentTreeNodeByRange();
@@ -802,11 +725,9 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
   selectCurrentTreeNodeByCanvas(): void {
     if (this.treeView) {
       let node: TreeNode | null = null;
-      const currentCanvasTopRangeIndex: number =
-        this.getCurrentCanvasTopRangeIndex();
+      const currentCanvasTopRangeIndex: number = this.getCurrentCanvasTopRangeIndex();
       const selectedTopRangeIndex: number = this.getSelectedTopRangeIndex();
-      const usingCorrectTree: boolean =
-        currentCanvasTopRangeIndex === selectedTopRangeIndex;
+      const usingCorrectTree: boolean = currentCanvasTopRangeIndex === selectedTopRangeIndex;
       let range: Range | null = null;
 
       if (currentCanvasTopRangeIndex !== -1) {
@@ -876,15 +797,9 @@ export class ContentLeftPanel extends LeftPanel<ContentLeftPanelConfig> {
     // timeout gives tabs time to appear and be counted
     // so the correct height is calc'd
     setTimeout(() => {
-      this.$tabsContent.height(
-        this.$main.height() -
-          (isVisible(this.$tabs) ? this.$tabs.height() : 0) -
-          this.$tabsContent.verticalPadding()
-      );
+      this.$tabsContent.height(this.$main.height() - (isVisible(this.$tabs) ? this.$tabs.height() : 0) - this.$tabsContent.verticalPadding());
 
-      this.$views.height(
-        this.$tabsContent.height() - this.$options.outerHeight()
-      );
+      this.$views.height(this.$tabsContent.height() - this.$options.outerHeight());
     }, 1);
   }
 }

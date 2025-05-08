@@ -1,13 +1,11 @@
-const $ = require("jquery");
-import { BaseConfig } from "../../BaseConfig";
-import { IIIFEvents } from "../../IIIFEvents";
-import { Dialogue } from "../uv-shared-module/Dialogue";
-import { ILoginDialogueOptions } from "../uv-shared-module/ILoginDialogueOptions";
-import { IExternalResource } from "manifesto.js";
+const $ = require('jquery');
+import { BaseConfig } from '../../BaseConfig';
+import { IIIFEvents } from '../../IIIFEvents';
+import { Dialogue } from '../uv-shared-module/Dialogue';
+import { ILoginDialogueOptions } from '../uv-shared-module/ILoginDialogueOptions';
+import { IExternalResource } from 'manifesto.js';
 
-export class LoginDialogue extends Dialogue<
-  BaseConfig["modules"]["loginDialogue"]
-> {
+export class LoginDialogue extends Dialogue<BaseConfig['modules']['loginDialogue']> {
   loginCallback: any;
   logoutCallback: any;
   $cancelButton: JQuery;
@@ -23,7 +21,7 @@ export class LoginDialogue extends Dialogue<
   }
 
   create(): void {
-    this.setConfig("loginDialogue");
+    this.setConfig('loginDialogue');
 
     super.create();
 
@@ -54,35 +52,35 @@ export class LoginDialogue extends Dialogue<
                     <a class="login btn btn-primary" href="#" target="_parent"></a>\
                     <a class="cancel btn btn-primary" href="#"></a>\
                 </div>\
-            </div>'
+            </div>',
     );
 
-    this.$message = this.$content.find(".message");
+    this.$message = this.$content.find('.message');
 
-    this.$loginButton = this.$content.find(".login");
+    this.$loginButton = this.$content.find('.login');
     this.$loginButton.text(this.content.login);
 
-    this.$logoutButton = this.$content.find(".logout");
+    this.$logoutButton = this.$content.find('.logout');
     this.$logoutButton.text(this.content.logout);
 
-    this.$cancelButton = this.$content.find(".cancel");
+    this.$cancelButton = this.$content.find('.cancel');
     this.$cancelButton.text(this.content.cancel);
 
     this.$element.hide();
 
-    this.$loginButton.on("click", (e) => {
+    this.$loginButton.on('click', (e) => {
       e.preventDefault();
       this.close();
       if (this.loginCallback) this.loginCallback();
     });
 
-    this.$logoutButton.on("click", (e) => {
+    this.$logoutButton.on('click', (e) => {
       e.preventDefault();
       this.close();
       if (this.logoutCallback) this.logoutCallback();
     });
 
-    this.$cancelButton.on("click", (e) => {
+    this.$cancelButton.on('click', (e) => {
       e.preventDefault();
       this.close();
     });
@@ -93,20 +91,15 @@ export class LoginDialogue extends Dialogue<
   open(): void {
     super.open();
 
-    let message: string = "";
+    let message: string = '';
 
     if (this.resource.loginService) {
-      this.$title.text(this.resource.loginService.getProperty("label"));
-      message = this.resource.loginService.getProperty("description");
+      this.$title.text(this.resource.loginService.getProperty('label'));
+      message = this.resource.loginService.getProperty('description');
     }
 
     if (this.options.warningMessage) {
-      message =
-        '<span class="warning">' +
-        this.extension.data.config!.content[this.options.warningMessage] +
-        '</span><span class="description">' +
-        message +
-        "</span>";
+      message = '<span class="warning">' + this.extension.data.config!.content[this.options.warningMessage] + '</span><span class="description">' + message + '</span>';
     }
 
     this.updateLogoutButton();
@@ -114,8 +107,8 @@ export class LoginDialogue extends Dialogue<
     this.$message.html(message);
     this.$message.targetBlank();
 
-    this.$message.find("a").on("click", function () {
-      var url: string = $(this).attr("href");
+    this.$message.find('a').on('click', function () {
+      var url: string = $(this).attr('href');
       this.extensionHost.publish(IIIFEvents.EXTERNAL_LINK_CLICKED, url);
     });
 

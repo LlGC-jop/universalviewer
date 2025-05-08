@@ -1,15 +1,12 @@
-const $ = require("jquery");
-import * as KeyCodes from "@edsilv/key-codes";
-import { Keyboard } from "@edsilv/utils";
-import { isVisible } from "../../../../Utils";
+const $ = require('jquery');
+import * as KeyCodes from '@edsilv/key-codes';
+import { Keyboard } from '@edsilv/utils';
+import { isVisible } from '../../../../Utils';
 export class AutoComplete {
   private _results: any;
   private _selectedResultIndex: number;
   private _$element: JQuery;
-  private _autoCompleteFunc: (
-    terms: string,
-    cb: (results: string[]) => void
-  ) => void;
+  private _autoCompleteFunc: (terms: string, cb: (results: string[]) => void) => void;
   private _delay: number;
   private _minChars: number;
   private _onSelect: (terms: string) => void;
@@ -28,7 +25,7 @@ export class AutoComplete {
     delay: number = 300,
     minChars: number = 2,
     positionAbove: boolean = false,
-    allowWords: boolean = false
+    allowWords: boolean = false,
   ) {
     this._$element = element;
     this._autoCompleteFunc = autoCompleteFunc;
@@ -48,9 +45,7 @@ export class AutoComplete {
       this._$element.parent().append(this._$searchResultsList);
     }
 
-    this._$searchResultTemplate = $(
-      '<li class="result"><a href="#" tabindex="-1"></a></li>'
-    );
+    this._$searchResultTemplate = $('<li class="result"><a href="#" tabindex="-1"></a></li>');
 
     // init ui.
 
@@ -65,7 +60,7 @@ export class AutoComplete {
 
     const that = this;
 
-    this._$element.on("keydown", function (e: JQueryEventObject) {
+    this._$element.on('keydown', function (e: JQueryEventObject) {
       const originalEvent: KeyboardEvent = <KeyboardEvent>e.originalEvent;
       //that._lastKeyDownWasNavigation = that._isNavigationKeyDown(originalEvent);
       const charCode: number = Keyboard.getCharCode(originalEvent);
@@ -89,12 +84,9 @@ export class AutoComplete {
     // });
 
     // auto complete
-    this._$element.on("keyup", function (e) {
+    this._$element.on('keyup', function (e) {
       // if pressing enter without a list item selected
-      if (
-        !that._getSelectedListItem().length &&
-        e.keyCode === KeyCodes.KeyDown.Enter
-      ) {
+      if (!that._getSelectedListItem().length && e.keyCode === KeyCodes.KeyDown.Enter) {
         // enter
         that._onSelect(that._getTerms());
         return;
@@ -136,7 +128,7 @@ export class AutoComplete {
     });
 
     // hide results if clicked outside.
-    $(document).on("mouseup", (e) => {
+    $(document).on('mouseup', (e) => {
       if (this._$searchResultsList.parent().has($(e.target)[0]).length === 0) {
         this._clearResults();
         this._hideResults();
@@ -144,11 +136,8 @@ export class AutoComplete {
     });
 
     // hide results if focus moves on.
-    $(document).on("focusin", (e) => {
-      if (
-        this._$searchResultsList.has($(e.target)[0]).length === 0 &&
-        !this._$element.is($(e.target)[0])
-      ) {
+    $(document).on('focusin', (e) => {
+      if (this._$searchResultsList.has($(e.target)[0]).length === 0 && !this._$element.is($(e.target)[0])) {
         this._clearResults();
         this._hideResults();
       }
@@ -158,7 +147,7 @@ export class AutoComplete {
   }
 
   private _searchForWords(search: string): boolean {
-    if (this._allowWords || !search.includes(" ")) {
+    if (this._allowWords || !search.includes(' ')) {
       return true;
     } else {
       return false;
@@ -178,7 +167,7 @@ export class AutoComplete {
       nextIndex = this._selectedResultIndex - 1;
     }
 
-    const $items: JQuery = this._$searchResultsList.find("li");
+    const $items: JQuery = this._$searchResultsList.find('li');
 
     if (nextIndex < 0) {
       nextIndex = $items.length - 1;
@@ -188,11 +177,11 @@ export class AutoComplete {
 
     this._selectedResultIndex = nextIndex;
 
-    $items.removeClass("selected");
+    $items.removeClass('selected');
 
     const $selectedItem: JQuery = $items.eq(this._selectedResultIndex);
 
-    $selectedItem.addClass("selected");
+    $selectedItem.addClass('selected');
 
     const top = $selectedItem.outerHeight(true) * this._selectedResultIndex;
 
@@ -257,7 +246,7 @@ export class AutoComplete {
     for (let i = 0; i < this._results.length; i++) {
       const result = this._results[i];
       const $resultItem = this._$searchResultTemplate.clone();
-      const $a = $resultItem.find("a");
+      const $a = $resultItem.find('a');
       $a.text(result);
       this._$searchResultsList.append($resultItem);
     }
@@ -266,10 +255,10 @@ export class AutoComplete {
 
     const that = this;
 
-    const $listItems = this._$searchResultsList.find("li");
+    const $listItems = this._$searchResultsList.find('li');
 
     $listItems.each((_idx, item) => {
-      $(item).on("click", function (e: any) {
+      $(item).on('click', function (e: any) {
         e.preventDefault();
         that._searchForItem($(this));
       });
@@ -277,7 +266,7 @@ export class AutoComplete {
   }
 
   private _searchForItem($item: JQuery): void {
-    const term: string = $item.find("a").text();
+    const term: string = $item.find('a').text();
     this._$element.val(term);
     this._hideResults();
     this._onSelect(term);
@@ -286,6 +275,6 @@ export class AutoComplete {
   }
 
   private _getSelectedListItem() {
-    return this._$searchResultsList.find("li.selected");
+    return this._$searchResultsList.find('li.selected');
   }
 }

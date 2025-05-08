@@ -1,10 +1,10 @@
-import { IIIFEvents } from "../../IIIFEvents";
-import { Information } from "./Information";
-import { InformationAction } from "./InformationAction";
-import { InformationArgs } from "./InformationArgs";
-import { InformationType } from "./InformationType";
-import { IExtension } from "./IExtension";
-import { IExternalResource } from "manifesto.js";
+import { IIIFEvents } from '../../IIIFEvents';
+import { Information } from './Information';
+import { InformationAction } from './InformationAction';
+import { InformationArgs } from './InformationArgs';
+import { InformationType } from './InformationType';
+import { IExtension } from './IExtension';
+import { IExternalResource } from 'manifesto.js';
 
 export class InformationFactory {
   extension: IExtension;
@@ -16,10 +16,7 @@ export class InformationFactory {
   public Get(args: InformationArgs): Information {
     switch (args.informationType) {
       case InformationType.AUTH_CORS_ERROR:
-        return new Information(
-          this.extension.data.config!.content.authCORSError,
-          []
-        );
+        return new Information(this.extension.data.config!.content.authCORSError, []);
       case InformationType.DEGRADED_RESOURCE:
         const actions: InformationAction[] = [];
         const loginAction: InformationAction = new InformationAction();
@@ -33,9 +30,7 @@ export class InformationFactory {
         }
 
         if (!label) {
-          label =
-            this.extension.data.config!.content.fallbackDegradedLabel ||
-            "login";
+          label = this.extension.data.config!.content.fallbackDegradedLabel || 'login';
         }
 
         loginAction.label = label;
@@ -44,13 +39,10 @@ export class InformationFactory {
 
         loginAction.action = () => {
           if (args.param.loginService) {
-            resource.authHoldingPage = window.open("", "_blank");
+            resource.authHoldingPage = window.open('', '_blank');
           }
           this.extension.extensionHost.publish(IIIFEvents.HIDE_INFORMATION);
-          this.extension.extensionHost.publish(
-            IIIFEvents.OPEN_EXTERNAL_RESOURCE,
-            [[resource]]
-          );
+          this.extension.extensionHost.publish(IIIFEvents.OPEN_EXTERNAL_RESOURCE, [[resource]]);
         };
 
         actions.push(loginAction);

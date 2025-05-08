@@ -1,12 +1,10 @@
-const $ = require("jquery");
-import { BaseConfig } from "../../BaseConfig";
-import { IIIFEvents } from "../../IIIFEvents";
-import { Dialogue } from "../uv-shared-module/Dialogue";
-import { ILocale } from "../uv-shared-module/ILocale";
+const $ = require('jquery');
+import { BaseConfig } from '../../BaseConfig';
+import { IIIFEvents } from '../../IIIFEvents';
+import { Dialogue } from '../uv-shared-module/Dialogue';
+import { ILocale } from '../uv-shared-module/ILocale';
 
-export class SettingsDialogue extends Dialogue<
-  BaseConfig["modules"]["settingsDialogue"]
-> {
+export class SettingsDialogue extends Dialogue<BaseConfig['modules']['settingsDialogue']> {
   $locale: JQuery;
   $localeDropDown: JQuery;
   $localeLabel: JQuery;
@@ -25,7 +23,7 @@ export class SettingsDialogue extends Dialogue<
   }
 
   create(): void {
-    this.setConfig("settingsDialogue");
+    this.setConfig('settingsDialogue');
 
     super.create();
 
@@ -60,9 +58,7 @@ export class SettingsDialogue extends Dialogue<
     this.$locale = $('<div class="setting locale"></div>');
     this.$scroll.append(this.$locale);
 
-    this.$localeLabel = $(
-      '<label for="locale">' + this.content.locale + "</label>"
-    );
+    this.$localeLabel = $('<label for="locale">' + this.content.locale + '</label>');
     this.$locale.append(this.$localeLabel);
 
     this.$localeDropDown = $('<select id="locale"></select>');
@@ -93,7 +89,7 @@ export class SettingsDialogue extends Dialogue<
 
   open(): void {
     super.open();
-    this.$version.text("v" + process.env.PACKAGE_VERSION);
+    this.$version.text('v' + process.env.PACKAGE_VERSION);
   }
 
   private _createLocalesMenu(): void {
@@ -102,9 +98,7 @@ export class SettingsDialogue extends Dialogue<
     if (locales && locales.length > 1) {
       for (let i = 0; i < locales.length; i++) {
         const locale: ILocale = locales[i];
-        this.$localeDropDown.append(
-          '<option value="' + locale.name + '">' + locale.label + "</option>"
-        );
+        this.$localeDropDown.append('<option value="' + locale.name + '">' + locale.label + '</option>');
       }
 
       this.$localeDropDown.val(locales[0].name);
@@ -126,44 +120,37 @@ export class SettingsDialogue extends Dialogue<
     this.$reducedAnimation = $('<div class="setting reducedAnimation"></div>');
     this.$scroll.append(this.$reducedAnimation);
 
-    this.$reducedAnimationCheckbox = $(
-      '<input id="reducedAnimation" type="checkbox" tabindex="0" />'
-    );
+    this.$reducedAnimationCheckbox = $('<input id="reducedAnimation" type="checkbox" tabindex="0" />');
 
     this.$reducedAnimation.append(this.$reducedAnimationCheckbox);
 
-    this.$reducedAnimationLabel = $(
-      '<label for="reducedAnimation">' + this.content.reducedMotion + "</label>"
-    );
+    this.$reducedAnimationLabel = $('<label for="reducedAnimation">' + this.content.reducedMotion + '</label>');
 
     this.$reducedAnimation.append(this.$reducedAnimationLabel);
 
     const settings: ISettings = this.getSettings();
 
     if (settings.animationDuration) {
-      document.documentElement.style.setProperty(
-        "--uv-animation-duration",
-        `${settings.animationDuration}ms`
-      );
+      document.documentElement.style.setProperty('--uv-animation-duration', `${settings.animationDuration}ms`);
     }
 
     if (settings.reducedAnimation) {
-      document.documentElement.style.setProperty("--uv-animation", "0");
-      this.$reducedAnimationCheckbox.prop("checked", true);
+      document.documentElement.style.setProperty('--uv-animation', '0');
+      this.$reducedAnimationCheckbox.prop('checked', true);
     } else {
-      document.documentElement.style.setProperty("--uv-animation", "1");
-      this.$reducedAnimationCheckbox.removeAttr("checked");
+      document.documentElement.style.setProperty('--uv-animation', '1');
+      this.$reducedAnimationCheckbox.removeAttr('checked');
     }
 
     this.$reducedAnimationCheckbox.change(() => {
       const settings: ISettings = {};
 
-      if (this.$reducedAnimationCheckbox.is(":checked")) {
+      if (this.$reducedAnimationCheckbox.is(':checked')) {
         settings.reducedAnimation = true;
-        document.documentElement.style.setProperty("--uv-animation", "0");
+        document.documentElement.style.setProperty('--uv-animation', '0');
       } else {
         settings.reducedAnimation = false;
-        document.documentElement.style.setProperty("--uv-animation", "1");
+        document.documentElement.style.setProperty('--uv-animation', '1');
       }
 
       this.updateSettings(settings);

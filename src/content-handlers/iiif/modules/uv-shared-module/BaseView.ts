@@ -1,40 +1,32 @@
-const $ = require("jquery");
-import { Panel } from "./Panel";
-import { IExtension } from "./IExtension";
-import { IIIFExtensionHost } from "../../IIIFExtensionHost";
-import { ModuleConfig } from "../../BaseConfig";
+const $ = require('jquery');
+import { Panel } from './Panel';
+import { IExtension } from './IExtension';
+import { IIIFExtensionHost } from '../../IIIFExtensionHost';
+import { ModuleConfig } from '../../BaseConfig';
 
 export class BaseView<T extends ModuleConfig> extends Panel {
   config: T;
-  content: T["content"];
+  content: T['content'];
   extension: IExtension;
   modules: string[];
-  options: T["options"];
+  options: T['options'];
 
-  constructor(
-    $element: JQuery,
-    fitToParentWidth?: boolean,
-    fitToParentHeight?: boolean
-  ) {
+  constructor($element: JQuery, fitToParentWidth?: boolean, fitToParentHeight?: boolean) {
     super($element, fitToParentWidth, fitToParentHeight);
   }
 
   create(): void {
-    this.extensionHost = this.$element
-      .closest(".uv-iiif-extension-host")
-      .data("component");
+    this.extensionHost = this.$element.closest('.uv-iiif-extension-host').data('component');
 
     // console.log("extensionHost", this.extensionHost);
 
     super.create();
 
-    this.extension = <IExtension>(
-      (<IIIFExtensionHost>this.extensionHost).extension
-    );
+    this.extension = <IExtension>(<IIIFExtensionHost>this.extensionHost).extension;
 
     this.config = {} as T;
-    this.config.content = {} as T["content"];
-    this.config.options = {} as T["options"];
+    this.config.content = {} as T['content'];
+    this.config.options = {} as T['options'];
 
     var that = this;
 
@@ -42,11 +34,7 @@ export class BaseView<T extends ModuleConfig> extends Panel {
     if (that.modules && that.modules.length) {
       that.modules = that.modules.reverse();
       that.modules.forEach((moduleName: string) => {
-        that.config = $.extend(
-          true,
-          that.config,
-          that.extension.data.config!.modules[moduleName]
-        );
+        that.config = $.extend(true, that.config, that.extension.data.config!.modules[moduleName]);
       });
     }
 

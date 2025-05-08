@@ -1,13 +1,11 @@
-const $ = require("jquery");
-import { IIIFEvents } from "../../IIIFEvents";
-import { Dialogue } from "../uv-shared-module/Dialogue";
-import { sanitize } from "../../../../Utils";
-import { Service } from "manifesto.js";
-import { BaseConfig } from "../../BaseConfig";
+const $ = require('jquery');
+import { IIIFEvents } from '../../IIIFEvents';
+import { Dialogue } from '../uv-shared-module/Dialogue';
+import { sanitize } from '../../../../Utils';
+import { Service } from 'manifesto.js';
+import { BaseConfig } from '../../BaseConfig';
 
-export class AuthDialogue extends Dialogue<
-  BaseConfig["modules"]["authDialogue"]
-> {
+export class AuthDialogue extends Dialogue<BaseConfig['modules']['authDialogue']> {
   closeCallback: any;
   confirmCallback: any;
   cancelCallback: any;
@@ -22,7 +20,7 @@ export class AuthDialogue extends Dialogue<
   }
 
   create(): void {
-    this.setConfig("authDialogue");
+    this.setConfig('authDialogue');
 
     super.create();
 
@@ -49,22 +47,22 @@ export class AuthDialogue extends Dialogue<
       '\
             <div>\
                 <p class="message scroll"></p>\
-            </div>'
+            </div>',
     );
 
     this.$buttons.prepend(this._buttonsToAdd());
 
-    this.$message = this.$content.find(".message");
+    this.$message = this.$content.find('.message');
 
-    this.$confirmButton = this.$buttons.find(".confirm");
+    this.$confirmButton = this.$buttons.find('.confirm');
     this.$confirmButton.text(this.content.confirm);
 
-    this.$cancelButton = this.$buttons.find(".close");
+    this.$cancelButton = this.$buttons.find('.close');
     this.$cancelButton.text(this.content.cancel);
 
     this.$element.hide();
 
-    this.$confirmButton.on("click", (e: any) => {
+    this.$confirmButton.on('click', (e: any) => {
       e.preventDefault();
       if (this.confirmCallback) {
         this.confirmCallback();
@@ -72,7 +70,7 @@ export class AuthDialogue extends Dialogue<
       this.close();
     });
 
-    this.$cancelButton.on("click", (e: any) => {
+    this.$cancelButton.on('click', (e: any) => {
       e.preventDefault();
       if (this.cancelCallback) {
         this.cancelCallback();
@@ -83,7 +81,7 @@ export class AuthDialogue extends Dialogue<
 
   open(): void {
     if (!this.service) {
-      console.error("NO SERVICE");
+      console.error('NO SERVICE');
       return;
     }
 
@@ -101,8 +99,8 @@ export class AuthDialogue extends Dialogue<
       this.$message.html(sanitize(description));
       this.$message.targetBlank();
 
-      this.$message.find("a").on("click", function () {
-        const url: string = $(this).attr("href");
+      this.$message.find('a').on('click', function () {
+        const url: string = $(this).attr('href');
         this.extensionHost.publish(IIIFEvents.EXTERNAL_LINK_CLICKED, url);
       });
     }
@@ -119,8 +117,7 @@ export class AuthDialogue extends Dialogue<
   }
 
   _buttonsToAdd(): string {
-    var buttonsToAdd =
-      '<a class="confirm btn btn-primary" href="#" target="_parent"></a>';
+    var buttonsToAdd = '<a class="confirm btn btn-primary" href="#" target="_parent"></a>';
     // If the top button is enabled, add an additional close button for consistency.
     if (this.options.topCloseButtonEnabled) {
       buttonsToAdd += '<button class="close btn btn-default"></button>';

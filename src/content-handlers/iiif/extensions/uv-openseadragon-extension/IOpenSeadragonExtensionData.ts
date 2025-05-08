@@ -1,4 +1,4 @@
-import { IIIFData } from "../../IIIFData";
+import { IIIFData } from '../../IIIFData';
 
 export interface IOpenSeadragonExtensionData extends IIIFData {
   highlight: string | undefined;

@@ -1,8 +1,8 @@
-import { IIIFEvents } from "../../IIIFEvents";
-import { ContentLeftPanel } from "../../extensions/config/ContentLeftPanel";
-import { BaseView } from "../uv-shared-module/BaseView";
-import { GalleryComponent } from "@iiif/iiif-gallery-component";
-import $ from "jquery";
+import { IIIFEvents } from '../../IIIFEvents';
+import { ContentLeftPanel } from '../../extensions/config/ContentLeftPanel';
+import { BaseView } from '../uv-shared-module/BaseView';
+import { GalleryComponent } from '@iiif/iiif-gallery-component';
+import $ from 'jquery';
 
 export class GalleryView extends BaseView<ContentLeftPanel> {
   isOpen: boolean = false;
@@ -10,16 +10,12 @@ export class GalleryView extends BaseView<ContentLeftPanel> {
   galleryData: any;
   $gallery: JQuery;
 
-  constructor(
-    $element: JQuery,
-    fitToParentWidth: boolean = true,
-    fitToParentHeight: boolean = true
-  ) {
+  constructor($element: JQuery, fitToParentWidth: boolean = true, fitToParentHeight: boolean = true) {
     super($element, fitToParentWidth, fitToParentHeight);
   }
 
   create(): void {
-    this.setConfig("contentLeftPanel");
+    this.setConfig('contentLeftPanel');
     super.create();
 
     this.$gallery = $('<div class="iiif-gallery-component"></div>');
@@ -34,28 +30,28 @@ export class GalleryView extends BaseView<ContentLeftPanel> {
     });
 
     this.galleryComponent.on(
-      "thumbSelected",
+      'thumbSelected',
       function (thumb: any) {
         that.extensionHost.publish(IIIFEvents.GALLERY_THUMB_SELECTED, thumb);
         that.extensionHost.publish(IIIFEvents.THUMB_SELECTED, thumb);
       },
-      false
+      false,
     );
 
     this.galleryComponent.on(
-      "decreaseSize",
+      'decreaseSize',
       function () {
         that.extensionHost.publish(IIIFEvents.GALLERY_DECREASE_SIZE);
       },
-      false
+      false,
     );
 
     this.galleryComponent.on(
-      "increaseSize",
+      'increaseSize',
       function () {
         that.extensionHost.publish(IIIFEvents.GALLERY_INCREASE_SIZE);
       },
-      false
+      false,
     );
   }
 
@@ -83,12 +79,12 @@ export class GalleryView extends BaseView<ContentLeftPanel> {
 
   resize(): void {
     super.resize();
-    const $main: JQuery = this.$gallery.find(".main");
-    const $header: JQuery = this.$gallery.find(".header");
+    const $main: JQuery = this.$gallery.find('.main');
+    const $header: JQuery = this.$gallery.find('.header');
     $main.height(this.$element.height() - $header.height());
   }
 
   public applyExtendedLabelsStyles(): void {
-    this.$gallery.addClass("label-extended");
+    this.$gallery.addClass('label-extended');
   }
 }

@@ -1,25 +1,20 @@
-import { Dimensions } from "@edsilv/utils";
+import { Dimensions } from '@edsilv/utils';
 
-const $ = require("jquery");
-import { IIIFEvents } from "../../IIIFEvents";
-import { MediaElementExtensionEvents } from "../../extensions/uv-mediaelement-extension/Events";
-import { CenterPanel } from "../uv-shared-module/CenterPanel";
-import { IMediaElementExtension } from "../../extensions/uv-mediaelement-extension/IMediaElementExtension";
-import { sanitize } from "../../../../Utils";
-import { MediaType, RenderingFormat } from "@iiif/vocabulary/dist-commonjs/";
-import {
-  AnnotationBody,
-  Canvas,
-  IExternalResource,
-  Rendering,
-} from "manifesto.js";
-import "mediaelement/build/mediaelement-and-player";
-import "mediaelement/build/mediaelementplayer.min.css";
-import "./js/source-chooser-fixed.js";
-import "mediaelement-plugins/dist/source-chooser/source-chooser.css";
-import { TFragment } from "../uv-shared-module/TFragment";
-import { Events } from "../../../../Events";
-import { Config } from "../../extensions/uv-mediaelement-extension/config/Config";
+const $ = require('jquery');
+import { IIIFEvents } from '../../IIIFEvents';
+import { MediaElementExtensionEvents } from '../../extensions/uv-mediaelement-extension/Events';
+import { CenterPanel } from '../uv-shared-module/CenterPanel';
+import { IMediaElementExtension } from '../../extensions/uv-mediaelement-extension/IMediaElementExtension';
+import { sanitize } from '../../../../Utils';
+import { MediaType, RenderingFormat } from '@iiif/vocabulary/dist-commonjs/';
+import { AnnotationBody, Canvas, IExternalResource, Rendering } from 'manifesto.js';
+import 'mediaelement/build/mediaelement-and-player';
+import 'mediaelement/build/mediaelementplayer.min.css';
+import './js/source-chooser-fixed.js';
+import 'mediaelement-plugins/dist/source-chooser/source-chooser.css';
+import { TFragment } from '../uv-shared-module/TFragment';
+import { Events } from '../../../../Events';
+import { Config } from '../../extensions/uv-mediaelement-extension/config/Config';
 
 type TextTrackDescriptor = {
   language?: string;
@@ -33,9 +28,7 @@ type MediaSourceDescriptor = {
   src: string;
 };
 
-export class MediaElementCenterPanel extends CenterPanel<
-  Config["modules"]["mediaElementCenterPanel"]
-> {
+export class MediaElementCenterPanel extends CenterPanel<Config['modules']['mediaElementCenterPanel']> {
   $wrapper: JQuery;
   $container: JQuery;
   $media: JQuery;
@@ -51,7 +44,7 @@ export class MediaElementCenterPanel extends CenterPanel<
   }
 
   create(): void {
-    this.setConfig("mediaElementCenterPanel");
+    this.setConfig('mediaElementCenterPanel');
 
     super.create();
 
@@ -77,7 +70,7 @@ export class MediaElementCenterPanel extends CenterPanel<
           const [startTime, endTime] = t;
 
           if (endTime <= startTime) {
-            console.error("endTime must be greater than startTime");
+            console.error('endTime must be greater than startTime');
             return;
           }
 
@@ -112,12 +105,9 @@ export class MediaElementCenterPanel extends CenterPanel<
       }
     });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.OPEN_EXTERNAL_RESOURCE,
-      (resources: IExternalResource[]) => {
-        that.openMedia(resources);
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.OPEN_EXTERNAL_RESOURCE, (resources: IExternalResource[]) => {
+      that.openMedia(resources);
+    });
 
     this.$wrapper = $('<div class="wrapper"></div>');
     this.$content.append(this.$wrapper);
@@ -130,9 +120,9 @@ export class MediaElementCenterPanel extends CenterPanel<
 
   updateMutedAttribute(muted: boolean) {
     if (muted) {
-      this.$media.attr("muted", "");
+      this.$media.attr('muted', '');
     } else {
-      this.$media.removeAttr("muted");
+      this.$media.removeAttr('muted');
     }
   }
 
@@ -148,9 +138,7 @@ export class MediaElementCenterPanel extends CenterPanel<
     this.mediaHeight = this.options.defaultHeight;
     this.mediaWidth = this.options.defaultWidth;
 
-    const poster: string | null = (<IMediaElementExtension>(
-      this.extension
-    )).getPosterImageUri();
+    const poster: string | null = (<IMediaElementExtension>this.extension).getPosterImageUri();
 
     const sources: Array<MediaSourceDescriptor> = [];
     const subtitles: Array<TextTrackDescriptor> = [];
@@ -161,9 +149,7 @@ export class MediaElementCenterPanel extends CenterPanel<
       canvas.getRenderings().forEach((rendering: Rendering) => {
         if (this.isTypeMedia(rendering)) {
           sources.push({
-            label:
-              rendering.getLabel().getValue() ??
-              rendering.getFormat().toString(),
+            label: rendering.getLabel().getValue() ?? rendering.getFormat().toString(),
             type: rendering.getFormat().toString(),
             src: rendering.id,
           });
@@ -171,17 +157,13 @@ export class MediaElementCenterPanel extends CenterPanel<
 
         if (this.isTypeCaption(rendering)) {
           subtitles.push({
-            label:
-              rendering.getLabel().getValue() ??
-              rendering.getFormat().toString(),
+            label: rendering.getLabel().getValue() ?? rendering.getFormat().toString(),
             id: rendering.id,
           });
         }
       });
     } else {
-      const formats: AnnotationBody[] | null = this.extension.getMediaFormats(
-        this.extension.helper.getCurrentCanvas()
-      );
+      const formats: AnnotationBody[] | null = this.extension.getMediaFormats(this.extension.helper.getCurrentCanvas());
 
       if (formats && formats.length) {
         formats.forEach((format: AnnotationBody) => {
@@ -193,7 +175,7 @@ export class MediaElementCenterPanel extends CenterPanel<
 
           if (this.isTypeMedia(format)) {
             sources.push({
-              label: format.__jsonld.label ? format.__jsonld.label : "",
+              label: format.__jsonld.label ? format.__jsonld.label : '',
               type: type.toString(),
               src: format.id,
             });
@@ -208,13 +190,11 @@ export class MediaElementCenterPanel extends CenterPanel<
 
     if (subtitles.length > 0) {
       // Show captions options popover for better interface feedback
-      subtitles.unshift({ id: "none" });
+      subtitles.unshift({ id: 'none' });
     }
 
     if (this.isVideo()) {
-      this.$media = $(
-        '<video controls="controls" preload="none" style="width:100%;height:100%;" width="100%" height="100%"></video>'
-      );
+      this.$media = $('<video controls="controls" preload="none" style="width:100%;height:100%;" width="100%" height="100%"></video>');
 
       // Add VTT subtitles/captions.
       this.appendTextTracks(subtitles);
@@ -222,63 +202,40 @@ export class MediaElementCenterPanel extends CenterPanel<
 
       this.$container.append(this.$media);
 
-      this.player = new MediaElementPlayer($("video")[0], {
+      this.player = new MediaElementPlayer($('video')[0], {
         poster: poster,
         toggleCaptionsButtonWhenOnlyOne: true,
-        features: [
-          "playpause",
-          "current",
-          "progress",
-          "tracks",
-          "volume",
-          "sourcechooser",
-          "fullscreen",
-        ],
+        features: ['playpause', 'current', 'progress', 'tracks', 'volume', 'sourcechooser', 'fullscreen'],
         success: function (mediaElement: any, originalNode: any) {
-          mediaElement.addEventListener("loadstart", () => {
+          mediaElement.addEventListener('loadstart', () => {
             // console.log("loadstart");
             that.resize();
           });
 
-          mediaElement.addEventListener("play", () => {
-            that.extensionHost.publish(
-              MediaElementExtensionEvents.MEDIA_PLAYED,
-              Math.floor(mediaElement.currentTime)
-            );
+          mediaElement.addEventListener('play', () => {
+            that.extensionHost.publish(MediaElementExtensionEvents.MEDIA_PLAYED, Math.floor(mediaElement.currentTime));
           });
 
-          mediaElement.addEventListener("pause", () => {
+          mediaElement.addEventListener('pause', () => {
             if (this.pauseTimeoutId !== null) {
               clearTimeout(this.pauseTimeoutId);
               this.pauseTimeoutId = null;
             }
             // mediaelement creates a pause event before the ended event. ignore this.
-            if (
-              Math.floor(mediaElement.currentTime) !=
-              Math.floor(mediaElement.duration)
-            ) {
-              that.extensionHost.publish(
-                MediaElementExtensionEvents.MEDIA_PAUSED,
-                Math.floor(mediaElement.currentTime)
-              );
+            if (Math.floor(mediaElement.currentTime) != Math.floor(mediaElement.duration)) {
+              that.extensionHost.publish(MediaElementExtensionEvents.MEDIA_PAUSED, Math.floor(mediaElement.currentTime));
             }
           });
 
-          mediaElement.addEventListener("ended", () => {
-            that.extensionHost.publish(
-              MediaElementExtensionEvents.MEDIA_ENDED,
-              Math.floor(mediaElement.duration)
-            );
+          mediaElement.addEventListener('ended', () => {
+            that.extensionHost.publish(MediaElementExtensionEvents.MEDIA_ENDED, Math.floor(mediaElement.duration));
           });
 
-          mediaElement.addEventListener("timeupdate", () => {
-            that.extensionHost.publish(
-              MediaElementExtensionEvents.MEDIA_TIME_UPDATE,
-              Math.floor(mediaElement.currentTime)
-            );
+          mediaElement.addEventListener('timeupdate', () => {
+            that.extensionHost.publish(MediaElementExtensionEvents.MEDIA_TIME_UPDATE, Math.floor(mediaElement.currentTime));
           });
 
-          mediaElement.addEventListener("volumechange", (volume) => {
+          mediaElement.addEventListener('volumechange', (volume) => {
             const muted: boolean = volume.detail.target.getMuted();
 
             if (that.muted === false && muted === true) {
@@ -289,9 +246,7 @@ export class MediaElementCenterPanel extends CenterPanel<
             if (that.muted === true && muted === false) {
               that.muted = false;
 
-              that.extensionHost.fire(
-                MediaElementExtensionEvents.MEDIA_UNMUTED
-              );
+              that.extensionHost.fire(MediaElementExtensionEvents.MEDIA_UNMUTED);
             }
 
             that.updateMutedAttribute(that.muted);
@@ -301,9 +256,7 @@ export class MediaElementCenterPanel extends CenterPanel<
     } else {
       // audio
 
-      this.$media = $(
-        '<audio controls="controls" preload="none" style="width:100%;height:100%;" width="100%" height="100%"></audio>'
-      );
+      this.$media = $('<audio controls="controls" preload="none" style="width:100%;height:100%;" width="100%" height="100%"></audio>');
 
       // Add VTT subtitles/captions.
       this.appendTextTracks(subtitles);
@@ -311,61 +264,39 @@ export class MediaElementCenterPanel extends CenterPanel<
 
       this.$container.append(this.$media);
 
-      this.player = new MediaElementPlayer($("audio")[0], {
+      this.player = new MediaElementPlayer($('audio')[0], {
         poster: poster,
-        defaultAudioWidth: "auto",
-        features: [
-          "playpause",
-          "current",
-          "progress",
-          "tracks",
-          "volume",
-          "sourcechooser",
-        ],
-        stretching: "responsive",
-        defaultAudioHeight: "auto",
+        defaultAudioWidth: 'auto',
+        features: ['playpause', 'current', 'progress', 'tracks', 'volume', 'sourcechooser'],
+        stretching: 'responsive',
+        defaultAudioHeight: 'auto',
         showPosterWhenPaused: true,
         showPosterWhenEnded: true,
         success: function (mediaElement: any, originalNode: any) {
-          mediaElement.addEventListener("play", () => {
-            that.extensionHost.publish(
-              MediaElementExtensionEvents.MEDIA_PLAYED,
-              Math.floor(mediaElement.currentTime)
-            );
+          mediaElement.addEventListener('play', () => {
+            that.extensionHost.publish(MediaElementExtensionEvents.MEDIA_PLAYED, Math.floor(mediaElement.currentTime));
           });
 
-          mediaElement.addEventListener("pause", () => {
+          mediaElement.addEventListener('pause', () => {
             if (this.pauseTimeoutId !== null) {
               clearTimeout(this.pauseTimeoutId);
               this.pauseTimeoutId = null;
             }
             // mediaelement creates a pause event before the ended event. ignore this.
-            if (
-              Math.floor(mediaElement.currentTime) !=
-              Math.floor(mediaElement.duration)
-            ) {
-              that.extensionHost.publish(
-                MediaElementExtensionEvents.MEDIA_PAUSED,
-                Math.floor(mediaElement.currentTime)
-              );
+            if (Math.floor(mediaElement.currentTime) != Math.floor(mediaElement.duration)) {
+              that.extensionHost.publish(MediaElementExtensionEvents.MEDIA_PAUSED, Math.floor(mediaElement.currentTime));
             }
           });
 
-          mediaElement.addEventListener("ended", () => {
-            that.extensionHost.publish(
-              MediaElementExtensionEvents.MEDIA_ENDED,
-              Math.floor(mediaElement.duration)
-            );
+          mediaElement.addEventListener('ended', () => {
+            that.extensionHost.publish(MediaElementExtensionEvents.MEDIA_ENDED, Math.floor(mediaElement.duration));
           });
 
-          mediaElement.addEventListener("timeupdate", () => {
-            that.extensionHost.publish(
-              MediaElementExtensionEvents.MEDIA_TIME_UPDATE,
-              Math.floor(mediaElement.currentTime)
-            );
+          mediaElement.addEventListener('timeupdate', () => {
+            that.extensionHost.publish(MediaElementExtensionEvents.MEDIA_TIME_UPDATE, Math.floor(mediaElement.currentTime));
           });
 
-          mediaElement.addEventListener("volumechange", (volume) => {
+          mediaElement.addEventListener('volumechange', (volume) => {
             const muted: boolean = volume.detail.target.getMuted();
 
             if (that.muted === false && muted === true) {
@@ -375,9 +306,7 @@ export class MediaElementCenterPanel extends CenterPanel<
 
             if (that.muted === true && muted === false) {
               that.muted = false;
-              that.extensionHost.fire(
-                MediaElementExtensionEvents.MEDIA_UNMUTED
-              );
+              that.extensionHost.fire(MediaElementExtensionEvents.MEDIA_UNMUTED);
             }
 
             that.updateMutedAttribute(that.muted);
@@ -393,23 +322,15 @@ export class MediaElementCenterPanel extends CenterPanel<
   appendTextTracks(subtitles: Array<TextTrackDescriptor>) {
     for (const subtitle of subtitles) {
       this.$media.append(
-        $(`<track label="${subtitle.label}" kind="subtitles" srclang="${
-          subtitle.language
-        }" src="${subtitle.id}" ${
-          subtitles.indexOf(subtitle) === 0 ? "default" : ""
-        }>
-`)
+        $(`<track label="${subtitle.label}" kind="subtitles" srclang="${subtitle.language}" src="${subtitle.id}" ${subtitles.indexOf(subtitle) === 0 ? 'default' : ''}>
+`),
       );
     }
   }
 
   appendMediaSources(sources: Array<MediaSourceDescriptor>) {
     for (const source of sources) {
-      this.$media.append(
-        $(
-          `<source src="${source.src}" type="${source.type}" title="${source.label}">`
-        )
-      );
+      this.$media.append($(`<source src="${source.src}" type="${source.type}" title="${source.label}">`));
     }
   }
 
@@ -422,9 +343,9 @@ export class MediaElementCenterPanel extends CenterPanel<
     }
 
     const typeStr = type.toString();
-    const typeGroup = typeStr.split("/")[0];
+    const typeGroup = typeStr.split('/')[0];
 
-    return typeGroup === "audio" || typeGroup === "video";
+    return typeGroup === 'audio' || typeGroup === 'video';
   }
 
   // vtt, srt, csv
@@ -435,7 +356,7 @@ export class MediaElementCenterPanel extends CenterPanel<
       return false;
     }
 
-    const captionTypes = new Set<String>(["text/vtt", "text/srt"]);
+    const captionTypes = new Set<String>(['text/vtt', 'text/srt']);
 
     return captionTypes.has(type.toString());
   }
@@ -455,12 +376,7 @@ export class MediaElementCenterPanel extends CenterPanel<
       this.$title.text(sanitize(this.title));
     }
 
-    const size = Dimensions.fitRect(
-      this.mediaWidth,
-      this.mediaHeight,
-      this.$content.width(),
-      this.$content.height()
-    );
+    const size = Dimensions.fitRect(this.mediaWidth, this.mediaHeight, this.$content.width(), this.$content.height());
 
     this.$container.height(size.height);
     this.$container.width(size.width);

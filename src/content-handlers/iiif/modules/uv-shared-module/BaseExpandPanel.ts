@@ -1,7 +1,7 @@
-const $ = require("jquery");
-import { Bools } from "@edsilv/utils";
-import { ExpandPanel } from "../../extensions/config/ExpandPanel";
-import { BaseView } from "./BaseView";
+const $ = require('jquery');
+import { Bools } from '@edsilv/utils';
+import { ExpandPanel } from '../../extensions/config/ExpandPanel';
+import { BaseView } from './BaseView';
 
 export class BaseExpandPanel<T extends ExpandPanel> extends BaseView<T> {
   isExpanded: boolean = false;
@@ -19,11 +19,7 @@ export class BaseExpandPanel<T extends ExpandPanel> extends BaseView<T> {
   $title: JQuery;
   $top: JQuery;
 
-  constructor(
-    $element: JQuery,
-    fitToParentWidth: boolean = false,
-    fitToParentHeight: boolean = true
-  ) {
+  constructor($element: JQuery, fitToParentWidth: boolean = false, fitToParentHeight: boolean = true) {
     super($element, fitToParentWidth, fitToParentHeight);
   }
 
@@ -43,18 +39,14 @@ export class BaseExpandPanel<T extends ExpandPanel> extends BaseView<T> {
       this.$expandFullButton.hide();
     }
 
-    this.$collapseButton = $(
-      '<button role="button" class="collapseButton" tabindex="0"></button>'
-    );
+    this.$collapseButton = $('<button role="button" class="collapseButton" tabindex="0"></button>');
     this.$top.append(this.$collapseButton);
 
     this.$closed = $('<div class="closed"></div>');
     this.$element.append(this.$closed);
 
-    this.$expandButton = $(
-      '<button role="button" class="expandButton" tabindex="0"></button>'
-    );
-    this.$expandButton.prop("title", this.content.expand);
+    this.$expandButton = $('<button role="button" class="expandButton" tabindex="0"></button>');
+    this.$expandButton.prop('title', this.content.expand);
 
     this.$closed.append(this.$expandButton);
 
@@ -68,15 +60,15 @@ export class BaseExpandPanel<T extends ExpandPanel> extends BaseView<T> {
       this.toggle();
     });
 
-    this.$expandFullButton.on("click", () => {
+    this.$expandFullButton.on('click', () => {
       this.expandFull();
     });
 
-    this.$closedTitle.on("click", () => {
+    this.$closedTitle.on('click', () => {
       this.toggle();
     });
 
-    this.$title.on("click", () => {
+    this.$title.on('click', () => {
       if (this.isFullyExpanded) {
         this.collapseFull();
       } else {
@@ -106,43 +98,31 @@ export class BaseExpandPanel<T extends ExpandPanel> extends BaseView<T> {
     const settings = this.extension.getSettings();
     let isReducedAnimation = settings.reducedAnimation;
 
-    const oldAnimationDuration =
-      document.documentElement.style.getPropertyValue(
-        "--uv-animation-duration"
-      );
+    const oldAnimationDuration = document.documentElement.style.getPropertyValue('--uv-animation-duration');
     if (this.options.panelAnimationDuration) {
-      document.documentElement.style.setProperty(
-        "--uv-animation-duration",
-        `${this.options.panelAnimationDuration}ms`
-      );
+      document.documentElement.style.setProperty('--uv-animation-duration', `${this.options.panelAnimationDuration}ms`);
     }
 
     autoToggled ? (this.autoToggled = true) : (this.autoToggled = false);
 
-    this.$element.toggleClass("open");
+    this.$element.toggleClass('open');
 
     if (this.isExpanded) {
-      this.$top.attr("aria-hidden", "true");
-      this.$main.attr("aria-hidden", "true");
-      this.$closed.attr("aria-hidden", "false");
+      this.$top.attr('aria-hidden', 'true');
+      this.$main.attr('aria-hidden', 'true');
+      this.$closed.attr('aria-hidden', 'false');
     }
 
     let timeout = 0;
     if (!isReducedAnimation) {
-      timeout =
-        (this.options.panelAnimationDuration ??
-          settings.animationDuration ??
-          250) + 50;
+      timeout = (this.options.panelAnimationDuration ?? settings.animationDuration ?? 250) + 50;
     }
 
     setTimeout(() => {
       this.toggled();
 
       if (oldAnimationDuration) {
-        document.documentElement.style.setProperty(
-          "--uv-animation-duration",
-          `${oldAnimationDuration}`
-        );
+        document.documentElement.style.setProperty('--uv-animation-duration', `${oldAnimationDuration}`);
       }
     }, timeout);
   }
@@ -154,9 +134,9 @@ export class BaseExpandPanel<T extends ExpandPanel> extends BaseView<T> {
 
     // if expanded show content when animation finished.
     if (this.isExpanded) {
-      this.$top.attr("aria-hidden", "false");
-      this.$main.attr("aria-hidden", "false");
-      this.$closed.attr("aria-hidden", "true");
+      this.$top.attr('aria-hidden', 'false');
+      this.$main.attr('aria-hidden', 'false');
+      this.$closed.attr('aria-hidden', 'true');
     }
 
     this.toggleFinish();
@@ -168,15 +148,9 @@ export class BaseExpandPanel<T extends ExpandPanel> extends BaseView<T> {
     const settings = this.extension.getSettings();
     let isReducedAnimation = settings.reducedAnimation;
 
-    const oldAnimationDuration =
-      document.documentElement.style.getPropertyValue(
-        "--uv-animation-duration"
-      );
+    const oldAnimationDuration = document.documentElement.style.getPropertyValue('--uv-animation-duration');
     if (this.options.panelAnimationDuration) {
-      document.documentElement.style.setProperty(
-        "--uv-animation-duration",
-        `${this.options.panelAnimationDuration * 2}ms`
-      );
+      document.documentElement.style.setProperty('--uv-animation-duration', `${this.options.panelAnimationDuration * 2}ms`);
     }
 
     this.expandFullStart();
@@ -184,10 +158,7 @@ export class BaseExpandPanel<T extends ExpandPanel> extends BaseView<T> {
     let timeout = 0;
 
     if (!isReducedAnimation) {
-      timeout =
-        (this.options.panelAnimationDuration ??
-          settings.animationDuration ??
-          250) + 50;
+      timeout = (this.options.panelAnimationDuration ?? settings.animationDuration ?? 250) + 50;
 
       // double it because it's the full expand
       timeout = timeout * 2;
@@ -200,10 +171,7 @@ export class BaseExpandPanel<T extends ExpandPanel> extends BaseView<T> {
       this.expandFullFinish();
 
       if (oldAnimationDuration) {
-        document.documentElement.style.setProperty(
-          "--uv-animation-duration",
-          `${oldAnimationDuration}`
-        );
+        document.documentElement.style.setProperty('--uv-animation-duration', `${oldAnimationDuration}`);
       }
     }, timeout);
   }
@@ -212,15 +180,9 @@ export class BaseExpandPanel<T extends ExpandPanel> extends BaseView<T> {
     const settings = this.extension.getSettings();
     let isReducedAnimation = settings.reducedAnimation;
 
-    const oldAnimationDuration =
-      document.documentElement.style.getPropertyValue(
-        "--uv-animation-duration"
-      );
+    const oldAnimationDuration = document.documentElement.style.getPropertyValue('--uv-animation-duration');
     if (this.options.panelAnimationDuration) {
-      document.documentElement.style.setProperty(
-        "--uv-animation-duration",
-        `${this.options.panelAnimationDuration * 2}ms`
-      );
+      document.documentElement.style.setProperty('--uv-animation-duration', `${this.options.panelAnimationDuration * 2}ms`);
     }
 
     this.collapseFullStart();
@@ -230,10 +192,7 @@ export class BaseExpandPanel<T extends ExpandPanel> extends BaseView<T> {
 
     // if we're not reducing animation then set the correct timeout
     if (!isReducedAnimation) {
-      timeout =
-        (this.options.panelAnimationDuration ??
-          settings.animationDuration ??
-          250) + 50;
+      timeout = (this.options.panelAnimationDuration ?? settings.animationDuration ?? 250) + 50;
 
       // double duration for full size anims
       timeout = timeout * 2;
@@ -243,10 +202,7 @@ export class BaseExpandPanel<T extends ExpandPanel> extends BaseView<T> {
       this.collapseFullFinish();
 
       if (oldAnimationDuration) {
-        document.documentElement.style.setProperty(
-          "--uv-animation-duration",
-          `${oldAnimationDuration}`
-        );
+        document.documentElement.style.setProperty('--uv-animation-duration', `${oldAnimationDuration}`);
       }
     }, timeout);
   }

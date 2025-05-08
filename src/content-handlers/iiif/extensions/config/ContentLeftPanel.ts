@@ -1,5 +1,5 @@
-import { ModuleConfig } from "../../BaseConfig";
-import { ExpandPanelContent, ExpandPanelOptions } from "./ExpandPanel";
+import { ModuleConfig } from '../../BaseConfig';
+import { ExpandPanelContent, ExpandPanelOptions } from './ExpandPanel';
 
 type ThumbsCacheInvalidation = {
   /** Determines if cache invalidation is enabled */

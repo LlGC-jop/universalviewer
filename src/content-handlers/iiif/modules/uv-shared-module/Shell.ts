@@ -1,9 +1,9 @@
-const $ = require("jquery");
-import { isVisible } from "../../../../Utils";
-import { BaseConfig } from "../../BaseConfig";
-import { IIIFEvents } from "../../IIIFEvents";
-import { BaseView } from "./BaseView";
-import { GenericDialogue } from "./GenericDialogue";
+const $ = require('jquery');
+import { isVisible } from '../../../../Utils';
+import { BaseConfig } from '../../BaseConfig';
+import { IIIFEvents } from '../../IIIFEvents';
+import { BaseView } from './BaseView';
+import { GenericDialogue } from './GenericDialogue';
 
 export class Shell extends BaseView<BaseConfig> {
   public $centerPanel: JQuery;
@@ -33,11 +33,7 @@ export class Shell extends BaseView<BaseConfig> {
     });
 
     // Jump link
-    this.$element.append(
-      '<a class="sr-only" href="#download-btn">' +
-        this.extension.data.config!.content.skipToDownload +
-        "</a>"
-    );
+    this.$element.append('<a class="sr-only" href="#download-btn">' + this.extension.data.config!.content.skipToDownload + '</a>');
 
     this.$headerPanel = $('<div class="headerPanel"></div>');
     this.$element.append(this.$headerPanel);
@@ -46,11 +42,7 @@ export class Shell extends BaseView<BaseConfig> {
     this.$element.append(this.$mainPanel);
 
     this.$centerPanel = $('<div class="centerPanel"></div>');
-    this.$centerPanel.append(
-      '<h2 class="sr-only">' +
-        this.extension.data.config!.content.mediaViewer +
-        "</h2>"
-    );
+    this.$centerPanel.append('<h2 class="sr-only">' + this.extension.data.config!.content.mediaViewer + '</h2>');
     this.$mainPanel.append(this.$centerPanel);
 
     this.$leftPanel = $('<div class="leftPanel"></div>');
@@ -69,13 +61,11 @@ export class Shell extends BaseView<BaseConfig> {
     this.$element.append(this.$overlays);
     this.$overlays.hide();
 
-    this.$genericDialogue = $(
-      '<div class="overlay genericDialogue" aria-hidden="true"></div>'
-    );
+    this.$genericDialogue = $('<div class="overlay genericDialogue" aria-hidden="true"></div>');
     this.$overlays.append(this.$genericDialogue);
 
-    this.$overlays.on("click", (e) => {
-      if ($(e.target).hasClass("overlays")) {
+    this.$overlays.on('click', (e) => {
+      if ($(e.target).hasClass('overlays')) {
         e.preventDefault();
         this.extensionHost.publish(IIIFEvents.CLOSE_ACTIVE_DIALOGUE);
       }
@@ -95,12 +85,10 @@ export class Shell extends BaseView<BaseConfig> {
 
     const mainHeight: number =
       this.$element.height() -
-      parseInt(this.$mainPanel.css("paddingTop")) -
+      parseInt(this.$mainPanel.css('paddingTop')) -
       (isVisible(this.$headerPanel) ? this.$headerPanel.height() : 0) -
       (isVisible(this.$footerPanel) ? this.$footerPanel.height() : 0) -
-      (isVisible(this.$mobileFooterPanel)
-        ? this.$mobileFooterPanel.height()
-        : 0);
+      (isVisible(this.$mobileFooterPanel) ? this.$mobileFooterPanel.height() : 0);
 
     this.$mainPanel.height(mainHeight);
   }

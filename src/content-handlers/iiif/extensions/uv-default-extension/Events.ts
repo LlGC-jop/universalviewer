@@ -1,3 +1,3 @@
 export class DefaultExtensionEvents {
-  static namespace: string = "defaultExtension.";
+  static namespace: string = 'defaultExtension.';
 }

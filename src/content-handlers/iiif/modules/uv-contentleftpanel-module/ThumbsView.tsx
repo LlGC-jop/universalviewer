@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from "react";
-import { Thumb } from "manifesto.js";
-import { ViewingDirection, ViewingHint } from "@iiif/vocabulary";
-import { useInView } from "react-intersection-observer";
-import cx from "classnames";
+import React, { useEffect, useRef } from 'react';
+import { Thumb } from 'manifesto.js';
+import { ViewingDirection, ViewingHint } from '@iiif/vocabulary';
+import { useInView } from 'react-intersection-observer';
+import cx from 'classnames';
 
 const ThumbImage = ({
   first,
@@ -25,12 +25,12 @@ const ThumbImage = ({
 }) => {
   const [ref, inView] = useInView({
     threshold: 0,
-    rootMargin: "0px 0px 0px 0px",
+    rootMargin: '0px 0px 0px 0px',
     triggerOnce: true,
   });
 
   var keydownHandler = (e) => {
-    if (e.key === "Enter" || e.key === " ") {
+    if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       onKeyDown(thumb);
     }
@@ -39,16 +39,13 @@ const ThumbImage = ({
     <div
       onClick={() => onClick(thumb)}
       onKeyDown={keydownHandler}
-      className={cx("thumb", {
+      className={cx('thumb', {
         first: first,
         placeholder: !thumb.uri,
-        twoCol:
-          paged &&
-          (viewingDirection === ViewingDirection.LEFT_TO_RIGHT ||
-            viewingDirection === ViewingDirection.RIGHT_TO_LEFT),
+        twoCol: paged && (viewingDirection === ViewingDirection.LEFT_TO_RIGHT || viewingDirection === ViewingDirection.RIGHT_TO_LEFT),
         oneCol: !paged,
         selected: selected,
-        "truncate-labels": truncateThumbnailLabels,
+        'truncate-labels': truncateThumbnailLabels,
       })}
       tabIndex={0}
     >
@@ -56,7 +53,7 @@ const ThumbImage = ({
         ref={ref}
         className="wrap"
         style={{
-          height: thumb.height + 8 + "px",
+          height: thumb.height + 8 + 'px',
         }}
       >
         {inView && <img src={thumb.uri} alt={thumb.label} />}
@@ -65,9 +62,7 @@ const ThumbImage = ({
         <span className="label" title={thumb.label}>
           {thumb.label}&nbsp;
         </span>
-        {thumb.data.searchResults && (
-          <span className="searchResults">{thumb.data.searchResults}</span>
-        )}
+        {thumb.data.searchResults && <span className="searchResults">{thumb.data.searchResults}</span>}
       </div>
     </div>
   );
@@ -93,22 +88,16 @@ const Thumbnails = ({
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const thumb: HTMLElement = ref.current?.querySelector(
-      `#thumb-${selected[0]}`
-    ) as HTMLElement;
+    const thumb: HTMLElement = ref.current?.querySelector(`#thumb-${selected[0]}`) as HTMLElement;
     const y: number = thumb?.offsetTop;
     ref.current?.parentElement!.scrollTo({
       top: y,
       left: 0,
-      behavior: "smooth",
+      behavior: 'smooth',
     });
   }, [selected]);
 
-  function showSeparator(
-    paged: boolean,
-    viewingHint: ViewingHint | null,
-    index: number
-  ) {
+  function showSeparator(paged: boolean, viewingHint: ViewingHint | null, index: number) {
     if (viewingHint === ViewingHint.NON_PAGED) {
       return true;
     }
@@ -128,11 +117,11 @@ const Thumbnails = ({
   return (
     <div
       ref={ref}
-      className={cx("thumbs", {
-        "left-to-right": viewingDirection === ViewingDirection.LEFT_TO_RIGHT,
-        "right-to-left": viewingDirection === ViewingDirection.RIGHT_TO_LEFT,
+      className={cx('thumbs', {
+        'left-to-right': viewingDirection === ViewingDirection.LEFT_TO_RIGHT,
+        'right-to-left': viewingDirection === ViewingDirection.RIGHT_TO_LEFT,
         paged: paged,
-        "truncate-labels": truncateThumbnailLabels,
+        'truncate-labels': truncateThumbnailLabels,
       })}
     >
       {thumbs.map((thumb, index) => (
@@ -147,9 +136,7 @@ const Thumbnails = ({
             truncateThumbnailLabels={truncateThumbnailLabels}
             viewingDirection={viewingDirection}
           />
-          {showSeparator(paged, thumb.viewingHint, index) && (
-            <div className="separator"></div>
-          )}
+          {showSeparator(paged, thumb.viewingHint, index) && <div className="separator"></div>}
         </span>
       ))}
     </div>

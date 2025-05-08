@@ -1,5 +1,5 @@
 export class StringValue {
-  public value: string = "";
+  public value: string = '';
 
   constructor(value?: string) {
     if (value) {

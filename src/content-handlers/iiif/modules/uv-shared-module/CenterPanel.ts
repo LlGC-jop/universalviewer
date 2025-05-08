@@ -1,15 +1,13 @@
-import { IIIFEvents } from "../../IIIFEvents";
+import { IIIFEvents } from '../../IIIFEvents';
 
-const $ = require("jquery");
-import { BaseView } from "./BaseView";
-import { Position } from "./Position";
-import { sanitize, isVisible } from "../../../../Utils";
-import { Bools } from "@edsilv/utils";
-import { BaseConfig } from "../../BaseConfig";
+const $ = require('jquery');
+import { BaseView } from './BaseView';
+import { Position } from './Position';
+import { sanitize, isVisible } from '../../../../Utils';
+import { Bools } from '@edsilv/utils';
+import { BaseConfig } from '../../BaseConfig';
 
-export class CenterPanel<
-  T extends BaseConfig["modules"]["centerPanel"]
-> extends BaseView<T> {
+export class CenterPanel<T extends BaseConfig['modules']['centerPanel']> extends BaseView<T> {
   title: string | null;
   subtitle: string | null;
   subtitleExpanded: boolean = false;
@@ -46,9 +44,9 @@ export class CenterPanel<
                             </div>`);
     this.$element.append(this.$subtitle);
 
-    this.$subtitleWrapper = this.$subtitle.find(".wrapper");
-    this.$subtitleExpand = this.$subtitle.find(".expand-btn");
-    this.$subtitleText = this.$subtitle.find(".text");
+    this.$subtitleWrapper = this.$subtitle.find('.wrapper');
+    this.$subtitleExpand = this.$subtitle.find('.expand-btn');
+    this.$subtitleText = this.$subtitle.find('.text');
 
     this.$content = $('<div id="content" class="content"></div>');
     this.$element.append(this.$content);
@@ -69,31 +67,28 @@ export class CenterPanel<
                                 </div>
         `);
 
-    this.$attribution.find(".header .title").text(this.content.attribution);
+    this.$attribution.find('.header .title').text(this.content.attribution);
     this.$content.append(this.$attribution);
     this.closeAttribution();
 
-    this.$closeAttributionButton = this.$attribution.find(".header .close");
-    this.$closeAttributionButton.attr(
-      "aria-label",
-      this.content.closeAttribution
-    );
-    this.$closeAttributionButton.on("click", (e) => {
+    this.$closeAttributionButton = this.$attribution.find('.header .close');
+    this.$closeAttributionButton.attr('aria-label', this.content.closeAttribution);
+    this.$closeAttributionButton.on('click', (e) => {
       e.preventDefault();
       this.closeAttribution(true);
     });
 
-    this.$subtitleExpand.on("click", (e) => {
+    this.$subtitleExpand.on('click', (e) => {
       e.preventDefault();
 
       this.subtitleExpanded = !this.subtitleExpanded;
 
       if (this.subtitleExpanded) {
-        this.$subtitleWrapper.addClass("expanded");
-        this.$subtitleExpand.text("-");
+        this.$subtitleWrapper.addClass('expanded');
+        this.$subtitleExpand.text('-');
       } else {
-        this.$subtitleWrapper.removeClass("expanded");
-        this.$subtitleExpand.text("+");
+        this.$subtitleWrapper.removeClass('expanded');
+        this.$subtitleExpand.text('+');
       }
 
       this.resize();
@@ -138,8 +133,7 @@ export class CenterPanel<
   closeAttribution(explicitlyClosed: boolean = false): void {
     // If the user explicitly closes the box once, remember that state; this
     // will get reset in the viewer reload when a different manifest is loaded.
-    this.attributionExplicitlyClosed =
-      this.attributionExplicitlyClosed || explicitlyClosed;
+    this.attributionExplicitlyClosed = this.attributionExplicitlyClosed || explicitlyClosed;
     this.$attribution.hide();
     this.isAttributionOpen = false;
   }
@@ -149,23 +143,15 @@ export class CenterPanel<
       return;
     }
 
-    const mostSpecific = Bools.getBool(
-      this.config.options.mostSpecificRequiredStatement,
-      false
-    );
-    const requiredStatement = mostSpecific
-      ? this.extension.helper.getMostSpecificRequiredStatement()
-      : this.extension.helper.getRequiredStatement();
+    const mostSpecific = Bools.getBool(this.config.options.mostSpecificRequiredStatement, false);
+    const requiredStatement = mostSpecific ? this.extension.helper.getMostSpecificRequiredStatement() : this.extension.helper.getRequiredStatement();
 
     // isAttributionLoaded
 
     //var license = this.provider.getLicense();
     //var logo = this.provider.getLogo();
 
-    const enabled: boolean = Bools.getBool(
-      this.options.requiredStatementEnabled,
-      true
-    );
+    const enabled: boolean = Bools.getBool(this.options.requiredStatementEnabled, true);
 
     if (!requiredStatement || !requiredStatement.value || !enabled) {
       return;
@@ -173,11 +159,10 @@ export class CenterPanel<
 
     this.openAttribution();
 
-    const $attributionTitle: JQuery = this.$attribution.find(".title");
-    const $attributionText: JQuery =
-      this.$attribution.find(".attribution-text");
-    const $license: JQuery = this.$attribution.find(".license");
-    const $logo: JQuery = this.$attribution.find(".logo");
+    const $attributionTitle: JQuery = this.$attribution.find('.title');
+    const $attributionText: JQuery = this.$attribution.find('.attribution-text');
+    const $license: JQuery = this.$attribution.find('.license');
+    const $logo: JQuery = this.$attribution.find('.logo');
 
     if (requiredStatement.label) {
       const sanitizedTitle: string = sanitize(requiredStatement.label);
@@ -194,8 +179,8 @@ export class CenterPanel<
       const resize = () => this.resize();
 
       $attributionText
-        .find("img")
-        .one("load", () => {
+        .find('img')
+        .one('load', () => {
           this.resize();
         })
         .each(function () {
@@ -204,7 +189,7 @@ export class CenterPanel<
           }
         });
 
-      $attributionText.find("img").one("error", () => {
+      $attributionText.find('img').one('error', () => {
         resize();
       });
 
@@ -241,19 +226,13 @@ export class CenterPanel<
     let titleHeight: number;
     let subtitleHeight: number;
 
-    if (
-      (this.options && this.options.titleEnabled === false) ||
-      !isVisible(this.$title)
-    ) {
+    if ((this.options && this.options.titleEnabled === false) || !isVisible(this.$title)) {
       titleHeight = 0;
     } else {
       titleHeight = this.$title.outerHeight(true);
     }
 
-    if (
-      (this.options && this.options.subtitleEnabled === false) ||
-      !isVisible(this.$subtitle)
-    ) {
+    if ((this.options && this.options.subtitleEnabled === false) || !isVisible(this.$subtitle)) {
       subtitleHeight = 0;
     } else {
       subtitleHeight = this.$subtitle.outerHeight(true);
@@ -261,20 +240,20 @@ export class CenterPanel<
 
     this.$content.height(this.$element.height() - titleHeight - subtitleHeight);
     this.$content.width(this.$element.width());
-    const $text = this.$attribution.find(".attribution-text");
+    const $text = this.$attribution.find('.attribution-text');
 
-    $text.css("maxHeight", `calc(${this.$content.height()}px - 100px)`);
-    $text.css("overflow-y", "auto");
+    $text.css('maxHeight', `calc(${this.$content.height()}px - 100px)`);
+    $text.css('overflow-y', 'auto');
 
     if (this.$attribution && this.isAttributionOpen) {
       switch (this.attributionPosition) {
         case Position.BOTTOM_LEFT:
-          this.$attribution.css("bottom", 0);
-          this.$attribution.css("left", 0);
+          this.$attribution.css('bottom', 0);
+          this.$attribution.css('left', 0);
           break;
         case Position.BOTTOM_RIGHT:
-          this.$attribution.css("bottom", 0);
-          this.$attribution.css("right", 0);
+          this.$attribution.css('bottom', 0);
+          this.$attribution.css('right', 0);
           break;
       }
 
@@ -287,20 +266,15 @@ export class CenterPanel<
     }
 
     if (this.subtitle && this.options.subtitleEnabled) {
-      this.$subtitleText.html(
-        sanitize(this.subtitle.replace(/<br\s*[\/]?>/gi, "; "))
-      );
-      this.$subtitleText.removeClass("elided");
+      this.$subtitleText.html(sanitize(this.subtitle.replace(/<br\s*[\/]?>/gi, '; ')));
+      this.$subtitleText.removeClass('elided');
       this.$subtitle.show();
-      this.$subtitleWrapper.css(
-        "max-height",
-        this.$content.height() + this.$subtitle.outerHeight()
-      );
+      this.$subtitleWrapper.css('max-height', this.$content.height() + this.$subtitle.outerHeight());
       this.$subtitleWrapper.width(this.$content.width());
 
       if (!this.subtitleExpanded) {
-        this.$subtitleText.width("auto");
-        this.$subtitleWrapper.width("auto");
+        this.$subtitleText.width('auto');
+        this.$subtitleWrapper.width('auto');
         this.$subtitleExpand.hide();
 
         // if the subtitle span is wider than the container, set it to display:block
@@ -309,18 +283,12 @@ export class CenterPanel<
         // show the expand button
         if (this.$subtitleText.width() > this.$content.width()) {
           this.$subtitleExpand.show();
-          this.$subtitleText.addClass("elided");
-          this.$subtitleText.width(
-            this.$content.width() -
-              (this.$subtitleExpand.outerWidth() +
-                this.$subtitleText.horizontalMargins())
-          );
+          this.$subtitleText.addClass('elided');
+          this.$subtitleText.width(this.$content.width() - (this.$subtitleExpand.outerWidth() + this.$subtitleText.horizontalMargins()));
         }
       } else {
         // subtitle expanded
-        this.$subtitleText.width(
-          this.$content.width() - this.$subtitleText.horizontalMargins() - 2
-        );
+        this.$subtitleText.width(this.$content.width() - this.$subtitleText.horizontalMargins() - 2);
       }
     } else {
       this.$subtitle.hide();

@@ -1,12 +1,10 @@
-const $ = require("jquery");
-import { BaseView } from "./BaseView";
-import { IIIFEvents } from "../../IIIFEvents";
-import { Maths } from "@edsilv/utils";
-import { BaseConfig } from "../../BaseConfig";
+const $ = require('jquery');
+import { BaseView } from './BaseView';
+import { IIIFEvents } from '../../IIIFEvents';
+import { Maths } from '@edsilv/utils';
+import { BaseConfig } from '../../BaseConfig';
 
-export class Dialogue<
-  T extends BaseConfig["modules"]["dialogue"]
-> extends BaseView<T> {
+export class Dialogue<T extends BaseConfig['modules']['dialogue']> extends BaseView<T> {
   allowClose: boolean = true;
   isActive: boolean = false;
   isUnopened: boolean = true;
@@ -27,7 +25,7 @@ export class Dialogue<
   }
 
   create(): void {
-    this.setConfig("dialogue");
+    this.setConfig('dialogue');
     super.create();
 
     // events.
@@ -50,11 +48,7 @@ export class Dialogue<
     this.$top = $('<div class="top"></div>');
     this.$element.append(this.$top);
 
-    this.$closeButton = $(
-      '<button type="button" class="btn btn-default close" tabindex="0">' +
-        this.content.close +
-        "</button>"
-    );
+    this.$closeButton = $('<button type="button" class="btn btn-default close" tabindex="0">' + this.content.close + '</button>');
 
     this.$middle = $('<div class="middle"></div>');
     this.$element.append(this.$middle);
@@ -74,7 +68,7 @@ export class Dialogue<
       this.$buttons.append(this.$closeButton);
     }
 
-    this.$closeButton.on("click", (e) => {
+    this.$closeButton.on('click', (e) => {
       e.preventDefault();
 
       this.close();
@@ -94,9 +88,7 @@ export class Dialogue<
   }
 
   setDockedPosition(): void {
-    let top: number = Math.floor(
-      this.extension.height() - this.$element.outerHeight(true)
-    );
+    let top: number = Math.floor(this.extension.height() - this.$element.outerHeight(true));
     let left: number = 0;
     let arrowLeft: number = 0;
     let normalisedPos: number = 0;
@@ -106,29 +98,23 @@ export class Dialogue<
       const horizontalPadding: number = 2;
 
       const a: number = (<any>this.$triggerButton.offset()).top;
-      const b: number = (<JQueryCoordinates>this.extension.$element.offset())
-        .top;
+      const b: number = (<JQueryCoordinates>this.extension.$element.offset()).top;
       const d: number = this.$element.outerHeight(true);
       const e: number = a - b - d;
 
       top = e + verticalPadding;
 
       const f: number = (<JQueryCoordinates>this.$triggerButton.offset()).left;
-      const g: number = (<JQueryCoordinates>this.extension.$element.offset())
-        .left;
+      const g: number = (<JQueryCoordinates>this.extension.$element.offset()).left;
       const h: number = f - g;
 
       normalisedPos = Maths.normalise(h, 0, this.extension.width());
 
-      left =
-        Math.floor(
-          this.extension.width() * normalisedPos -
-            this.$element.width() * normalisedPos
-        ) + horizontalPadding;
+      left = Math.floor(this.extension.width() * normalisedPos - this.$element.width() * normalisedPos) + horizontalPadding;
       arrowLeft = Math.floor(this.$element.width() * normalisedPos);
     }
 
-    this.$bottom.css("backgroundPosition", arrowLeft + "px 0px");
+    this.$bottom.css('backgroundPosition', arrowLeft + 'px 0px');
 
     this.$element.css({
       top: top,
@@ -137,7 +123,7 @@ export class Dialogue<
   }
 
   open(triggerButton?: HTMLElement): void {
-    this.$element.attr("aria-hidden", "false");
+    this.$element.attr('aria-hidden', 'false');
     this.$element.show();
 
     if (triggerButton) {
@@ -151,14 +137,12 @@ export class Dialogue<
 
     // set the focus to the default button.
     setTimeout(() => {
-      const $defaultButton: JQuery = this.$element.find(".default");
+      const $defaultButton: JQuery = this.$element.find('.default');
       if ($defaultButton.length) {
         $defaultButton.focus();
       } else {
         // if there's no default button, focus on the first visible input or select element
-        const $firstVisibleElement: JQuery = this.$element
-          .find("input:visible, select:visible")
-          .first();
+        const $firstVisibleElement: JQuery = this.$element.find('input:visible, select:visible').first();
 
         if ($firstVisibleElement.length) {
           $firstVisibleElement.focus();
@@ -170,7 +154,7 @@ export class Dialogue<
     }, 1);
 
     // Add keydown event listener to trap focus within the dialog
-    this.$element.on("keydown", (e: JQuery.Event) => this.handleKeydown(e));
+    this.$element.on('keydown', (e: JQuery.Event) => this.handleKeydown(e));
 
     this.extensionHost.publish(IIIFEvents.SHOW_OVERLAY);
 
@@ -186,12 +170,12 @@ export class Dialogue<
 
   close(): void {
     if (!this.isActive) return;
-    this.$element.attr("aria-hidden", "true");
+    this.$element.attr('aria-hidden', 'true');
     this.$element.hide();
     this.isActive = false;
 
     // Remove the keydown event listener
-    this.$element.off("keydown");
+    this.$element.off('keydown');
 
     this.extensionHost.publish(this.closeCommand);
     this.extensionHost.publish(IIIFEvents.HIDE_OVERLAY);
@@ -207,12 +191,9 @@ export class Dialogue<
   }
 
   private handleKeydown(event: JQuery.Event): void {
-    if (event.key === "Tab") {
-      const focusableSelectors =
-        'a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox"], select, [tabindex="0"]';
-      const focusableElements = this.$element
-        .find(focusableSelectors)
-        .filter(":visible");
+    if (event.key === 'Tab') {
+      const focusableSelectors = 'a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox"], select, [tabindex="0"]';
+      const focusableElements = this.$element.find(focusableSelectors).filter(':visible');
 
       const firstElement = focusableElements.first()[0];
       const lastElement = focusableElements.last()[0];

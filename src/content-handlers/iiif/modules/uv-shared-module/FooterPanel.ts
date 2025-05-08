@@ -1,13 +1,11 @@
-const $ = require("jquery");
-import { IIIFEvents } from "../../IIIFEvents";
-import { BaseView } from "./BaseView";
-import { Bools, Documents } from "@edsilv/utils";
-import { Events } from "../../../../Events";
-import { BaseConfig } from "../../BaseConfig";
+const $ = require('jquery');
+import { IIIFEvents } from '../../IIIFEvents';
+import { BaseView } from './BaseView';
+import { Bools, Documents } from '@edsilv/utils';
+import { Events } from '../../../../Events';
+import { BaseConfig } from '../../BaseConfig';
 
-export class FooterPanel<
-  T extends BaseConfig["modules"]["footerPanel"]
-> extends BaseView<T> {
+export class FooterPanel<T extends BaseConfig['modules']['footerPanel']> extends BaseView<T> {
   $feedbackButton: JQuery;
   $bookmarkButton: JQuery;
   $downloadButton: JQuery;
@@ -27,7 +25,7 @@ export class FooterPanel<
   }
 
   create(): void {
-    this.setConfig("footerPanel");
+    this.setConfig('footerPanel');
 
     super.create();
 
@@ -120,41 +118,22 @@ export class FooterPanel<
     this.$mainOptions.append(this.$fullScreenBtn);
 
     this.$moreInfoButton = $(`
-      <button class="moreInfo btn imageBtn" title="${
-        $(".mainPanel.rightPanelOpen").length !== 0
-          ? this.content.closeRightPanel
-          : this.content.openRightPanel
-      }">
+      <button class="moreInfo btn imageBtn" title="${$('.mainPanel.rightPanelOpen').length !== 0 ? this.content.closeRightPanel : this.content.openRightPanel}">
         <i class="uv-icon uv-icon-more-info" aria-hidden="true"></i>
-        <span class="sr-only">${
-          $(".mainPanel.rightPanelOpen").length !== 0
-            ? this.content.closeRightPanel
-            : this.content.openRightPanel
-        }</span>
+        <span class="sr-only">${$('.mainPanel.rightPanelOpen').length !== 0 ? this.content.closeRightPanel : this.content.openRightPanel}</span>
       </button>
     `);
     this.$rightOptions.append(this.$moreInfoButton);
 
     this.$toggleLeftPanelButton = $(`
-      <button class="toggleLeftPanelButton btn imageBtn" title="${
-        $(".mainPanel.leftPanelOpen").length !== 0
-          ? this.content.closeLeftPanel
-          : this.content.openLeftPanel
-      }">
+      <button class="toggleLeftPanelButton btn imageBtn" title="${$('.mainPanel.leftPanelOpen').length !== 0 ? this.content.closeLeftPanel : this.content.openLeftPanel}">
         <i class="uv-icon uv-icon-toggle-left-panel" aria-hidden="true"></i>
-        <span class="sr-only">${
-          $(".mainPanel.leftPanelOpen").length !== 0
-            ? this.content.closeLeftPanel
-            : this.content.openLeftPanel
-        }</span>
+        <span class="sr-only">${$('.mainPanel.leftPanelOpen').length !== 0 ? this.content.closeLeftPanel : this.content.openLeftPanel}</span>
       </button>
     `);
     this.$leftOptions.append(this.$toggleLeftPanelButton);
 
-    if (
-      $(".leftPanel").css("display") === "none" ||
-      $(".leftPanel").contents().length === 0
-    ) {
+    if ($('.leftPanel').css('display') === 'none' || $('.leftPanel').contents().length === 0) {
       this.$toggleLeftPanelButton.hide();
     }
 
@@ -171,50 +150,29 @@ export class FooterPanel<
     });
 
     this.$shareButton.onPressed(() => {
-      this.extensionHost.publish(
-        IIIFEvents.SHOW_SHARE_DIALOGUE,
-        this.$shareButton
-      );
+      this.extensionHost.publish(IIIFEvents.SHOW_SHARE_DIALOGUE, this.$shareButton);
     });
 
     this.$embedButton.onPressed(() => {
-      this.extensionHost.publish(
-        IIIFEvents.SHOW_EMBED_DIALOGUE,
-        this.$embedButton
-      );
+      this.extensionHost.publish(IIIFEvents.SHOW_EMBED_DIALOGUE, this.$embedButton);
     });
 
     this.$downloadButton.onPressed(() => {
-      this.extensionHost.publish(
-        IIIFEvents.SHOW_DOWNLOAD_DIALOGUE,
-        this.$downloadButton
-      );
+      this.extensionHost.publish(IIIFEvents.SHOW_DOWNLOAD_DIALOGUE, this.$downloadButton);
     });
 
     this.$moreInfoButton.onPressed(() => {
-      this.extensionHost.publish(
-        IIIFEvents.TOGGLE_RIGHT_PANEL,
-        this.$moreInfoButton
-      );
-      const newLabel =
-        $(".mainPanel.rightPanelOpen").length !== 0
-          ? this.content.closeRightPanel
-          : this.content.openRightPanel;
-      this.$moreInfoButton.attr("title", newLabel);
-      this.$moreInfoButton.find(".sr-only").text(newLabel);
+      this.extensionHost.publish(IIIFEvents.TOGGLE_RIGHT_PANEL, this.$moreInfoButton);
+      const newLabel = $('.mainPanel.rightPanelOpen').length !== 0 ? this.content.closeRightPanel : this.content.openRightPanel;
+      this.$moreInfoButton.attr('title', newLabel);
+      this.$moreInfoButton.find('.sr-only').text(newLabel);
     });
 
     this.$toggleLeftPanelButton.onPressed(() => {
-      this.extensionHost.publish(
-        IIIFEvents.TOGGLE_LEFT_PANEL,
-        this.$moreInfoButton
-      );
-      const newLabel =
-        $(".mainPanel.leftPanelOpen").length !== 0
-          ? this.content.closeLeftPanel
-          : this.content.openLeftPanel;
-      this.$toggleLeftPanelButton.attr("title", newLabel);
-      this.$toggleLeftPanelButton.find(".sr-only").text(newLabel);
+      this.extensionHost.publish(IIIFEvents.TOGGLE_LEFT_PANEL, this.$moreInfoButton);
+      const newLabel = $('.mainPanel.leftPanelOpen').length !== 0 ? this.content.closeLeftPanel : this.content.openLeftPanel;
+      this.$toggleLeftPanelButton.attr('title', newLabel);
+      this.$toggleLeftPanelButton.find('.sr-only').text(newLabel);
     });
 
     this.onAccessibleClick(
@@ -223,7 +181,7 @@ export class FooterPanel<
         e.preventDefault();
         this.extensionHost.publish(Events.TOGGLE_FULLSCREEN);
       },
-      true
+      true,
     );
 
     if (!Bools.getBool(this.options.embedEnabled, true)) {
@@ -243,13 +201,10 @@ export class FooterPanel<
 
   updateMinimisedButtons(): void {
     // if configured to always minimise buttons
-    if (
-      Bools.getBool(this.options.minimiseButtons, false) ||
-      !this.extension.isDesktopMetric()
-    ) {
-      this.$options.find("span").addClass("sr-only");
+    if (Bools.getBool(this.options.minimiseButtons, false) || !this.extension.isDesktopMetric()) {
+      this.$options.find('span').addClass('sr-only');
     } else {
-      this.$options.find("span").removeClass("sr-only");
+      this.$options.find('span').removeClass('sr-only');
     }
   }
 
@@ -266,10 +221,7 @@ export class FooterPanel<
   }
 
   updateOpenButton(): void {
-    const configEnabled: boolean = Bools.getBool(
-      this.options.openEnabled,
-      false
-    );
+    const configEnabled: boolean = Bools.getBool(this.options.openEnabled, false);
 
     if (configEnabled && Documents.isInIFrame()) {
       this.$openButton.show();
@@ -279,40 +231,26 @@ export class FooterPanel<
   }
 
   updateFullScreenButton(): void {
-    if (
-      !Bools.getBool(this.options.fullscreenEnabled, true) ||
-      !Documents.supportsFullscreen()
-    ) {
+    if (!Bools.getBool(this.options.fullscreenEnabled, true) || !Documents.supportsFullscreen()) {
       this.$fullScreenBtn.hide();
       return;
     }
 
     if (this.extension.isFullScreen()) {
-      this.$fullScreenBtn.switchClass("fullScreen", "exitFullscreen");
-      this.$fullScreenBtn
-        .find("i")
-        .switchClass("uv-icon-fullscreen", "uv-icon-exit-fullscreen");
-      this.$fullScreenBtn.attr("title", this.content.exitFullScreen);
-      $(
-        (<any>this.$fullScreenBtn[0].firstChild).nextSibling.nextSibling
-      ).replaceWith(this.content.exitFullScreen);
+      this.$fullScreenBtn.switchClass('fullScreen', 'exitFullscreen');
+      this.$fullScreenBtn.find('i').switchClass('uv-icon-fullscreen', 'uv-icon-exit-fullscreen');
+      this.$fullScreenBtn.attr('title', this.content.exitFullScreen);
+      $((<any>this.$fullScreenBtn[0].firstChild).nextSibling.nextSibling).replaceWith(this.content.exitFullScreen);
     } else {
-      this.$fullScreenBtn.switchClass("exitFullscreen", "fullScreen");
-      this.$fullScreenBtn
-        .find("i")
-        .switchClass("uv-icon-exit-fullscreen", "uv-icon-fullscreen");
-      this.$fullScreenBtn.attr("title", this.content.fullScreen);
-      $(
-        (<any>this.$fullScreenBtn[0].firstChild).nextSibling.nextSibling
-      ).replaceWith(this.content.fullScreen);
+      this.$fullScreenBtn.switchClass('exitFullscreen', 'fullScreen');
+      this.$fullScreenBtn.find('i').switchClass('uv-icon-exit-fullscreen', 'uv-icon-fullscreen');
+      this.$fullScreenBtn.attr('title', this.content.fullScreen);
+      $((<any>this.$fullScreenBtn[0].firstChild).nextSibling.nextSibling).replaceWith(this.content.fullScreen);
     }
   }
 
   updateEmbedButton(): void {
-    if (
-      this.extension.helper.isUIEnabled("embed") &&
-      Bools.getBool(this.options.embedEnabled, false)
-    ) {
+    if (this.extension.helper.isUIEnabled('embed') && Bools.getBool(this.options.embedEnabled, false)) {
       // current jquery version sets display to 'inline' in mobile version, while this should remain hidden (see media query)
       if (!this.extension.isMobile()) {
         this.$embedButton.show();
@@ -323,10 +261,7 @@ export class FooterPanel<
   }
 
   updateShareButton(): void {
-    if (
-      this.extension.helper.isUIEnabled("share") &&
-      Bools.getBool(this.options.shareEnabled, true)
-    ) {
+    if (this.extension.helper.isUIEnabled('share') && Bools.getBool(this.options.shareEnabled, true)) {
       this.$shareButton.show();
     } else {
       this.$shareButton.hide();
@@ -334,10 +269,7 @@ export class FooterPanel<
   }
 
   updateDownloadButton(): void {
-    const configEnabled: boolean = Bools.getBool(
-      this.options.downloadEnabled,
-      true
-    );
+    const configEnabled: boolean = Bools.getBool(this.options.downloadEnabled, true);
 
     if (configEnabled) {
       this.$downloadButton.show();
@@ -347,10 +279,7 @@ export class FooterPanel<
   }
 
   updateFeedbackButton(): void {
-    const configEnabled: boolean = Bools.getBool(
-      this.options.feedbackEnabled,
-      false
-    );
+    const configEnabled: boolean = Bools.getBool(this.options.feedbackEnabled, false);
 
     if (configEnabled) {
       this.$feedbackButton.show();
@@ -360,10 +289,7 @@ export class FooterPanel<
   }
 
   updateBookmarkButton(): void {
-    const configEnabled: boolean = Bools.getBool(
-      this.options.bookmarkEnabled,
-      false
-    );
+    const configEnabled: boolean = Bools.getBool(this.options.bookmarkEnabled, false);
 
     if (configEnabled) {
       this.$bookmarkButton.show();

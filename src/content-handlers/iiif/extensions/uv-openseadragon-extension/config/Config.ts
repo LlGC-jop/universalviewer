@@ -16,9 +16,9 @@ import {
   SettingsDialogueOptions,
   ShareDialogueContent,
   ShareDialogueOptions,
-} from "@/content-handlers/iiif/BaseConfig";
+} from '@/content-handlers/iiif/BaseConfig';
 
-import { ContentLeftPanel } from "../../config/ContentLeftPanel";
+import { ContentLeftPanel } from '../../config/ContentLeftPanel';
 
 type MultiSelectDialogueOptions = DialogueOptions & {
   /** Determines if chunked resizing is enabled for gallery thumbnails */

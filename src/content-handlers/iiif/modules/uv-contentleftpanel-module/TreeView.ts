@@ -1,9 +1,9 @@
-const $ = require("jquery");
-import { IIIFEvents } from "../../IIIFEvents";
-import { BaseView } from "../uv-shared-module/BaseView";
-import { TreeNode } from "manifesto.js";
-import { TreeComponent } from "@iiif/iiif-tree-component";
-import { ContentLeftPanel } from "./ContentLeftPanel";
+const $ = require('jquery');
+import { IIIFEvents } from '../../IIIFEvents';
+import { BaseView } from '../uv-shared-module/BaseView';
+import { TreeNode } from 'manifesto.js';
+import { TreeComponent } from '@iiif/iiif-tree-component';
+import { ContentLeftPanel } from './ContentLeftPanel';
 
 export class TreeView extends BaseView<ContentLeftPanel> {
   isOpen: boolean = false;
@@ -12,16 +12,12 @@ export class TreeView extends BaseView<ContentLeftPanel> {
   $tree: JQuery;
   private expandedNodeIds: Set<string> = new Set();
 
-  constructor(
-    $element: JQuery,
-    fitToParentWidth: boolean = true,
-    fitToParentHeight: boolean = true
-  ) {
+  constructor($element: JQuery, fitToParentWidth: boolean = true, fitToParentHeight: boolean = true) {
     super($element, fitToParentWidth, fitToParentHeight);
   }
 
   create(): void {
-    this.setConfig("contentLeftPanel");
+    this.setConfig('contentLeftPanel');
     super.create();
     this.$tree = $('<div class="iiif-tree-component"></div>');
     this.$element.append(this.$tree);
@@ -34,19 +30,19 @@ export class TreeView extends BaseView<ContentLeftPanel> {
     });
 
     this.treeComponent.on(
-      "treeNodeSelected",
+      'treeNodeSelected',
       (node: TreeNode) => {
         this.extensionHost.publish(IIIFEvents.TREE_NODE_SELECTED, node);
       },
-      false
+      false,
     );
 
     this.treeComponent.on(
-      "treeNodeMultiSelected",
+      'treeNodeMultiSelected',
       (node: TreeNode) => {
         this.extensionHost.publish(IIIFEvents.TREE_NODE_MULTISELECTED, node);
       },
-      false
+      false,
     );
   }
 
@@ -88,9 +84,7 @@ export class TreeView extends BaseView<ContentLeftPanel> {
 
   public selectNode(node: TreeNode): void {
     this.treeComponent.expandParents(node, true); // Expand node parents
-    const link: Element | undefined = this.$tree.find(
-      "#tree-link-" + node.id
-    )[0];
+    const link: Element | undefined = this.$tree.find('#tree-link-' + node.id)[0];
     if (link) {
       //commented out as bug where scrolls to wrong node eg in Villanova collection
       // link.scrollIntoViewIfNeeded();

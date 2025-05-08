@@ -1,11 +1,9 @@
-const $ = require("jquery");
-import { FooterPanel as BaseFooterPanel } from "../uv-shared-module/FooterPanel";
-import { OpenSeadragonExtensionEvents } from "../../extensions/uv-openseadragon-extension/Events";
-import { Config } from "../../extensions/uv-openseadragon-extension/config/Config";
+const $ = require('jquery');
+import { FooterPanel as BaseFooterPanel } from '../uv-shared-module/FooterPanel';
+import { OpenSeadragonExtensionEvents } from '../../extensions/uv-openseadragon-extension/Events';
+import { Config } from '../../extensions/uv-openseadragon-extension/config/Config';
 
-export class FooterPanel extends BaseFooterPanel<
-  Config["modules"]["mobileFooterPanel"]
-> {
+export class FooterPanel extends BaseFooterPanel<Config['modules']['mobileFooterPanel']> {
   $rotateButton: JQuery;
   //$spacer: JQuery;
   $zoomInButton: JQuery;
@@ -17,7 +15,7 @@ export class FooterPanel extends BaseFooterPanel<
   }
 
   create(): void {
-    this.setConfig("mobileFooterPanel");
+    this.setConfig('mobileFooterPanel');
 
     super.create();
 
@@ -79,10 +77,7 @@ export class FooterPanel extends BaseFooterPanel<
     super.resize();
 
     setTimeout(() => {
-      this.$options.css(
-        "left",
-        Math.floor(this.$element.width() / 2 - this.$options.width() / 2)
-      );
+      this.$options.css('left', Math.floor(this.$element.width() / 2 - this.$options.width() / 2));
     }, 1);
   }
 }

@@ -1,24 +1,16 @@
-const $ = require("jquery");
-import { IIIFEvents } from "../../IIIFEvents";
-import { CenterPanel } from "../uv-shared-module/CenterPanel";
-import { Position } from "../uv-shared-module/Position";
-import { sanitize } from "../../../../Utils";
-import {
-  Canvas,
-  IExternalResource,
-  LabelValuePair,
-  LanguageMap,
-  Range,
-} from "manifesto.js";
-import { MetadataGroup, MetadataOptions } from "@iiif/manifold";
-import { AVComponent } from "@iiif/iiif-av-component/dist-esmodule";
-import { Bools } from "@edsilv/utils";
-import { Events } from "../../../../Events";
-import { Config } from "../../extensions/uv-av-extension/config/Config";
+const $ = require('jquery');
+import { IIIFEvents } from '../../IIIFEvents';
+import { CenterPanel } from '../uv-shared-module/CenterPanel';
+import { Position } from '../uv-shared-module/Position';
+import { sanitize } from '../../../../Utils';
+import { Canvas, IExternalResource, LabelValuePair, LanguageMap, Range } from 'manifesto.js';
+import { MetadataGroup, MetadataOptions } from '@iiif/manifold';
+import { AVComponent } from '@iiif/iiif-av-component/dist-esmodule';
+import { Bools } from '@edsilv/utils';
+import { Events } from '../../../../Events';
+import { Config } from '../../extensions/uv-av-extension/config/Config';
 
-export class AVCenterPanel extends CenterPanel<
-  Config["modules"]["avCenterPanel"]
-> {
+export class AVCenterPanel extends CenterPanel<Config['modules']['avCenterPanel']> {
   $avcomponent: JQuery;
   avcomponent: any;
   private _lastCanvasIndex: number | undefined;
@@ -31,63 +23,48 @@ export class AVCenterPanel extends CenterPanel<
   }
 
   create(): void {
-    this.setConfig("avCenterPanel");
+    this.setConfig('avCenterPanel');
 
     super.create();
 
     const that = this;
 
-    this.extensionHost.subscribe(
-      IIIFEvents.OPEN_EXTERNAL_RESOURCE,
-      (resources: IExternalResource[]) => {
-        that.openMedia(resources);
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.OPEN_EXTERNAL_RESOURCE, (resources: IExternalResource[]) => {
+      that.openMedia(resources);
+    });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.CANVAS_INDEX_CHANGE,
-      (canvasIndex: number) => {
-        if (this._lastCanvasIndex !== canvasIndex) {
-          this._viewCanvas(canvasIndex);
+    this.extensionHost.subscribe(IIIFEvents.CANVAS_INDEX_CHANGE, (canvasIndex: number) => {
+      if (this._lastCanvasIndex !== canvasIndex) {
+        this._viewCanvas(canvasIndex);
+      }
+    });
+
+    this.extensionHost.subscribe(IIIFEvents.CURRENT_TIME_CHANGE, (currentTime: number) => {
+      this._whenMediaReady(() => {
+        if (this.avcomponent) {
+          this.avcomponent.setCurrentTime(currentTime, true);
         }
-      }
-    );
+      });
+    });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.CURRENT_TIME_CHANGE,
-      (currentTime: number) => {
-        this._whenMediaReady(() => {
-          if (this.avcomponent) {
-            this.avcomponent.setCurrentTime(currentTime, true);
-          }
-        });
-      }
-    );
-
-    this.extensionHost.subscribe(
-      IIIFEvents.RANGE_TIME_CHANGE,
-      ({ time, rangeId }: { time: number; rangeId: string }) => {
-        this._whenMediaReady(() => {
-          if (this.avcomponent) {
-            this.avcomponent.setCurrentRangeTime(time, rangeId, true);
-          }
-        });
-      }
-    );
-
-    this.extensionHost.subscribe(
-      IIIFEvents.RANGE_CHANGE,
-      (range: Range | null) => {
-        if (!this._observeRangeChanges()) {
-          return;
+    this.extensionHost.subscribe(IIIFEvents.RANGE_TIME_CHANGE, ({ time, rangeId }: { time: number; rangeId: string }) => {
+      this._whenMediaReady(() => {
+        if (this.avcomponent) {
+          this.avcomponent.setCurrentRangeTime(time, rangeId, true);
         }
+      });
+    });
 
-        this._whenMediaReady(() => {
-          that._viewRange(range);
-          that._setTitle();
-        });
+    this.extensionHost.subscribe(IIIFEvents.RANGE_CHANGE, (range: Range | null) => {
+      if (!this._observeRangeChanges()) {
+        return;
       }
-    );
+
+      this._whenMediaReady(() => {
+        that._viewRange(range);
+        that._setTitle();
+      });
+    });
 
     this.extensionHost.subscribe(IIIFEvents.METRIC_CHANGE, () => {
       this._whenMediaReady(() => {
@@ -114,8 +91,7 @@ export class AVCenterPanel extends CenterPanel<
             virtualCanvasEnabled: false,
           });
 
-          const canvas: Canvas | null =
-            this.extension.helper.getCurrentCanvas();
+          const canvas: Canvas | null = this.extension.helper.getCurrentCanvas();
 
           if (canvas) {
             this._viewCanvas(this.extension.helper.canvasIndex);
@@ -171,38 +147,33 @@ export class AVCenterPanel extends CenterPanel<
       },
     });
 
-    this.avcomponent.on("mediaerror", (err) => {
+    this.avcomponent.on('mediaerror', (err) => {
       if (!this.config.options.hideMediaError) {
         this.extensionHost.publish(IIIFEvents.SHOW_MESSAGE, [err]);
       }
     });
 
     this.avcomponent.on(
-      "mediaready",
+      'mediaready',
       () => {
         this._mediaReady = true;
         this._flushMediaReadyQueue();
       },
-      false
+      false,
     );
 
-    this.avcomponent.on("pause", () => {
-      this.extensionHost.publish(
-        IIIFEvents.PAUSE,
-        this.avcomponent.getCurrentTime()
-      );
+    this.avcomponent.on('pause', () => {
+      this.extensionHost.publish(IIIFEvents.PAUSE, this.avcomponent.getCurrentTime());
     });
 
     this.avcomponent.on(
-      "rangechanged",
+      'rangechanged',
       (rangeId: string | null) => {
         if (rangeId) {
-          const range: Range | null =
-            this.extension.helper.getRangeById(rangeId);
+          const range: Range | null = this.extension.helper.getRangeById(rangeId);
 
           if (range) {
-            const currentRange: Range | null =
-              this.extension.helper.getCurrentRange();
+            const currentRange: Range | null = this.extension.helper.getCurrentRange();
 
             if (range !== currentRange) {
               this.extensionHost.publish(IIIFEvents.RANGE_CHANGE, range);
@@ -216,7 +187,7 @@ export class AVCenterPanel extends CenterPanel<
 
         this._setTitle();
       },
-      false
+      false,
     );
   }
 
@@ -225,7 +196,7 @@ export class AVCenterPanel extends CenterPanel<
   }
 
   private _setTitle(): void {
-    let title: string = "";
+    let title: string = '';
     let value: string | null;
     let label: LanguageMap;
 
@@ -263,30 +234,23 @@ export class AVCenterPanel extends CenterPanel<
     this.title = title;
 
     // set subtitle
-    const groups: MetadataGroup[] = this.extension.helper.getMetadata(<
-      MetadataOptions
-    >{
+    const groups: MetadataGroup[] = this.extension.helper.getMetadata(<MetadataOptions>{
       range: currentRange,
     });
 
     for (let i = 0; i < groups.length; i++) {
       const group: MetadataGroup = groups[i];
 
-      const item: LabelValuePair | undefined = group.items.find(
-        (el: LabelValuePair) => {
-          if (el.label) {
-            const label: string | null = LanguageMap.getValue(el.label);
-            if (
-              label &&
-              label.toLowerCase() === this.config.options.subtitleMetadataField
-            ) {
-              return true;
-            }
+      const item: LabelValuePair | undefined = group.items.find((el: LabelValuePair) => {
+        if (el.label) {
+          const label: string | null = LanguageMap.getValue(el.label);
+          if (label && label.toLowerCase() === this.config.options.subtitleMetadataField) {
+            return true;
           }
-
-          return false;
         }
-      );
+
+        return false;
+      });
 
       if (item) {
         // @ts-ignore
@@ -380,8 +344,7 @@ export class AVCenterPanel extends CenterPanel<
 
   private _viewCanvas(canvasIndex: number): void {
     this._whenMediaReady(() => {
-      const canvas: Canvas | null =
-        this.extension.helper.getCanvasByIndex(canvasIndex);
+      const canvas: Canvas | null = this.extension.helper.getCanvasByIndex(canvasIndex);
 
       if (this.avcomponent) {
         this.avcomponent.showCanvas(canvas.id);

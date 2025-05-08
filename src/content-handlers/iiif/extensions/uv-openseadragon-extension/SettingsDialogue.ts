@@ -1,6 +1,6 @@
-const $ = require("jquery");
-import { SettingsDialogue as BaseSettingsDialogue } from "../../modules/uv-dialogues-module/SettingsDialogue";
-import config from "./config/config.json";
+const $ = require('jquery');
+import { SettingsDialogue as BaseSettingsDialogue } from '../../modules/uv-dialogues-module/SettingsDialogue';
+import config from './config/config.json';
 
 export class SettingsDialogue extends BaseSettingsDialogue {
   $clickToZoomEnabled: JQuery;
@@ -24,7 +24,7 @@ export class SettingsDialogue extends BaseSettingsDialogue {
   }
 
   create(): void {
-    this.setConfig("settingsDialogue");
+    this.setConfig('settingsDialogue');
 
     super.create();
 
@@ -32,60 +32,36 @@ export class SettingsDialogue extends BaseSettingsDialogue {
     this.$scroll.append(this.$navigatorEnabled);
 
     // todo: use .checkboxButton jquery extension
-    this.$navigatorEnabledCheckbox = $(
-      '<input id="navigatorEnabled" type="checkbox" tabindex="0" />'
-    );
+    this.$navigatorEnabledCheckbox = $('<input id="navigatorEnabled" type="checkbox" tabindex="0" />');
     this.$navigatorEnabled.append(this.$navigatorEnabledCheckbox);
 
-    this.$navigatorEnabledLabel = $(
-      '<label for="navigatorEnabled">' +
-        this.content.navigatorEnabled +
-        "</label>"
-    );
+    this.$navigatorEnabledLabel = $('<label for="navigatorEnabled">' + this.content.navigatorEnabled + '</label>');
     this.$navigatorEnabled.append(this.$navigatorEnabledLabel);
 
     this.$pagingEnabled = $('<div class="setting pagingEnabled"></div>');
     this.$scroll.append(this.$pagingEnabled);
 
-    this.$pagingEnabledCheckbox = $(
-      '<input id="pagingEnabled" type="checkbox" tabindex="0" />'
-    );
+    this.$pagingEnabledCheckbox = $('<input id="pagingEnabled" type="checkbox" tabindex="0" />');
     this.$pagingEnabled.append(this.$pagingEnabledCheckbox);
 
-    this.$pagingEnabledLabel = $(
-      '<label for="pagingEnabled">' + this.content.pagingEnabled + "</label>"
-    );
+    this.$pagingEnabledLabel = $('<label for="pagingEnabled">' + this.content.pagingEnabled + '</label>');
     this.$pagingEnabled.append(this.$pagingEnabledLabel);
 
     if (config.options.truncateThumbnailLabels) {
-      this.$truncateThumbnailLabels = $(
-        '<div class="setting truncateThumbnailLabels"></div>'
-      );
+      this.$truncateThumbnailLabels = $('<div class="setting truncateThumbnailLabels"></div>');
       this.$scroll.append(this.$truncateThumbnailLabels);
 
-      this.$truncateThumbnailLabelsCheckbox = $(
-        '<input id="truncateThumbnailLabels" type="checkbox" tabindex="0" />'
-      );
-      this.$truncateThumbnailLabels.append(
-        this.$truncateThumbnailLabelsCheckbox
-      );
+      this.$truncateThumbnailLabelsCheckbox = $('<input id="truncateThumbnailLabels" type="checkbox" tabindex="0" />');
+      this.$truncateThumbnailLabels.append(this.$truncateThumbnailLabelsCheckbox);
 
-      this.$truncateThumbnailLabelsLabel = $(
-        '<label for="truncateThumbnailLabels">' +
-          this.content.truncateThumbnailLabels +
-          "</label>"
-      );
+      this.$truncateThumbnailLabelsLabel = $('<label for="truncateThumbnailLabels">' + this.content.truncateThumbnailLabels + '</label>');
       this.$truncateThumbnailLabels.append(this.$truncateThumbnailLabelsLabel);
 
-      this.$truncateThumbnailLabelsCheckbox.prop(
-        "checked",
-        config.options.truncateThumbnailLabels
-      );
+      this.$truncateThumbnailLabelsCheckbox.prop('checked', config.options.truncateThumbnailLabels);
 
       this.$truncateThumbnailLabelsCheckbox.change(() => {
         const settings: ISettings = {};
-        settings.truncateThumbnailLabels =
-          this.$truncateThumbnailLabelsCheckbox.is(":checked");
+        settings.truncateThumbnailLabels = this.$truncateThumbnailLabelsCheckbox.is(':checked');
         this.updateSettings(settings);
       });
     }
@@ -93,37 +69,25 @@ export class SettingsDialogue extends BaseSettingsDialogue {
     this.$clickToZoomEnabled = $('<div class="setting clickToZoom"></div>');
     this.$scroll.append(this.$clickToZoomEnabled);
 
-    this.$clickToZoomEnabledCheckbox = $(
-      '<input id="clickToZoomEnabled" type="checkbox" />'
-    );
+    this.$clickToZoomEnabledCheckbox = $('<input id="clickToZoomEnabled" type="checkbox" />');
     this.$clickToZoomEnabled.append(this.$clickToZoomEnabledCheckbox);
 
-    this.$clickToZoomEnabledLabel = $(
-      '<label for="clickToZoomEnabled">' +
-        this.content.clickToZoomEnabled +
-        "</label>"
-    );
+    this.$clickToZoomEnabledLabel = $('<label for="clickToZoomEnabled">' + this.content.clickToZoomEnabled + '</label>');
     this.$clickToZoomEnabled.append(this.$clickToZoomEnabledLabel);
 
     this.$preserveViewport = $('<div class="setting preserveViewport"></div>');
     this.$scroll.append(this.$preserveViewport);
 
-    this.$preserveViewportCheckbox = $(
-      '<input id="preserveViewport" type="checkbox" tabindex="0" />'
-    );
+    this.$preserveViewportCheckbox = $('<input id="preserveViewport" type="checkbox" tabindex="0" />');
     this.$preserveViewport.append(this.$preserveViewportCheckbox);
 
-    this.$preserveViewportLabel = $(
-      '<label for="preserveViewport">' +
-        this.content.preserveViewport +
-        "</label>"
-    );
+    this.$preserveViewportLabel = $('<label for="preserveViewport">' + this.content.preserveViewport + '</label>');
     this.$preserveViewport.append(this.$preserveViewportLabel);
 
     this.$navigatorEnabledCheckbox.change(() => {
       const settings: ISettings = {};
 
-      if (this.$navigatorEnabledCheckbox.is(":checked")) {
+      if (this.$navigatorEnabledCheckbox.is(':checked')) {
         settings.navigatorEnabled = true;
       } else {
         settings.navigatorEnabled = false;
@@ -135,7 +99,7 @@ export class SettingsDialogue extends BaseSettingsDialogue {
     this.$clickToZoomEnabledCheckbox.change(() => {
       const settings: ISettings = {};
 
-      if (this.$clickToZoomEnabledCheckbox.is(":checked")) {
+      if (this.$clickToZoomEnabledCheckbox.is(':checked')) {
         settings.clickToZoomEnabled = true;
       } else {
         settings.clickToZoomEnabled = false;
@@ -147,7 +111,7 @@ export class SettingsDialogue extends BaseSettingsDialogue {
     this.$pagingEnabledCheckbox.change(() => {
       const settings: ISettings = {};
 
-      if (this.$pagingEnabledCheckbox.is(":checked")) {
+      if (this.$pagingEnabledCheckbox.is(':checked')) {
         settings.pagingEnabled = true;
       } else {
         settings.pagingEnabled = false;
@@ -159,7 +123,7 @@ export class SettingsDialogue extends BaseSettingsDialogue {
     this.$preserveViewportCheckbox.change(() => {
       const settings: ISettings = {};
 
-      if (this.$preserveViewportCheckbox.is(":checked")) {
+      if (this.$preserveViewportCheckbox.is(':checked')) {
         settings.preserveViewport = true;
       } else {
         settings.preserveViewport = false;
@@ -175,38 +139,38 @@ export class SettingsDialogue extends BaseSettingsDialogue {
     const settings: ISettings = this.getSettings();
 
     if (settings.navigatorEnabled) {
-      this.$navigatorEnabledCheckbox.prop("checked", true);
+      this.$navigatorEnabledCheckbox.prop('checked', true);
     } else {
-      this.$navigatorEnabledCheckbox.removeAttr("checked");
+      this.$navigatorEnabledCheckbox.removeAttr('checked');
     }
 
     if (settings.clickToZoomEnabled) {
-      this.$clickToZoomEnabledCheckbox.prop("checked", true);
+      this.$clickToZoomEnabledCheckbox.prop('checked', true);
     } else {
-      this.$clickToZoomEnabledCheckbox.removeAttr("checked");
+      this.$clickToZoomEnabledCheckbox.removeAttr('checked');
     }
 
     if (!this.extension.helper.isPagingAvailable()) {
       this.$pagingEnabled.hide();
     } else {
       if (settings.pagingEnabled) {
-        this.$pagingEnabledCheckbox.prop("checked", true);
+        this.$pagingEnabledCheckbox.prop('checked', true);
       } else {
-        this.$pagingEnabledCheckbox.removeAttr("checked");
+        this.$pagingEnabledCheckbox.removeAttr('checked');
       }
     }
 
     if (settings.preserveViewport) {
-      this.$preserveViewportCheckbox.prop("checked", true);
+      this.$preserveViewportCheckbox.prop('checked', true);
     } else {
-      this.$preserveViewportCheckbox.removeAttr("checked");
+      this.$preserveViewportCheckbox.removeAttr('checked');
     }
 
     if (this.$truncateThumbnailLabelsCheckbox) {
       if (settings.truncateThumbnailLabels) {
-        this.$truncateThumbnailLabelsCheckbox.prop("checked", true);
+        this.$truncateThumbnailLabelsCheckbox.prop('checked', true);
       } else {
-        this.$truncateThumbnailLabelsCheckbox.prop("checked", false);
+        this.$truncateThumbnailLabelsCheckbox.prop('checked', false);
       }
     }
   }

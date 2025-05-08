@@ -1,59 +1,39 @@
-import { IIIFEvents } from "../../IIIFEvents";
-import { BaseExtension } from "../../modules/uv-shared-module/BaseExtension";
-import { Bookmark } from "../../modules/uv-shared-module/Bookmark";
-import { XYWHFragment } from "../../modules/uv-shared-module/XYWHFragment";
-import { ContentLeftPanel } from "../../modules/uv-contentleftpanel-module/ContentLeftPanel";
-import { CroppedImageDimensions } from "./CroppedImageDimensions";
-import DownloadDialogue from "./DownloadDialogue";
-import { OpenSeadragonExtensionEvents } from "./Events";
-import { ExternalContentDialogue } from "../../modules/uv-dialogues-module/ExternalContentDialogue";
-import { FooterPanel as MobileFooterPanel } from "../../modules/uv-osdmobilefooterpanel-module/MobileFooter";
-import { FooterPanel } from "../../modules/uv-searchfooterpanel-module/FooterPanel";
-import { HelpDialogue } from "../../modules/uv-dialogues-module/HelpDialogue";
-import { IOpenSeadragonExtensionData } from "./IOpenSeadragonExtensionData";
-import { Mode } from "./Mode";
-import { MoreInfoRightPanel } from "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel";
-import { MultiSelectDialogue } from "../../modules/uv-multiselectdialogue-module/MultiSelectDialogue";
-import { MultiSelectionArgs } from "./MultiSelectionArgs";
-import { PagingHeaderPanel } from "../../modules/uv-pagingheaderpanel-module/PagingHeaderPanel";
-import { Point } from "../../modules/uv-shared-module/Point";
-import { OpenSeadragonCenterPanel } from "../../modules/uv-openseadragoncenterpanel-module/OpenSeadragonCenterPanel";
-import { SettingsDialogue } from "./SettingsDialogue";
-import { ShareDialogue } from "./ShareDialogue";
-import { Bools, Maths, Strings } from "@edsilv/utils";
-import {
-  IIIFResourceType,
-  ExternalResourceType,
-  ServiceProfile,
-  ViewingHint,
-  ViewingDirection,
-} from "@iiif/vocabulary/dist-commonjs/";
-import { AnnotationGroup, AnnotationRect } from "@iiif/manifold";
-import {
-  Annotation,
-  AnnotationBody,
-  Canvas,
-  Thumb,
-  TreeNode,
-  ManifestType,
-  Resource,
-  Range,
-  LanguageMap,
-  Service,
-  Size,
-  Utils,
-  Manifest,
-} from "manifesto.js";
-import "./theme/theme.less";
-import { AnnotationResults } from "../../modules/uv-shared-module/AnnotationResults";
-import { Events } from "../../../../Events";
-import { createRoot, Root } from "react-dom/client";
-import { createElement } from "react";
-import { createStore, OpenSeadragonExtensionState } from "./Store";
-import { merge } from "../../../../Utils";
-import defaultConfig from "./config/config.json";
-import { Config } from "./config/Config";
-import { AdjustImageDialogue } from "../../modules/uv-dialogues-module/AdjustImageDialogue";
+import { IIIFEvents } from '../../IIIFEvents';
+import { BaseExtension } from '../../modules/uv-shared-module/BaseExtension';
+import { Bookmark } from '../../modules/uv-shared-module/Bookmark';
+import { XYWHFragment } from '../../modules/uv-shared-module/XYWHFragment';
+import { ContentLeftPanel } from '../../modules/uv-contentleftpanel-module/ContentLeftPanel';
+import { CroppedImageDimensions } from './CroppedImageDimensions';
+import DownloadDialogue from './DownloadDialogue';
+import { OpenSeadragonExtensionEvents } from './Events';
+import { ExternalContentDialogue } from '../../modules/uv-dialogues-module/ExternalContentDialogue';
+import { FooterPanel as MobileFooterPanel } from '../../modules/uv-osdmobilefooterpanel-module/MobileFooter';
+import { FooterPanel } from '../../modules/uv-searchfooterpanel-module/FooterPanel';
+import { HelpDialogue } from '../../modules/uv-dialogues-module/HelpDialogue';
+import { IOpenSeadragonExtensionData } from './IOpenSeadragonExtensionData';
+import { Mode } from './Mode';
+import { MoreInfoRightPanel } from '../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel';
+import { MultiSelectDialogue } from '../../modules/uv-multiselectdialogue-module/MultiSelectDialogue';
+import { MultiSelectionArgs } from './MultiSelectionArgs';
+import { PagingHeaderPanel } from '../../modules/uv-pagingheaderpanel-module/PagingHeaderPanel';
+import { Point } from '../../modules/uv-shared-module/Point';
+import { OpenSeadragonCenterPanel } from '../../modules/uv-openseadragoncenterpanel-module/OpenSeadragonCenterPanel';
+import { SettingsDialogue } from './SettingsDialogue';
+import { ShareDialogue } from './ShareDialogue';
+import { Bools, Maths, Strings } from '@edsilv/utils';
+import { IIIFResourceType, ExternalResourceType, ServiceProfile, ViewingHint, ViewingDirection } from '@iiif/vocabulary/dist-commonjs/';
+import { AnnotationGroup, AnnotationRect } from '@iiif/manifold';
+import { Annotation, AnnotationBody, Canvas, Thumb, TreeNode, ManifestType, Resource, Range, LanguageMap, Service, Size, Utils, Manifest } from 'manifesto.js';
+import './theme/theme.less';
+import { AnnotationResults } from '../../modules/uv-shared-module/AnnotationResults';
+import { Events } from '../../../../Events';
+import { createRoot, Root } from 'react-dom/client';
+import { createElement } from 'react';
+import { createStore, OpenSeadragonExtensionState } from './Store';
+import { merge } from '../../../../Utils';
+import defaultConfig from './config/config.json';
+import { Config } from './config/Config';
+import { AdjustImageDialogue } from '../../modules/uv-dialogues-module/AdjustImageDialogue';
 
 export default class OpenSeadragonExtension extends BaseExtension<Config> {
   $downloadDialogue: JQuery;
@@ -104,14 +84,11 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
       }
     });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.CANVAS_INDEX_CHANGE,
-      (canvasIndex: number) => {
-        this.previousAnnotationRect = null;
-        this.currentAnnotationRect = null;
-        this.changeCanvas(canvasIndex);
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.CANVAS_INDEX_CHANGE, (canvasIndex: number) => {
+      this.previousAnnotationRect = null;
+      this.currentAnnotationRect = null;
+      this.changeCanvas(canvasIndex);
+    });
 
     this.extensionHost.subscribe(IIIFEvents.CLEAR_ANNOTATIONS, () => {
       this.clearAnnotations();
@@ -126,18 +103,12 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
     });
 
     this.extensionHost.subscribe(IIIFEvents.END, () => {
-      this.extensionHost.publish(
-        IIIFEvents.CANVAS_INDEX_CHANGE,
-        this.helper.getLastPageIndex()
-      );
+      this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, this.helper.getLastPageIndex());
     });
 
     this.extensionHost.subscribe(IIIFEvents.FIRST, () => {
       this.fire(IIIFEvents.FIRST);
-      this.extensionHost.publish(
-        IIIFEvents.CANVAS_INDEX_CHANGE,
-        this.helper.getFirstPageIndex()
-      );
+      this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, this.helper.getFirstPageIndex());
     });
 
     this.extensionHost.subscribe(IIIFEvents.GALLERY_DECREASE_SIZE, () => {
@@ -153,117 +124,77 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
     });
 
     this.extensionHost.subscribe(IIIFEvents.HOME, () => {
-      this.extensionHost.publish(
-        IIIFEvents.CANVAS_INDEX_CHANGE,
-        this.helper.getFirstPageIndex()
-      );
+      this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, this.helper.getFirstPageIndex());
     });
 
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.IMAGE_SEARCH,
-      (index: number) => {
-        this.fire(OpenSeadragonExtensionEvents.IMAGE_SEARCH, index);
-        this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, index);
-      }
-    );
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.IMAGE_SEARCH, (index: number) => {
+      this.fire(OpenSeadragonExtensionEvents.IMAGE_SEARCH, index);
+      this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, index);
+    });
 
     this.extensionHost.subscribe(IIIFEvents.LAST, () => {
       this.fire(IIIFEvents.LAST);
-      this.extensionHost.publish(
-        IIIFEvents.CANVAS_INDEX_CHANGE,
-        this.helper.getLastPageIndex()
-      );
+      this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, this.helper.getLastPageIndex());
     });
 
     this.extensionHost.subscribe(IIIFEvents.LEFT_ARROW, () => {
       if (this.useArrowKeysToNavigate()) {
-        this.extensionHost.publish(
-          IIIFEvents.CANVAS_INDEX_CHANGE,
-          this.getPrevPageIndex()
-        );
+        this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, this.getPrevPageIndex());
       } else {
         this.centerPanel.setFocus();
       }
     });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.LEFTPANEL_COLLAPSE_FULL_START,
-      () => {
-        if (this.isDesktopMetric()) {
-          this.shell.$rightPanel.show();
-        }
+    this.extensionHost.subscribe(IIIFEvents.LEFTPANEL_COLLAPSE_FULL_START, () => {
+      if (this.isDesktopMetric()) {
+        this.shell.$rightPanel.show();
       }
-    );
+    });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.LEFTPANEL_COLLAPSE_FULL_FINISH,
-      () => {
-        this.shell.$centerPanel.show();
-        this.resize();
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, () => {
+      this.shell.$centerPanel.show();
+      this.resize();
+    });
 
     this.extensionHost.subscribe(IIIFEvents.MINUS, () => {
       this.centerPanel.setFocus();
     });
 
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.MODE_CHANGE,
-      (mode: string) => {
-        this.fire(OpenSeadragonExtensionEvents.MODE_CHANGE, mode);
-        this.mode = new Mode(mode);
-        const settings: ISettings = this.getSettings();
-        this.extensionHost.publish(IIIFEvents.SETTINGS_CHANGE, settings);
-      }
-    );
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.MODE_CHANGE, (mode: string) => {
+      this.fire(OpenSeadragonExtensionEvents.MODE_CHANGE, mode);
+      this.mode = new Mode(mode);
+      const settings: ISettings = this.getSettings();
+      this.extensionHost.publish(IIIFEvents.SETTINGS_CHANGE, settings);
+    });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.MULTISELECTION_MADE,
-      (ids: string[]) => {
-        const args: MultiSelectionArgs = new MultiSelectionArgs();
-        args.manifestUri = this.helper.manifestUri;
-        args.allCanvases = ids.length === this.helper.getCanvases().length;
-        args.canvases = ids;
-        args.format = this.data.config!.options.multiSelectionMimeType;
-        args.sequence = this.helper.getCurrentSequence().id;
-        this.fire(IIIFEvents.MULTISELECTION_MADE, args);
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.MULTISELECTION_MADE, (ids: string[]) => {
+      const args: MultiSelectionArgs = new MultiSelectionArgs();
+      args.manifestUri = this.helper.manifestUri;
+      args.allCanvases = ids.length === this.helper.getCanvases().length;
+      args.canvases = ids;
+      args.format = this.data.config!.options.multiSelectionMimeType;
+      args.sequence = this.helper.getCurrentSequence().id;
+      this.fire(IIIFEvents.MULTISELECTION_MADE, args);
+    });
 
     this.extensionHost.subscribe(IIIFEvents.NEXT, () => {
       this.fire(IIIFEvents.NEXT);
-      this.extensionHost.publish(
-        IIIFEvents.CANVAS_INDEX_CHANGE,
-        this.getNextPageIndex()
-      );
+      this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, this.getNextPageIndex());
     });
 
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.NEXT_SEARCH_RESULT,
-      () => {
-        this.fire(OpenSeadragonExtensionEvents.NEXT_SEARCH_RESULT);
-      }
-    );
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.NEXT_SEARCH_RESULT, () => {
+      this.fire(OpenSeadragonExtensionEvents.NEXT_SEARCH_RESULT);
+    });
 
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE,
-      () => {
-        this.fire(
-          OpenSeadragonExtensionEvents.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE
-        );
-        this.nextSearchResult();
-      }
-    );
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE, () => {
+      this.fire(OpenSeadragonExtensionEvents.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE);
+      this.nextSearchResult();
+    });
 
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE,
-      () => {
-        this.fire(
-          OpenSeadragonExtensionEvents.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE
-        );
-        this.prevSearchResult();
-      }
-    );
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE, () => {
+      this.fire(OpenSeadragonExtensionEvents.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE);
+      this.prevSearchResult();
+    });
 
     this.extensionHost.subscribe(IIIFEvents.OPEN_THUMBS_VIEW, () => {
       this.fire(IIIFEvents.OPEN_THUMBS_VIEW);
@@ -274,33 +205,21 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
     });
 
     this.extensionHost.subscribe(IIIFEvents.PAGE_DOWN, () => {
-      this.extensionHost.publish(
-        IIIFEvents.CANVAS_INDEX_CHANGE,
-        this.getNextPageIndex()
-      );
+      this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, this.getNextPageIndex());
     });
 
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.PAGE_SEARCH,
-      (value: string) => {
-        this.fire(OpenSeadragonExtensionEvents.PAGE_SEARCH, value);
-        this.viewLabel(value);
-      }
-    );
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.PAGE_SEARCH, (value: string) => {
+      this.fire(OpenSeadragonExtensionEvents.PAGE_SEARCH, value);
+      this.viewLabel(value);
+    });
 
     this.extensionHost.subscribe(IIIFEvents.PAGE_UP, () => {
-      this.extensionHost.publish(
-        IIIFEvents.CANVAS_INDEX_CHANGE,
-        this.getPrevPageIndex()
-      );
+      this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, this.getPrevPageIndex());
     });
 
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.PAGING_TOGGLED,
-      (obj: any) => {
-        this.fire(OpenSeadragonExtensionEvents.PAGING_TOGGLED, obj);
-      }
-    );
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.PAGING_TOGGLED, (obj: any) => {
+      this.fire(OpenSeadragonExtensionEvents.PAGING_TOGGLED, obj);
+    });
 
     this.extensionHost.subscribe(IIIFEvents.PLUS, () => {
       this.centerPanel.setFocus();
@@ -308,18 +227,12 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
 
     this.extensionHost.subscribe(IIIFEvents.PREV, () => {
       this.fire(IIIFEvents.PREV);
-      this.extensionHost.publish(
-        IIIFEvents.CANVAS_INDEX_CHANGE,
-        this.getPrevPageIndex()
-      );
+      this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, this.getPrevPageIndex());
     });
 
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.PREV_SEARCH_RESULT,
-      () => {
-        this.fire(OpenSeadragonExtensionEvents.PREV_SEARCH_RESULT);
-      }
-    );
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.PREV_SEARCH_RESULT, () => {
+      this.fire(OpenSeadragonExtensionEvents.PREV_SEARCH_RESULT);
+    });
 
     this.extensionHost.subscribe(OpenSeadragonExtensionEvents.PRINT, () => {
       this.print();
@@ -331,122 +244,77 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
 
     this.extensionHost.subscribe(IIIFEvents.RIGHT_ARROW, () => {
       if (this.useArrowKeysToNavigate()) {
-        this.extensionHost.publish(
-          IIIFEvents.CANVAS_INDEX_CHANGE,
-          this.getNextPageIndex()
-        );
+        this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, this.getNextPageIndex());
       } else {
         this.centerPanel.setFocus();
       }
     });
 
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.OPENSEADRAGON_ANIMATION,
-      () => {
-        this.fire(OpenSeadragonExtensionEvents.OPENSEADRAGON_ANIMATION);
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.OPENSEADRAGON_ANIMATION, () => {
+      this.fire(OpenSeadragonExtensionEvents.OPENSEADRAGON_ANIMATION);
+    });
+
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.OPENSEADRAGON_ROTATION, (degrees: number) => {
+      this.fire(OpenSeadragonExtensionEvents.OPENSEADRAGON_ROTATION, degrees);
+    });
+
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.OPENSEADRAGON_ANIMATION_FINISH, (viewer: any) => {
+      const xywh: XYWHFragment | null = this.centerPanel.getViewportBounds();
+      const canvas: Canvas = this.helper.getCurrentCanvas();
+
+      if (this.centerPanel && xywh && canvas) {
+        this.extensionHost.publish(OpenSeadragonExtensionEvents.XYWH_CHANGE, xywh.toString());
+        this.data.target = canvas.id + '#xywh=' + xywh.toString();
+        this.fire(IIIFEvents.TARGET_CHANGE, this.data.target);
       }
-    );
 
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.OPENSEADRAGON_ROTATION,
-      (degrees: number) => {
-        this.fire(OpenSeadragonExtensionEvents.OPENSEADRAGON_ROTATION, degrees);
+      this.fire(OpenSeadragonExtensionEvents.CURRENT_VIEW_URI, {
+        cropUri: this.getCroppedImageUri(canvas, this.getViewer()),
+        fullUri: this.getConfinedImageUri(canvas, canvas.getWidth()),
+      });
+    });
+
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.OPENSEADRAGON_ANIMATION_START, () => {
+      this.fire(OpenSeadragonExtensionEvents.OPENSEADRAGON_ANIMATION_START);
+    });
+
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.OPENSEADRAGON_OPEN, () => {
+      if (!this.useArrowKeysToNavigate()) {
+        this.centerPanel.setFocus();
       }
-    );
+      this.fire(OpenSeadragonExtensionEvents.OPENSEADRAGON_OPEN);
+    });
 
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.OPENSEADRAGON_ANIMATION_FINISH,
-      (viewer: any) => {
-        const xywh: XYWHFragment | null = this.centerPanel.getViewportBounds();
-        const canvas: Canvas = this.helper.getCurrentCanvas();
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.OPENSEADRAGON_RESIZE, () => {
+      this.fire(OpenSeadragonExtensionEvents.OPENSEADRAGON_RESIZE);
+    });
 
-        if (this.centerPanel && xywh && canvas) {
-          this.extensionHost.publish(
-            OpenSeadragonExtensionEvents.XYWH_CHANGE,
-            xywh.toString()
-          );
-          this.data.target = canvas.id + "#xywh=" + xywh.toString();
-          this.fire(IIIFEvents.TARGET_CHANGE, this.data.target);
-        }
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.OPENSEADRAGON_ROTATION, (rotation: number) => {
+      (<IOpenSeadragonExtensionData>this.data).rotation = rotation;
+      this.fire(OpenSeadragonExtensionEvents.OPENSEADRAGON_ROTATION, (<IOpenSeadragonExtensionData>this.data).rotation);
+      this.currentRotation = rotation;
+    });
 
-        this.fire(OpenSeadragonExtensionEvents.CURRENT_VIEW_URI, {
-          cropUri: this.getCroppedImageUri(canvas, this.getViewer()),
-          fullUri: this.getConfinedImageUri(canvas, canvas.getWidth()),
-        });
-      }
-    );
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.SEARCH, (terms: string) => {
+      this.fire(OpenSeadragonExtensionEvents.SEARCH, terms);
+      this.search(terms);
+    });
 
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.OPENSEADRAGON_ANIMATION_START,
-      () => {
-        this.fire(OpenSeadragonExtensionEvents.OPENSEADRAGON_ANIMATION_START);
-      }
-    );
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.SEARCH_PREVIEW_FINISH, () => {
+      this.fire(OpenSeadragonExtensionEvents.SEARCH_PREVIEW_FINISH);
+    });
 
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.OPENSEADRAGON_OPEN,
-      () => {
-        if (!this.useArrowKeysToNavigate()) {
-          this.centerPanel.setFocus();
-        }
-        this.fire(OpenSeadragonExtensionEvents.OPENSEADRAGON_OPEN);
-      }
-    );
-
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.OPENSEADRAGON_RESIZE,
-      () => {
-        this.fire(OpenSeadragonExtensionEvents.OPENSEADRAGON_RESIZE);
-      }
-    );
-
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.OPENSEADRAGON_ROTATION,
-      (rotation: number) => {
-        (<IOpenSeadragonExtensionData>this.data).rotation = rotation;
-        this.fire(
-          OpenSeadragonExtensionEvents.OPENSEADRAGON_ROTATION,
-          (<IOpenSeadragonExtensionData>this.data).rotation
-        );
-        this.currentRotation = rotation;
-      }
-    );
-
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.SEARCH,
-      (terms: string) => {
-        this.fire(OpenSeadragonExtensionEvents.SEARCH, terms);
-        this.search(terms);
-      }
-    );
-
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.SEARCH_PREVIEW_FINISH,
-      () => {
-        this.fire(OpenSeadragonExtensionEvents.SEARCH_PREVIEW_FINISH);
-      }
-    );
-
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.SEARCH_PREVIEW_START,
-      () => {
-        this.fire(OpenSeadragonExtensionEvents.SEARCH_PREVIEW_START);
-      }
-    );
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.SEARCH_PREVIEW_START, () => {
+      this.fire(OpenSeadragonExtensionEvents.SEARCH_PREVIEW_START);
+    });
 
     this.extensionHost.subscribe(IIIFEvents.ANNOTATIONS, (obj: any) => {
       this.fire(IIIFEvents.ANNOTATIONS, obj);
     });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.ANNOTATION_CANVAS_CHANGE,
-      (rects: AnnotationRect[]) => {
-        this.extensionHost.publish(
-          IIIFEvents.CANVAS_INDEX_CHANGE,
-          rects[0].canvasIndex
-        );
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.ANNOTATION_CANVAS_CHANGE, (rects: AnnotationRect[]) => {
+      this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, rects[0].canvasIndex);
+    });
 
     this.extensionHost.subscribe(IIIFEvents.ANNOTATIONS_EMPTY, () => {
       this.fire(IIIFEvents.ANNOTATIONS_EMPTY);
@@ -456,13 +324,10 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
       this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, thumb.index);
     });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.TREE_NODE_SELECTED,
-      (node: TreeNode) => {
-        this.fire(IIIFEvents.TREE_NODE_SELECTED, node.data.path);
-        this.treeNodeSelected(node);
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.TREE_NODE_SELECTED, (node: TreeNode) => {
+      this.fire(IIIFEvents.TREE_NODE_SELECTED, node.data.path);
+      this.treeNodeSelected(node);
+    });
 
     this.extensionHost.subscribe(IIIFEvents.UP_ARROW, () => {
       if (!this.useArrowKeysToNavigate()) {
@@ -471,21 +336,15 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
     });
 
     this.extensionHost.subscribe(IIIFEvents.UPDATE_SETTINGS, () => {
-      this.extensionHost.publish(
-        IIIFEvents.CANVAS_INDEX_CHANGE,
-        this.helper.canvasIndex
-      );
+      this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, this.helper.canvasIndex);
     });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.SHOW_DOWNLOAD_DIALOGUE,
-      (triggerButton) => {
-        const state = this.store.getState();
-        if (state !== null) {
-          state.openDownloadDialogue(triggerButton[0]);
-        }
+    this.extensionHost.subscribe(IIIFEvents.SHOW_DOWNLOAD_DIALOGUE, (triggerButton) => {
+      const state = this.store.getState();
+      if (state !== null) {
+        state.openDownloadDialogue(triggerButton[0]);
       }
-    );
+    });
 
     this.extensionHost.subscribe(IIIFEvents.HIDE_DOWNLOAD_DIALOGUE, () => {
       this.closeActiveDialogue();
@@ -530,59 +389,38 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
 
     if (this.isFooterPanelEnabled()) {
       this.footerPanel = new FooterPanel(this.shell.$footerPanel);
-      this.mobileFooterPanel = new MobileFooterPanel(
-        this.shell.$mobileFooterPanel
-      );
+      this.mobileFooterPanel = new MobileFooterPanel(this.shell.$mobileFooterPanel);
     } else {
       this.shell.$footerPanel.hide();
     }
 
-    this.$helpDialogue = $(
-      '<div class="overlay help" aria-hidden="true"></div>'
-    );
+    this.$helpDialogue = $('<div class="overlay help" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$helpDialogue);
     this.helpDialogue = new HelpDialogue(this.$helpDialogue);
 
-    this.$multiSelectDialogue = $(
-      '<div class="overlay multiSelect" aria-hidden="true"></div>'
-    );
+    this.$multiSelectDialogue = $('<div class="overlay multiSelect" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$multiSelectDialogue);
-    this.multiSelectDialogue = new MultiSelectDialogue(
-      this.$multiSelectDialogue
-    );
+    this.multiSelectDialogue = new MultiSelectDialogue(this.$multiSelectDialogue);
 
-    this.$shareDialogue = $(
-      '<div class="overlay share" aria-hidden="true"></div>'
-    );
+    this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$shareDialogue);
     this.shareDialogue = new ShareDialogue(this.$shareDialogue);
 
-    this.$adjustImageDialogue = $(
-      '<div class="overlay adjustImage" aria-hidden="true"></div>'
-    );
+    this.$adjustImageDialogue = $('<div class="overlay adjustImage" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$adjustImageDialogue);
-    this.adjustImageDialogue = new AdjustImageDialogue(
-      this.$adjustImageDialogue,
-      this.shell
-    );
+    this.adjustImageDialogue = new AdjustImageDialogue(this.$adjustImageDialogue, this.shell);
 
-    this.$downloadDialogue = $("<div></div>");
+    this.$downloadDialogue = $('<div></div>');
     this.shell.$overlays.append(this.$downloadDialogue);
     this.downloadDialogueRoot = createRoot(this.$downloadDialogue[0]);
 
-    this.$settingsDialogue = $(
-      '<div class="overlay settings" aria-hidden="true"></div>'
-    );
+    this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$settingsDialogue);
     this.settingsDialogue = new SettingsDialogue(this.$settingsDialogue);
 
-    this.$externalContentDialogue = $(
-      '<div class="overlay externalContent" aria-hidden="true"></div>'
-    );
+    this.$externalContentDialogue = $('<div class="overlay externalContent" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$externalContentDialogue);
-    this.externalContentDialogue = new ExternalContentDialogue(
-      this.$externalContentDialogue
-    );
+    this.externalContentDialogue = new ExternalContentDialogue(this.$externalContentDialogue);
 
     if (this.isHeaderPanelEnabled()) {
       this.headerPanel.init();
@@ -614,8 +452,7 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
     // todo: can this be added to store?
     const paged = this.isPagingSettingEnabled();
 
-    const { downloadDialogueOpen, dialogueTriggerButton } =
-      this.store.getState() as OpenSeadragonExtensionState;
+    const { downloadDialogueOpen, dialogueTriggerButton } = this.store.getState() as OpenSeadragonExtensionState;
 
     // todo: can the overlay visibility be added to the store?
     if (downloadDialogueOpen) {
@@ -626,24 +463,15 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
 
     const pagedIndices: number[] = this.getPagedIndices();
 
-    const canvases: Canvas[] = this.helper
-      .getCanvases()
-      .filter((_canvas: Canvas, index: number) => {
-        return pagedIndices.includes(index);
-      });
+    const canvases: Canvas[] = this.helper.getCanvases().filter((_canvas: Canvas, index: number) => {
+      return pagedIndices.includes(index);
+    });
 
-    const config = merge(
-      this.data.config!.modules.dialogue,
-      this.data.config!.modules.downloadDialogue
-    );
+    const config = merge(this.data.config!.modules.dialogue, this.data.config!.modules.downloadDialogue);
 
-    const downloadService: Service | null = this.helper.manifest!.getService(
-      ServiceProfile.DOWNLOAD_EXTENSIONS
-    );
+    const downloadService: Service | null = this.helper.manifest!.getService(ServiceProfile.DOWNLOAD_EXTENSIONS);
 
-    const selectionEnabled =
-      config.options.selectionEnabled &&
-      downloadService?.__jsonld.selectionEnabled;
+    const selectionEnabled = config.options.selectionEnabled && downloadService?.__jsonld.selectionEnabled;
 
     this.downloadDialogueRoot.render(
       createElement(DownloadDialogue, {
@@ -651,14 +479,12 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
         confinedImageSize: config.options.confinedImageSize,
         content: config.content,
         downloadCurrentViewEnabled: config.options.downloadCurrentViewEnabled,
-        downloadWholeImageHighResEnabled:
-          config.options.downloadWholeImageHighResEnabled,
-        downloadWholeImageLowResEnabled:
-          config.options.downloadWholeImageLowResEnabled,
+        downloadWholeImageHighResEnabled: config.options.downloadWholeImageHighResEnabled,
+        downloadWholeImageLowResEnabled: config.options.downloadWholeImageLowResEnabled,
         locale: this.getLocale(),
         manifest: this.helper.manifest as Manifest,
         maxImageWidth: config.options.maxImageWidth,
-        mediaDownloadEnabled: this.helper.isUIEnabled("mediaDownload"),
+        mediaDownloadEnabled: this.helper.isUIEnabled('mediaDownload'),
         open: downloadDialogueOpen,
         paged: paged,
         parent: this.shell.$overlays[0] as HTMLElement,
@@ -673,16 +499,10 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
           return this.getCroppedImageDimensions(canvas, this.getViewer());
         },
         getConfinedImageDimensions: (canvas: Canvas) => {
-          return this.getConfinedImageDimensions(
-            canvas,
-            config.options.confinedImageSize
-          );
+          return this.getConfinedImageDimensions(canvas, config.options.confinedImageSize);
         },
         getConfinedImageUri: (canvas: Canvas) => {
-          return this.getConfinedImageUri(
-            canvas,
-            config.options.confinedImageSize
-          );
+          return this.getConfinedImageUri(canvas, config.options.confinedImageSize);
         },
         onClose: () => {
           this.closeActiveDialogue();
@@ -699,7 +519,7 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
           this.closeActiveDialogue();
           this.extensionHost.publish(IIIFEvents.SHOW_TERMS_OF_USE);
         },
-      })
+      }),
     );
   }
 
@@ -713,7 +533,7 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
   checkForTarget(): void {
     if (this.data.target) {
       // Split target into canvas id and selector
-      const components: string[] = this.data.target.split("#");
+      const components: string[] = this.data.target.split('#');
       const canvasId: string = components[0];
 
       // get canvas index of canvas id and trigger CANVAS_INDEX_CHANGE (if different)
@@ -725,10 +545,7 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
 
       // trigger SET_TARGET which calls fitToBounds(xywh) in OpenSeadragonCenterPanel
       const selector: string = components[1];
-      this.extensionHost.publish(
-        IIIFEvents.SET_TARGET,
-        XYWHFragment.fromString(selector)
-      );
+      this.extensionHost.publish(IIIFEvents.SET_TARGET, XYWHFragment.fromString(selector));
     }
   }
 
@@ -741,14 +558,10 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
 
       if (Array.isArray(annotations)) {
         // using the Web Annotation Data Model
-        groupedAnnotations = this.groupWebAnnotationsByTarget(
-          this.data.annotations
-        );
+        groupedAnnotations = this.groupWebAnnotationsByTarget(this.data.annotations);
       } else if (annotations.resources.length) {
         // using Open Annotations
-        groupedAnnotations = this.groupOpenAnnotationsByTarget(
-          this.data.annotations
-        );
+        groupedAnnotations = this.groupOpenAnnotationsByTarget(this.data.annotations);
 
         // clear annotations as they're from a search
         this.extensionHost.publish(IIIFEvents.CLEAR_ANNOTATIONS);
@@ -762,11 +575,9 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
     this.annotations = annotations;
 
     // sort the annotations by canvasIndex
-    this.annotations = annotations.sort(
-      (a: AnnotationGroup, b: AnnotationGroup) => {
-        return a.canvasIndex - b.canvasIndex;
-      }
-    );
+    this.annotations = annotations.sort((a: AnnotationGroup, b: AnnotationGroup) => {
+      return a.canvasIndex - b.canvasIndex;
+    });
 
     const annotationResults: AnnotationResults = new AnnotationResults();
     annotationResults.terms = terms;
@@ -784,14 +595,11 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
     for (let i = 0; i < annotations.length; i++) {
       const annotation = annotations[i];
       const canvasId: string = annotation.target.match(/(.*)#/)[1];
-      const canvasIndex: number | null =
-        this.helper.getCanvasIndexById(canvasId);
+      const canvasIndex: number | null = this.helper.getCanvasIndexById(canvasId);
       const annotationGroup: AnnotationGroup = new AnnotationGroup(canvasId);
       annotationGroup.canvasIndex = canvasIndex as number;
 
-      const match: AnnotationGroup = groupedAnnotations.filter(
-        (x) => x.canvasId === annotationGroup.canvasId
-      )[0];
+      const match: AnnotationGroup = groupedAnnotations.filter((x) => x.canvasId === annotationGroup.canvasId)[0];
 
       // if there's already an annotation for that target, add a rect to it, otherwise create a new AnnotationGroup
       if (match) {
@@ -812,14 +620,11 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
       const resource: any = annotations.resources[i];
       const canvasId: string = resource.on.match(/(.*)#/)[1];
       // console.log(canvasId)
-      const canvasIndex: number | null =
-        this.helper.getCanvasIndexById(canvasId);
+      const canvasIndex: number | null = this.helper.getCanvasIndexById(canvasId);
       const annotationGroup: AnnotationGroup = new AnnotationGroup(canvasId);
       annotationGroup.canvasIndex = canvasIndex as number;
 
-      const match: AnnotationGroup = groupedAnnotations.filter(
-        (x) => x.canvasId === annotationGroup.canvasId
-      )[0];
+      const match: AnnotationGroup = groupedAnnotations.filter((x) => x.canvasId === annotationGroup.canvasId)[0];
 
       // if there's already an annotation for that target, add a rect to it, otherwise create a new AnnotationGroup
       if (match) {
@@ -840,24 +645,17 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
 
   checkForSearchParam(): void {
     // if a highlight param is set, use it to search.
-    const highlight: string | undefined = (<IOpenSeadragonExtensionData>(
-      this.data
-    )).highlight;
+    const highlight: string | undefined = (<IOpenSeadragonExtensionData>this.data).highlight;
 
     if (highlight) {
-      highlight.replace(/\+/g, " ").replace(/"/g, "");
-      this.extensionHost.publish(
-        OpenSeadragonExtensionEvents.SEARCH,
-        highlight
-      );
+      highlight.replace(/\+/g, ' ').replace(/"/g, '');
+      this.extensionHost.publish(OpenSeadragonExtensionEvents.SEARCH, highlight);
     }
   }
 
   checkForRotationParam(): void {
     // if a rotation value is passed, set rotation
-    const rotation: number | undefined = (<IOpenSeadragonExtensionData>(
-      this.data
-    )).rotation;
+    const rotation: number | undefined = (<IOpenSeadragonExtensionData>this.data).rotation;
 
     if (rotation) {
       this.extensionHost.publish(IIIFEvents.SET_ROTATION, rotation);
@@ -935,9 +733,7 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
 
   viewLabel(label: string): void {
     if (!label) {
-      this.showMessage(
-        this.data.config!.modules.genericDialogue.content.emptyValue
-      );
+      this.showMessage(this.data.config!.modules.genericDialogue.content.emptyValue);
       this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE_FAILED);
       return;
     }
@@ -947,9 +743,7 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
     if (index != -1) {
       this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, index);
     } else {
-      this.showMessage(
-        this.data.config!.modules.genericDialogue.content.pageNotFound
-      );
+      this.showMessage(this.data.config!.modules.genericDialogue.content.pageNotFound);
       this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE_FAILED);
     }
   }
@@ -978,10 +772,7 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
     this.annotations = [];
 
     // reload current index as it may contain results.
-    this.extensionHost.publish(
-      IIIFEvents.CANVAS_INDEX_CHANGE,
-      this.helper.canvasIndex
-    );
+    this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, this.helper.canvasIndex);
   }
 
   prevSearchResult(): void {
@@ -994,10 +785,7 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
 
       if (result.canvasIndex <= this.getPrevPageIndex()) {
         foundResult = result;
-        this.extensionHost.publish(
-          IIIFEvents.CANVAS_INDEX_CHANGE,
-          foundResult.canvasIndex
-        );
+        this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, foundResult.canvasIndex);
         break;
       }
     }
@@ -1011,10 +799,7 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
       const result: AnnotationGroup = this.annotations[i];
 
       if (result && result.canvasIndex >= this.getNextPageIndex()) {
-        this.extensionHost.publish(
-          IIIFEvents.CANVAS_INDEX_CHANGE,
-          result.canvasIndex
-        );
+        this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, result.canvasIndex);
         break;
       }
     }
@@ -1029,9 +814,7 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
     bookmark.index = this.helper.canvasIndex;
     bookmark.label = <string>LanguageMap.getValue(canvas.getLabel());
     bookmark.path = <string>this.getCroppedImageUri(canvas, this.getViewer());
-    bookmark.thumb = canvas.getCanonicalImageUri(
-      this.data.config!.options.bookmarkThumbWidth
-    );
+    bookmark.thumb = canvas.getCanonicalImageUri(this.data.config!.options.bookmarkThumbWidth);
     bookmark.title = this.helper.getLabel();
     bookmark.trackingLabel = window.trackingLabel;
     bookmark.type = ExternalResourceType.IMAGE;
@@ -1049,10 +832,7 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
     this.fire(OpenSeadragonExtensionEvents.PRINT);
   }
 
-  getCroppedImageDimensions(
-    canvas: Canvas,
-    viewer: any
-  ): CroppedImageDimensions | null {
+  getCroppedImageDimensions(canvas: Canvas, viewer: any): CroppedImageDimensions | null {
     if (!viewer) return null;
     if (!viewer.viewport) return null;
 
@@ -1205,8 +985,7 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
     if (!viewer) return null;
     if (!viewer.viewport) return null;
 
-    const dimensions: CroppedImageDimensions | null =
-      this.getCroppedImageDimensions(canvas, viewer);
+    const dimensions: CroppedImageDimensions | null = this.getCroppedImageDimensions(canvas, viewer);
 
     if (!dimensions) {
       return null;
@@ -1222,17 +1001,10 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
       return null;
     }
 
-    const region: string =
-      dimensions.regionPos.x +
-      "," +
-      dimensions.regionPos.y +
-      "," +
-      dimensions.region.width +
-      "," +
-      dimensions.region.height;
-    const size: string = dimensions.size.width + "," + dimensions.size.height;
+    const region: string = dimensions.regionPos.x + ',' + dimensions.regionPos.y + ',' + dimensions.region.width + ',' + dimensions.region.height;
+    const size: string = dimensions.size.width + ',' + dimensions.size.height;
     const rotation: number = <number>this.getViewerRotation();
-    const quality: string = "default";
+    const quality: string = 'default';
     return `${baseUri}/${id}/${region}/${size}/${rotation}/${quality}.jpg`;
   }
 
@@ -1271,21 +1043,20 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
       return null;
     }
 
-    const region: string = "full";
+    const region: string = 'full';
     const dimensions: Size = this.getConfinedImageDimensions(canvas, width);
-    const size: string = dimensions.width + "," + dimensions.height;
+    const size: string = dimensions.width + ',' + dimensions.height;
     const rotation: number = <number>this.getViewerRotation();
-    const quality: string = "default";
+    const quality: string = 'default';
     return `${baseUri}/${id}/${region}/${size}/${rotation}/${quality}.jpg`;
   }
 
   getImageId(canvas: Canvas): string | null {
     if (canvas.externalResource) {
-      const id: string | undefined =
-        canvas.externalResource.data["@id"] || canvas.externalResource.data.id;
+      const id: string | undefined = canvas.externalResource.data['@id'] || canvas.externalResource.data.id;
 
       if (id) {
-        return id.substr(id.lastIndexOf("/") + 1);
+        return id.substr(id.lastIndexOf('/') + 1);
       }
     }
 
@@ -1295,8 +1066,8 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
   getImageBaseUri(canvas: Canvas): string {
     let uri = this.getInfoUri(canvas);
     // First trim off info.json, then trim off ID....
-    uri = uri.substr(0, uri.lastIndexOf("/"));
-    return uri.substr(0, uri.lastIndexOf("/"));
+    uri = uri.substr(0, uri.lastIndexOf('/'));
+    return uri.substr(0, uri.lastIndexOf('/'));
   }
 
   getInfoUri(canvas: Canvas): string {
@@ -1314,12 +1085,12 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
         const service: Service = services[i];
         let id = service.id;
 
-        if (!id.endsWith("/")) {
-          id += "/";
+        if (!id.endsWith('/')) {
+          id += '/';
         }
 
         if (Utils.isImageProfile(service.getProfile())) {
-          infoUri = id + "info.json";
+          infoUri = id + 'info.json';
         }
       }
     } else {
@@ -1336,15 +1107,12 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
           const service: Service = services[i];
           let id = service.id;
 
-          if (!id.endsWith("/")) {
-            id += "/";
+          if (!id.endsWith('/')) {
+            id += '/';
           }
 
-          if (
-            Utils.isImageProfile(service.getProfile()) ||
-            Utils.isImageServiceType(service.getIIIFResourceType())
-          ) {
-            infoUri = id + "info.json";
+          if (Utils.isImageProfile(service.getProfile()) || Utils.isImageServiceType(service.getIIIFResourceType())) {
+            infoUri = id + 'info.json';
           }
         }
       }
@@ -1352,21 +1120,15 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
 
     if (!infoUri) {
       // todo: use compiler flag (when available)
-      infoUri = "lib/imageunavailable.json";
+      infoUri = 'lib/imageunavailable.json';
     }
 
     return infoUri;
   }
 
-  getEmbedScript(
-    template: string,
-    width: number,
-    height: number,
-    zoom: string,
-    rotation: number
-  ): string {
-    const config: string = this.data.config?.uri ?? "";
-    const locales: string = this.getSerializedLocales() ?? "";
+  getEmbedScript(template: string, width: number, height: number, zoom: string, rotation: number): string {
+    const config: string = this.data.config?.uri ?? '';
+    const locales: string = this.getSerializedLocales() ?? '';
     const hashParams = new URLSearchParams({
       manifest: this.helper.manifestUri,
       c: this.helper.collectionIndex.toString(),
@@ -1404,16 +1166,13 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
   getAutoCompleteService(): Service | null {
     const service: Service | null = this.helper.getSearchService();
     if (!service) return null;
-    return (
-      service.getService(ServiceProfile.SEARCH_0_AUTO_COMPLETE) ||
-      service.getService(ServiceProfile.SEARCH_1_AUTO_COMPLETE)
-    );
+    return service.getService(ServiceProfile.SEARCH_0_AUTO_COMPLETE) || service.getService(ServiceProfile.SEARCH_1_AUTO_COMPLETE);
   }
 
   getAutoCompleteUri(): string | null {
     const service: Service | null = this.getAutoCompleteService();
     if (!service) return null;
-    return service.id + "?q={0}";
+    return service.id + '?q={0}';
   }
 
   getSearchServiceUri(): string | null {
@@ -1421,7 +1180,7 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
     if (!service) return null;
 
     let uri: string = service.id;
-    uri = uri + "?q={0}";
+    uri = uri + '?q={0}';
     return uri;
   }
 
@@ -1443,40 +1202,25 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
 
     searchUri = Strings.format(searchUri, encodeURIComponent(terms));
 
-    this.getSearchResults(
-      searchUri,
-      terms,
-      this.annotations,
-      (annotations: AnnotationGroup[]) => {
-        that.isAnnotating = false;
+    this.getSearchResults(searchUri, terms, this.annotations, (annotations: AnnotationGroup[]) => {
+      that.isAnnotating = false;
 
-        if (annotations.length) {
-          that.annotate(annotations, terms);
-        } else {
-          that.showMessage(
-            that.data.config!.modules.genericDialogue.content.noMatches,
-            () => {
-              this.extensionHost.publish(IIIFEvents.ANNOTATIONS_EMPTY);
-            }
-          );
-        }
+      if (annotations.length) {
+        that.annotate(annotations, terms);
+      } else {
+        that.showMessage(that.data.config!.modules.genericDialogue.content.noMatches, () => {
+          this.extensionHost.publish(IIIFEvents.ANNOTATIONS_EMPTY);
+        });
       }
-    );
+    });
   }
 
-  getSearchResults(
-    searchUri: string,
-    terms: string,
-    searchResults: AnnotationGroup[],
-    cb: (results: AnnotationGroup[]) => void
-  ): void {
+  getSearchResults(searchUri: string, terms: string, searchResults: AnnotationGroup[], cb: (results: AnnotationGroup[]) => void): void {
     fetch(searchUri)
       .then((response) => response.json())
       .then((results) => {
         if (results.resources && results.resources.length) {
-          searchResults = searchResults.concat(
-            this.groupOpenAnnotationsByTarget(results)
-          );
+          searchResults = searchResults.concat(this.groupOpenAnnotationsByTarget(results));
         }
 
         if (results.next) {
@@ -1590,10 +1334,7 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
         indices.push(canvasIndex);
       } else {
         // two-up
-        if (
-          canvasIndex === 0 ||
-          (canvasIndex === canvases.length && canvases.length % 2 === 0)
-        ) {
+        if (canvasIndex === 0 || (canvasIndex === canvases.length && canvases.length % 2 === 0)) {
           indices = [canvasIndex];
         } else if (canvasIndex % 2 === 0) {
           // the current canvas index is even
@@ -1602,10 +1343,7 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
           // only include prev canvas if it's not non-paged and the current canvas isn't non-paged
           const currentCanvas: Canvas | null = canvases[canvasIndex];
           const prevCanvas: Canvas | null = canvases[canvasIndex - 1];
-          if (
-            currentCanvas?.getViewingHint() !== ViewingHint.NON_PAGED &&
-            prevCanvas?.getViewingHint() !== ViewingHint.NON_PAGED
-          ) {
+          if (currentCanvas?.getViewingHint() !== ViewingHint.NON_PAGED && prevCanvas?.getViewingHint() !== ViewingHint.NON_PAGED) {
             if (prevCanvas) {
               indices = [canvasIndex - 1, canvasIndex];
             } else {
@@ -1621,10 +1359,7 @@ export default class OpenSeadragonExtension extends BaseExtension<Config> {
           // only include next canvas if it's not non-paged and the current canvas isn't non-paged
           const currentCanvas: Canvas | null = canvases[canvasIndex];
           const nextCanvas: Canvas | null = canvases[canvasIndex + 1];
-          if (
-            currentCanvas?.getViewingHint() !== ViewingHint.NON_PAGED &&
-            nextCanvas?.getViewingHint() !== ViewingHint.NON_PAGED
-          ) {
+          if (currentCanvas?.getViewingHint() !== ViewingHint.NON_PAGED && nextCanvas?.getViewingHint() !== ViewingHint.NON_PAGED) {
             if (nextCanvas) {
               indices = [canvasIndex, canvasIndex + 1];
             } else {

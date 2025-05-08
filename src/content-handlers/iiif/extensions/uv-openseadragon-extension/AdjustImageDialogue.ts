@@ -1,5 +1,5 @@
-import { AdjustImageDialogue as BaseAdjustImageDialogue } from "../../modules/uv-dialogues-module/AdjustImageDialogue";
-import { Shell } from "../../modules/uv-shared-module/Shell";
+import { AdjustImageDialogue as BaseAdjustImageDialogue } from '../../modules/uv-dialogues-module/AdjustImageDialogue';
+import { Shell } from '../../modules/uv-shared-module/Shell';
 
 export class AdjustImageDialogue extends BaseAdjustImageDialogue {
   constructor($element: JQuery, shell: Shell) {
@@ -7,7 +7,7 @@ export class AdjustImageDialogue extends BaseAdjustImageDialogue {
   }
 
   create(): void {
-    this.setConfig("shareDialogue");
+    this.setConfig('shareDialogue');
     super.create();
   }
 

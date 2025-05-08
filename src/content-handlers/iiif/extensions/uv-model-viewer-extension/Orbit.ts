@@ -19,8 +19,8 @@ export class Orbit {
   }
 
   static fromString(orbit: string): Orbit {
-    orbit = orbit.replace("orbit=", "");
-    const orbitArr: string[] = orbit.split(",");
+    orbit = orbit.replace('orbit=', '');
+    const orbitArr: string[] = orbit.split(',');
     return new Orbit(orbitArr[0], orbitArr[1], orbitArr[2]);
   }
 }

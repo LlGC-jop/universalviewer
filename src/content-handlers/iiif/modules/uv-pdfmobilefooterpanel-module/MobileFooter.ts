@@ -1,12 +1,10 @@
-const $ = require("jquery");
-import { Config } from "../../extensions/uv-pdf-extension/config/Config";
-import { PDFExtensionEvents } from "../../extensions/uv-pdf-extension/Events";
-import { FooterPanel as BaseFooterPanel } from "../uv-shared-module/FooterPanel";
-import { IPDFExtension } from "../../extensions/uv-pdf-extension/IPDFExtension";
+const $ = require('jquery');
+import { Config } from '../../extensions/uv-pdf-extension/config/Config';
+import { PDFExtensionEvents } from '../../extensions/uv-pdf-extension/Events';
+import { FooterPanel as BaseFooterPanel } from '../uv-shared-module/FooterPanel';
+import { IPDFExtension } from '../../extensions/uv-pdf-extension/IPDFExtension';
 
-export class FooterPanel extends BaseFooterPanel<
-  Config["modules"]["mobileFooterPanel"]
-> {
+export class FooterPanel extends BaseFooterPanel<Config['modules']['mobileFooterPanel']> {
   $fullScreenBtn: JQuery;
   $zoomInButton: JQuery;
   $zoomOutButton: JQuery;
@@ -16,7 +14,7 @@ export class FooterPanel extends BaseFooterPanel<
   }
 
   create(): void {
-    this.setConfig("mobileFooterPanel");
+    this.setConfig('mobileFooterPanel');
 
     super.create();
 
@@ -49,9 +47,6 @@ export class FooterPanel extends BaseFooterPanel<
   resize(): void {
     super.resize();
 
-    this.$options.css(
-      "left",
-      Math.floor(this.$element.width() / 2 - this.$options.width() / 2)
-    );
+    this.$options.css('left', Math.floor(this.$element.width() / 2 - this.$options.width() / 2));
   }
 }

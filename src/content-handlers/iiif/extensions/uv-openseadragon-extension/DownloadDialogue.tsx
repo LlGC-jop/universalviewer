@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
-import cx from "classnames";
-import { Files, Maths, Strings } from "@edsilv/utils";
+import React, { useEffect, useRef, useState } from 'react';
+import cx from 'classnames';
+import { Files, Maths, Strings } from '@edsilv/utils';
 import {
   Canvas,
   Size,
@@ -16,10 +16,10 @@ import {
   LanguageMap,
   Sequence,
   Manifest,
-} from "manifesto.js";
-import { DownloadOption } from "../../modules/uv-shared-module/DownloadOption";
-import { MediaType } from "@iiif/vocabulary";
-import { CroppedImageDimensions } from "./CroppedImageDimensions";
+} from 'manifesto.js';
+import { DownloadOption } from '../../modules/uv-shared-module/DownloadOption';
+import { MediaType } from '@iiif/vocabulary';
+import { CroppedImageDimensions } from './CroppedImageDimensions';
 
 const DownloadDialogue = ({
   canvases,
@@ -79,31 +79,20 @@ const DownloadDialogue = ({
   triggerButton: HTMLElement;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ top: "0px", left: "0px" });
-  const [arrowPosition, setArrowPosition] = useState("0px 0px");
-  const [selectedPage, setSelectedPage] = useState<"left" | "right">("left");
+  const [position, setPosition] = useState({ top: '0px', left: '0px' });
+  const [arrowPosition, setArrowPosition] = useState('0px 0px');
+  const [selectedPage, setSelectedPage] = useState<'left' | 'right'>('left');
   const hasNormalDimensions: boolean = rotation % 180 == 0;
 
   useEffect(() => {
     if (open) {
-      const top: number =
-        parent.clientHeight -
-        ref.current!.clientHeight -
-        triggerButton.clientHeight;
+      const top: number = parent.clientHeight - ref.current!.clientHeight - triggerButton.clientHeight;
 
-      let left: number =
-        triggerButton.getBoundingClientRect().left -
-        parent.getBoundingClientRect().left;
+      let left: number = triggerButton.getBoundingClientRect().left - parent.getBoundingClientRect().left;
 
-      const normalisedPos: number = Maths.normalise(
-        left,
-        0,
-        parent.clientWidth
-      );
+      const normalisedPos: number = Maths.normalise(left, 0, parent.clientWidth);
 
-      left =
-        parent.clientWidth * normalisedPos -
-        ref.current!.clientWidth * normalisedPos;
+      left = parent.clientWidth * normalisedPos - ref.current!.clientWidth * normalisedPos;
 
       const arrowLeft = ref.current!.clientWidth * normalisedPos;
 
@@ -120,21 +109,17 @@ const DownloadDialogue = ({
 
   // Method to get focusable elements inside the component
   const getFocusableElements = (): NodeListOf<HTMLElement> | null => {
-    return ref.current?.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    ) as NodeListOf<HTMLElement>;
+    return ref.current?.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])') as NodeListOf<HTMLElement>;
   };
 
   // Focus trapping logic
   const handleTabKey = (e: KeyboardEvent) => {
-    if (e.key === "Tab") {
+    if (e.key === 'Tab') {
       const focusableElements = getFocusableElements();
       if (!focusableElements) return;
 
       const firstFocusableElement = focusableElements[0] as HTMLElement;
-      const lastFocusableElement = focusableElements[
-        focusableElements.length - 1
-      ] as HTMLElement;
+      const lastFocusableElement = focusableElements[focusableElements.length - 1] as HTMLElement;
 
       if (e.shiftKey) {
         // If Shift + Tab is pressed and the focus is on the first element, go to the last
@@ -154,11 +139,11 @@ const DownloadDialogue = ({
 
   useEffect(() => {
     if (open) {
-      document.addEventListener("keydown", handleTabKey);
+      document.addEventListener('keydown', handleTabKey);
     }
 
     return () => {
-      document.removeEventListener("keydown", handleTabKey);
+      document.removeEventListener('keydown', handleTabKey);
     };
   }, [open]);
 
@@ -167,12 +152,8 @@ const DownloadDialogue = ({
   function getCanvasDimensions(canvas: Canvas): Size | null {
     // externalResource may not have loaded yet
     if (canvas.externalResource.data) {
-      const width: number | undefined = (
-        canvas.externalResource.data as IExternalImageResourceData
-      ).width;
-      const height: number | undefined = (
-        canvas.externalResource.data as IExternalImageResourceData
-      ).height;
+      const width: number | undefined = (canvas.externalResource.data as IExternalImageResourceData).width;
+      const height: number | undefined = (canvas.externalResource.data as IExternalImageResourceData).height;
       if (width && height) {
         return new Size(width, height);
       }
@@ -193,10 +174,7 @@ const DownloadDialogue = ({
       return imageSize;
     }
 
-    if (
-      imageSize.width <= requiredSize.width &&
-      imageSize.height <= requiredSize.height
-    ) {
+    if (imageSize.width <= requiredSize.width && imageSize.height <= requiredSize.height) {
       return imageSize;
     }
 
@@ -204,10 +182,7 @@ const DownloadDialogue = ({
     const scaleH: number = requiredSize.height / imageSize.height;
     const scale: number = Math.min(scaleW, scaleH);
 
-    return new Size(
-      Math.floor(imageSize.width * scale),
-      Math.floor(imageSize.height * scale)
-    );
+    return new Size(Math.floor(imageSize.width * scale), Math.floor(imageSize.height * scale));
   }
 
   function isLevel0(profile: any): boolean {
@@ -217,13 +192,13 @@ const DownloadDialogue = ({
   }
 
   function getSelectedCanvas(): Canvas {
-    return canvases[selectedPage === "left" ? 0 : 1];
+    return canvases[selectedPage === 'left' ? 0 : 1];
   }
 
   function getSelectedResource(): IExternalResourceData | null {
     if (resources && resources.length) {
       if (resources.length > 1) {
-        return resources[selectedPage === "left" ? 0 : 1];
+        return resources[selectedPage === 'left' ? 0 : 1];
       } else {
         return resources[0];
       }
@@ -233,8 +208,7 @@ const DownloadDialogue = ({
   }
 
   function isDownloadOptionAvailable(option: DownloadOption) {
-    const selectedResource: IExternalResourceData | null =
-      getSelectedResource();
+    const selectedResource: IExternalResourceData | null = getSelectedResource();
 
     if (!selectedResource) {
       return false;
@@ -244,10 +218,7 @@ const DownloadDialogue = ({
 
     // if the external resource doesn't have a service descriptor or is level 0
     // only allow wholeImageHighRes
-    if (
-      !canvas.externalResource.hasServiceDescriptor() ||
-      isLevel0(canvas.externalResource.data.profile)
-    ) {
+    if (!canvas.externalResource.hasServiceDescriptor() || isLevel0(canvas.externalResource.data.profile)) {
       if (option === DownloadOption.WHOLE_IMAGE_HIGH_RES) {
         // if in one-up mode, or in two-up mode with a single page being shown
         if (!(paged || (paged && selectedResource))) {
@@ -342,8 +313,7 @@ const DownloadDialogue = ({
     }
 
     // presentation api version 3
-    const annotationBody: AnnotationBody | null =
-      getCanvasImageAnnotationBody(canvas);
+    const annotationBody: AnnotationBody | null = getCanvasImageAnnotationBody(canvas);
     if (annotationBody) {
       const format: MediaType | null = annotationBody.getFormat();
 
@@ -362,29 +332,23 @@ const DownloadDialogue = ({
       const width: number = size.width;
       let uri: string = canvas.getCanonicalImageUri(width);
 
-      if (
-        canvas.externalResource &&
-        canvas.externalResource.hasServiceDescriptor()
-      ) {
-        const uriParts: string[] = uri.split("/");
+      if (canvas.externalResource && canvas.externalResource.hasServiceDescriptor()) {
+        const uriParts: string[] = uri.split('/');
         uriParts[uriParts.length - 2] = String(rotation);
-        uri = uriParts.join("/");
+        uri = uriParts.join('/');
       }
 
       return uri;
-    } else if (
-      canvas.externalResource &&
-      !canvas.externalResource.hasServiceDescriptor()
-    ) {
+    } else if (canvas.externalResource && !canvas.externalResource.hasServiceDescriptor()) {
       // if there is no image service, return the dataUri.
       return canvas.externalResource.dataUri as string;
     }
 
-    return "";
+    return '';
   }
 
   function getWholeImageHighResLabel(): string {
-    let label: string = "";
+    let label: string = '';
     const canvas: Canvas = getSelectedCanvas();
 
     let mime: string | null = getCanvasMimeType(canvas);
@@ -392,7 +356,7 @@ const DownloadDialogue = ({
     if (mime) {
       mime = Files.simplifyMimeType(mime);
     } else {
-      mime = "?";
+      mime = '?';
     }
 
     // dimensions
@@ -400,26 +364,13 @@ const DownloadDialogue = ({
 
     if (!size) {
       // if there is no image service, allow the image to be downloaded directly.
-      if (
-        canvas.externalResource &&
-        !canvas.externalResource.hasServiceDescriptor()
-      ) {
-        label = Strings.format(content.wholeImageHighRes, "?", "?", mime);
+      if (canvas.externalResource && !canvas.externalResource.hasServiceDescriptor()) {
+        label = Strings.format(content.wholeImageHighRes, '?', '?', mime);
       }
     } else {
       label = hasNormalDimensions
-        ? Strings.format(
-            content.wholeImageHighRes,
-            size.width.toString(),
-            size.height.toString(),
-            mime
-          )
-        : Strings.format(
-            content.wholeImageHighRes,
-            size.height.toString(),
-            size.width.toString(),
-            mime
-          );
+        ? Strings.format(content.wholeImageHighRes, size.width.toString(), size.height.toString(), mime)
+        : Strings.format(content.wholeImageHighRes, size.height.toString(), size.width.toString(), mime);
     }
 
     return label;
@@ -429,20 +380,12 @@ const DownloadDialogue = ({
     const canvas: Canvas = getSelectedCanvas();
     const size: Size | null = getConfinedImageDimensions(canvas);
 
-    let label = "";
+    let label = '';
 
     if (size) {
       label = hasNormalDimensions
-        ? Strings.format(
-            content.wholeImageLowResAsJpg,
-            size.width.toString(),
-            size.height.toString()
-          )
-        : Strings.format(
-            content.wholeImageLowResAsJpg,
-            size.height.toString(),
-            size.width.toString()
-          );
+        ? Strings.format(content.wholeImageLowResAsJpg, size.width.toString(), size.height.toString())
+        : Strings.format(content.wholeImageLowResAsJpg, size.height.toString(), size.width.toString());
     }
 
     return label;
@@ -450,54 +393,33 @@ const DownloadDialogue = ({
 
   function getCurrentViewLabel() {
     let label: string = content.currentViewAsJpg;
-    const dimensions: CroppedImageDimensions | null = getCroppedImageDimensions(
-      getSelectedCanvas()
-    );
+    const dimensions: CroppedImageDimensions | null = getCroppedImageDimensions(getSelectedCanvas());
 
     // dimensions
     if (dimensions) {
       label = hasNormalDimensions
-        ? Strings.format(
-            label,
-            dimensions.size.width.toString(),
-            dimensions.size.height.toString()
-          )
-        : Strings.format(
-            label,
-            dimensions.size.height.toString(),
-            dimensions.size.width.toString()
-          );
+        ? Strings.format(label, dimensions.size.width.toString(), dimensions.size.height.toString())
+        : Strings.format(label, dimensions.size.height.toString(), dimensions.size.width.toString());
     }
 
     return label;
   }
 
-  function Renderings({
-    resource,
-    defaultLabel,
-  }: {
-    resource: ManifestResource;
-    defaultLabel: string;
-  }) {
+  function Renderings({ resource, defaultLabel }: { resource: ManifestResource; defaultLabel: string }) {
     const renderings: Rendering[] = resource.getRenderings();
 
     return (
       <>
         {renderings.map((rendering: Rendering, index: number) => {
-          let label: string | null = LanguageMap.getValue(
-            rendering.getLabel(),
-            locale
-          );
+          let label: string | null = LanguageMap.getValue(rendering.getLabel(), locale);
 
           if (label) {
-            label += " ({0})";
+            label += ' ({0})';
           } else {
             label = defaultLabel;
           }
 
-          const mime: string = Files.simplifyMimeType(
-            rendering.getFormat().toString()
-          );
+          const mime: string = Files.simplifyMimeType(rendering.getFormat().toString());
 
           label = Strings.format(label!, mime);
 
@@ -505,7 +427,7 @@ const DownloadDialogue = ({
             <li key={index}>
               <button
                 onClick={() => {
-                  window.open(rendering.id, "_blank");
+                  window.open(rendering.id, '_blank');
                 }}
               >
                 {label}
@@ -527,11 +449,7 @@ const DownloadDialogue = ({
     return (
       <>
         {canvas.ranges?.map((range: Range, index) => (
-          <Renderings
-            resource={range}
-            defaultLabel={content.entireFileAsOriginal}
-            key={`range-rendering-${String(index)}`}
-          />
+          <Renderings resource={range} defaultLabel={content.entireFileAsOriginal} key={`range-rendering-${String(index)}`} />
         ))}
       </>
     );
@@ -544,11 +462,7 @@ const DownloadDialogue = ({
     return (
       <>
         {images.map((image: Annotation, index) => (
-          <Renderings
-            resource={image.getResource()}
-            defaultLabel={content.entireFileAsOriginal}
-            key={`image-rendering-${String(index)}`}
-          />
+          <Renderings resource={image.getResource()} defaultLabel={content.entireFileAsOriginal} key={`image-rendering-${String(index)}`} />
         ))}
       </>
     );
@@ -557,31 +471,18 @@ const DownloadDialogue = ({
   function CanvasRenderings() {
     const canvas: Canvas = getSelectedCanvas();
 
-    return (
-      <Renderings
-        resource={canvas}
-        defaultLabel={content.entireFileAsOriginal}
-      />
-    );
+    return <Renderings resource={canvas} defaultLabel={content.entireFileAsOriginal} />;
   }
 
   function hasManifestRenderings(): boolean {
-    return (
-      sequence.getRenderings().length > 0 || manifest.getRenderings.length > 0
-    );
+    return sequence.getRenderings().length > 0 || manifest.getRenderings.length > 0;
   }
 
   function ManifestRenderings() {
     return (
       <>
-        <Renderings
-          resource={sequence}
-          defaultLabel={content.entireFileAsOriginal}
-        />
-        <Renderings
-          resource={manifest}
-          defaultLabel={content.entireFileAsOriginal}
-        />
+        <Renderings resource={sequence} defaultLabel={content.entireFileAsOriginal} />
+        <Renderings resource={manifest} defaultLabel={content.entireFileAsOriginal} />
       </>
     );
   }
@@ -599,7 +500,7 @@ const DownloadDialogue = ({
   }
 
   return (
-    <div ref={ref} className={cx("overlay download")} style={position}>
+    <div ref={ref} className={cx('overlay download')} style={position}>
       <div className="top"></div>
       <div className="middle">
         <div className="content">
@@ -613,27 +514,23 @@ const DownloadDialogue = ({
             <div className="pages">
               <div
                 onClick={() => {
-                  setSelectedPage("left");
+                  setSelectedPage('left');
                 }}
-                className={cx("page left", {
-                  selected: selectedPage === "left",
+                className={cx('page left', {
+                  selected: selectedPage === 'left',
                 })}
               >
-                <span className="label">
-                  {canvases[0].getLabel().getValue()}
-                </span>
+                <span className="label">{canvases[0].getLabel().getValue()}</span>
               </div>
               <div
                 onClick={() => {
-                  setSelectedPage("right");
+                  setSelectedPage('right');
                 }}
-                className={cx("page right", {
-                  selected: selectedPage === "right",
+                className={cx('page right', {
+                  selected: selectedPage === 'right',
                 })}
               >
-                <span className="label">
-                  {canvases[1].getLabel().getValue()}
-                </span>
+                <span className="label">{canvases[1].getLabel().getValue()}</span>
               </div>
             </div>
           )}
@@ -664,9 +561,7 @@ const DownloadDialogue = ({
               <li className="option single">
                 <button
                   onClick={() => {
-                    const imageUri: string | null = getConfinedImageUri(
-                      getSelectedCanvas()
-                    );
+                    const imageUri: string | null = getConfinedImageUri(getSelectedCanvas());
 
                     if (imageUri) {
                       window.open(imageUri);
@@ -677,24 +572,13 @@ const DownloadDialogue = ({
                 </button>
               </li>
             )}
-            {isDownloadOptionAvailable(DownloadOption.RANGE_RENDERINGS) && (
-              <RangeRenderings />
-            )}
-            {isDownloadOptionAvailable(DownloadOption.IMAGE_RENDERINGS) && (
-              <ImageRenderings />
-            )}
-            {isDownloadOptionAvailable(DownloadOption.CANVAS_RENDERINGS) && (
-              <CanvasRenderings />
-            )}
+            {isDownloadOptionAvailable(DownloadOption.RANGE_RENDERINGS) && <RangeRenderings />}
+            {isDownloadOptionAvailable(DownloadOption.IMAGE_RENDERINGS) && <ImageRenderings />}
+            {isDownloadOptionAvailable(DownloadOption.CANVAS_RENDERINGS) && <CanvasRenderings />}
           </ol>
-          {(hasManifestRenderings() ||
-            isDownloadOptionAvailable(DownloadOption.SELECTION)) && (
-            <h2>{content.allPages}</h2>
-          )}
+          {(hasManifestRenderings() || isDownloadOptionAvailable(DownloadOption.SELECTION)) && <h2>{content.allPages}</h2>}
           <ol className="options">
-            {isDownloadOptionAvailable(DownloadOption.MANIFEST_RENDERINGS) && (
-              <ManifestRenderings />
-            )}
+            {isDownloadOptionAvailable(DownloadOption.MANIFEST_RENDERINGS) && <ManifestRenderings />}
             {isDownloadOptionAvailable(DownloadOption.SELECTION) && (
               <li className="option single">
                 <button
@@ -725,7 +609,7 @@ const DownloadDialogue = ({
         </div>
       </div>
       <div
-        className={cx("bottom")}
+        className={cx('bottom')}
         style={{
           backgroundPosition: arrowPosition,
         }}

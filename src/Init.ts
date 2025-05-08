@@ -1,43 +1,43 @@
-import { Events } from "./Events";
-import { UniversalViewer } from "./UniversalViewer";
+import { Events } from './Events';
+import { UniversalViewer } from './UniversalViewer';
 
 export const init = (el: string | HTMLDivElement, data) => {
   let uv;
   let isFullScreen = false;
   let overrideFullScreen = false;
-  const container = typeof el === "string" ? document.getElementById(el) : el;
+  const container = typeof el === 'string' ? document.getElementById(el) : el;
 
   if (!container) {
-    throw new Error("UV target element not found");
+    throw new Error('UV target element not found');
   }
 
-  container.innerHTML = "";
-  const parent = document.createElement("div");
+  container.innerHTML = '';
+  const parent = document.createElement('div');
   container.appendChild(parent);
   // extra div is needed for safari full screen
-  const uvDiv = document.createElement("div");
+  const uvDiv = document.createElement('div');
   parent.appendChild(uvDiv);
 
   const resize = () => {
     if (uv) {
       if (isFullScreen && !overrideFullScreen) {
         // is full screen and not overridden.
-        parent.style.width = window.innerWidth + "px";
-        parent.style.height = window.innerHeight + "px";
+        parent.style.width = window.innerWidth + 'px';
+        parent.style.height = window.innerHeight + 'px';
       } else {
         // either we're not full screen or scaling to the window size is overridden
-        parent.style.width = container.offsetWidth + "px";
-        parent.style.height = container.offsetHeight + "px";
+        parent.style.width = container.offsetWidth + 'px';
+        parent.style.height = container.offsetHeight + 'px';
       }
       uv.resize();
     }
   };
 
-  window.addEventListener("resize", function () {
+  window.addEventListener('resize', function () {
     resize();
   });
 
-  window.addEventListener("orientationchange", function () {
+  window.addEventListener('orientationchange', function () {
     setTimeout(function () {
       resize();
     }, 100);
@@ -55,7 +55,7 @@ export const init = (el: string | HTMLDivElement, data) => {
     function (_obj) {
       resize();
     },
-    false
+    false,
   );
 
   uv.on(
@@ -65,7 +65,7 @@ export const init = (el: string | HTMLDivElement, data) => {
         resize();
       }, 100);
     },
-    false
+    false,
   );
 
   uv.on(
@@ -97,7 +97,7 @@ export const init = (el: string | HTMLDivElement, data) => {
         resize();
       }, 100);
     },
-    false
+    false,
   );
 
   uv.on(
@@ -105,24 +105,24 @@ export const init = (el: string | HTMLDivElement, data) => {
     function (message) {
       console.error(message);
     },
-    false
+    false,
   );
 
   function fullScreenChange(e) {
     if (
-      (e.type === "webkitfullscreenchange" && !document.webkitIsFullScreen) ||
-      (e.type === "fullscreenchange" && !document.fullscreenElement) ||
-      (e.type === "mozfullscreenchange" && !document.mozFullScreen) ||
-      (e.type === "MSFullscreenChange" && document.msFullscreenElement === null)
+      (e.type === 'webkitfullscreenchange' && !document.webkitIsFullScreen) ||
+      (e.type === 'fullscreenchange' && !document.fullscreenElement) ||
+      (e.type === 'mozfullscreenchange' && !document.mozFullScreen) ||
+      (e.type === 'MSFullscreenChange' && document.msFullscreenElement === null)
     ) {
       uv.exitFullScreen();
     }
   }
 
-  document.addEventListener("fullscreenchange", fullScreenChange, false);
-  document.addEventListener("webkitfullscreenchange", fullScreenChange, false);
-  document.addEventListener("mozfullscreenchange", fullScreenChange, false);
-  document.addEventListener("MSFullscreenChange", fullScreenChange, false);
+  document.addEventListener('fullscreenchange', fullScreenChange, false);
+  document.addEventListener('webkitfullscreenchange', fullScreenChange, false);
+  document.addEventListener('mozfullscreenchange', fullScreenChange, false);
+  document.addEventListener('MSFullscreenChange', fullScreenChange, false);
 
   return uv;
 };

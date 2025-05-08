@@ -1,4 +1,4 @@
-import { UVAdapter } from "./UVAdapter";
+import { UVAdapter } from './UVAdapter';
 
 export interface IContentHandler<IUVData> {
   // adapter.bindTo() sets this.

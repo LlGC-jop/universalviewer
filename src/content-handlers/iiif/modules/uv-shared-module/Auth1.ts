@@ -1,31 +1,20 @@
-const $ = require("jquery");
-import { IIIFEvents } from "../../IIIFEvents";
-import { sanitize } from "../../../../Utils";
-import { InformationArgs } from "./InformationArgs";
-import { InformationType } from "./InformationType";
-import {
-  IExternalResource,
-  IAccessToken,
-  IManifestoOptions,
-  Service,
-  StatusCode,
-  Utils,
-} from "manifesto.js";
-import { Storage, StorageType, StorageItem, Urls } from "@edsilv/utils";
+const $ = require('jquery');
+import { IIIFEvents } from '../../IIIFEvents';
+import { sanitize } from '../../../../Utils';
+import { InformationArgs } from './InformationArgs';
+import { InformationType } from './InformationType';
+import { IExternalResource, IAccessToken, IManifestoOptions, Service, StatusCode, Utils } from 'manifesto.js';
+import { Storage, StorageType, StorageItem, Urls } from '@edsilv/utils';
 // import { Urls } from "@edsilv/utils";
 // import { Storage, StorageType, StorageItem } from "../../../../Utils";
-import * as HTTPStatusCode from "@edsilv/http-status-codes";
+import * as HTTPStatusCode from '@edsilv/http-status-codes';
 
 export class Auth1 {
   static messages: any = {};
   static storageStrategy: StorageType;
   static publish: (event: string, args?: any) => void;
 
-  static loadExternalResources(
-    resourcesToLoad: IExternalResource[],
-    storageStrategy: StorageType,
-    options: IManifestoOptions
-  ): Promise<IExternalResource[]> {
+  static loadExternalResources(resourcesToLoad: IExternalResource[], storageStrategy: StorageType, options: IManifestoOptions): Promise<IExternalResource[]> {
     return new Promise<IExternalResource[]>((resolve) => {
       Auth1.storageStrategy = storageStrategy;
 
@@ -44,12 +33,12 @@ export class Auth1 {
         Auth1.userInteractedWithContentProvider,
         Auth1.getContentProviderInteraction,
         Auth1.handleMovedTemporarily,
-        Auth1.showOutOfOptionsMessages
+        Auth1.showOutOfOptionsMessages,
       )
         .then((r: IExternalResource[]) => {
           resolve(r);
         })
-        ["catch"]((error: any) => {
+        ['catch']((error: any) => {
           switch (error.name) {
             case StatusCode.AUTHORIZATION_FAILED.toString():
               Auth1.publish(IIIFEvents.LOGIN_FAILED);
@@ -68,7 +57,7 @@ export class Auth1 {
   }
 
   static getCookieServiceUrl(service: Service): string {
-    let cookieServiceUrl: string = service.id + "?origin=" + Auth1.getOrigin();
+    let cookieServiceUrl: string = service.id + '?origin=' + Auth1.getOrigin();
     return cookieServiceUrl;
   }
 
@@ -81,20 +70,13 @@ export class Auth1 {
   static getOrigin(url?: string): string {
     let urlHolder: Location | HTMLAnchorElement = window.location;
     if (url) {
-      urlHolder = document.createElement("a");
+      urlHolder = document.createElement('a');
       urlHolder.href = url;
     }
-    return (
-      urlHolder.protocol +
-      "//" +
-      urlHolder.hostname +
-      (urlHolder.port ? ":" + urlHolder.port : "")
-    );
+    return urlHolder.protocol + '//' + urlHolder.hostname + (urlHolder.port ? ':' + urlHolder.port : '');
   }
 
-  static userInteractedWithContentProvider(
-    contentProviderWindow: Window
-  ): Promise<boolean> {
+  static userInteractedWithContentProvider(contentProviderWindow: Window): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
       // What happens here is forever a mystery to a client application.
       // It can but wait.
@@ -120,36 +102,28 @@ export class Auth1 {
       // if it's a kiosk service, open the window immediately.
       Auth1.publish(IIIFEvents.OPEN_EXTERNAL_RESOURCE, [[resource]]);
     } else {
-      const informationArgs: InformationArgs = new InformationArgs(
-        InformationType.DEGRADED_RESOURCE,
-        resource
-      );
+      const informationArgs: InformationArgs = new InformationArgs(InformationType.DEGRADED_RESOURCE, resource);
       Auth1.publish(IIIFEvents.SHOW_INFORMATION, [informationArgs]);
     }
   }
 
-  static storeAccessToken(
-    resource: IExternalResource,
-    token: IAccessToken
-  ): Promise<void> {
+  static storeAccessToken(resource: IExternalResource, token: IAccessToken): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       if (resource.tokenService) {
         Storage.set(
           resource.tokenService.id,
           token,
           token.expiresIn || 3600, // default to 1 hour
-          Auth1.storageStrategy
+          Auth1.storageStrategy,
         );
         resolve();
       } else {
-        reject("Token service not found");
+        reject('Token service not found');
       }
     });
   }
 
-  static getStoredAccessToken(
-    resource: IExternalResource
-  ): Promise<IAccessToken | null> {
+  static getStoredAccessToken(resource: IExternalResource): Promise<IAccessToken | null> {
     return new Promise<IAccessToken | null>((resolve, reject) => {
       let foundItems: StorageItem[] = [];
       let item: StorageItem | null = null;
@@ -163,9 +137,7 @@ export class Auth1 {
         foundItems.push(item);
       } else {
         // find an access token for the domain
-        const domain: string = Urls.getUrlParts(
-          <string>resource.dataUri
-        ).hostname;
+        const domain: string = Urls.getUrlParts(<string>resource.dataUri).hostname;
         const items: StorageItem[] = Storage.getItems(Auth1.storageStrategy);
 
         for (let i = 0; i < items.length; i++) {
@@ -192,10 +164,7 @@ export class Auth1 {
     });
   }
 
-  static getContentProviderInteraction(
-    resource: IExternalResource,
-    service: Service
-  ): Promise<Window | null> {
+  static getContentProviderInteraction(resource: IExternalResource, service: Service): Promise<Window | null> {
     return new Promise<Window | null>((resolve) => {
       // if the info bar has already been shown for degraded logins
       if (resource.isResponseHandled && !resource.authHoldingPage) {
@@ -203,8 +172,7 @@ export class Auth1 {
         resolve(null);
       } else if (resource.authHoldingPage) {
         // redirect holding page
-        resource.authHoldingPage.location.href =
-          Auth1.getCookieServiceUrl(service);
+        resource.authHoldingPage.location.href = Auth1.getCookieServiceUrl(service);
         resolve(resource.authHoldingPage);
       } else {
         Auth1.publish(IIIFEvents.SHOW_AUTH_DIALOGUE, [
@@ -214,8 +182,7 @@ export class Auth1 {
               resolve(null);
             },
             confirmCallback: () => {
-              const win: Window | null =
-                Auth1.openContentProviderInteraction(service);
+              const win: Window | null = Auth1.openContentProviderInteraction(service);
               resolve(win);
             },
             cancelCallback: () => {
@@ -227,10 +194,7 @@ export class Auth1 {
     });
   }
 
-  static openTokenService(
-    resource: IExternalResource,
-    tokenService: Service
-  ): Promise<any> {
+  static openTokenService(resource: IExternalResource, tokenService: Service): Promise<any> {
     // use a Promise across a postMessage call. Discuss...
     return new Promise<any>((resolve, reject) => {
       // if necessary, the client can decide not to trust this origin
@@ -246,14 +210,9 @@ export class Auth1 {
         resource: resource,
       };
 
-      window.addEventListener("message", Auth1.receiveToken, false);
+      window.addEventListener('message', Auth1.receiveToken, false);
 
-      const tokenUrl: string =
-        tokenService.id +
-        "?messageId=" +
-        messageId +
-        "&origin=" +
-        Auth1.getOrigin();
+      const tokenUrl: string = tokenService.id + '?messageId=' + messageId + '&origin=' + Auth1.getOrigin();
 
       // load the access token service url in the #commsFrame iframe.
       // when the message event listener (Auth1.receiveToken) receives a message from the iframe
@@ -261,16 +220,14 @@ export class Auth1 {
       // if found, it stores the returned access token, resolves and deletes the message.
       // resolving the message resolves the openTokenService promise.
       // console.log("tokenUrl", tokenUrl);
-      $("#commsFrame").prop("src", tokenUrl);
+      $('#commsFrame').prop('src', tokenUrl);
 
       // reject any unhandled messages after a configurable timeout
       const postMessageTimeout: number = 5000;
 
       setTimeout(() => {
         if (Auth1.messages[messageId]) {
-          Auth1.messages[messageId].reject(
-            "Message unhandled after " + postMessageTimeout + "ms, rejecting"
-          );
+          Auth1.messages[messageId].reject('Message unhandled after ' + postMessageTimeout + 'ms, rejecting');
           delete Auth1.messages[messageId];
         }
       }, postMessageTimeout);
@@ -283,7 +240,7 @@ export class Auth1 {
     //   console.log("receiveToken", event);
     // }
 
-    if (event.data.hasOwnProperty("messageId")) {
+    if (event.data.hasOwnProperty('messageId')) {
       const message: any = Auth1.messages[event.data.messageId];
 
       if (message && event.origin == message.serviceOrigin) {
@@ -297,19 +254,16 @@ export class Auth1 {
     }
   }
 
-  static showOutOfOptionsMessages(
-    resource: IExternalResource,
-    service: Service
-  ): void {
+  static showOutOfOptionsMessages(resource: IExternalResource, service: Service): void {
     // if the UV is already showing the info bar, no need to show an error message.
     if (resource.status == HTTPStatusCode.MOVED_TEMPORARILY) {
       return;
     }
 
-    let errorMessage: string = "";
+    let errorMessage: string = '';
 
     if (service.getFailureHeader()) {
-      errorMessage += "<p>" + service.getFailureHeader() + "</p>";
+      errorMessage += '<p>' + service.getFailureHeader() + '</p>';
     }
 
     if (service.getFailureDescription()) {

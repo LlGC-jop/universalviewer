@@ -1,21 +1,19 @@
-const $ = require("jquery");
-import { AutoComplete } from "../uv-shared-module/AutoComplete";
-import { IIIFEvents } from "../../IIIFEvents";
-import { OpenSeadragonExtensionEvents } from "../../extensions/uv-openseadragon-extension/Events";
-import { FooterPanel as BaseFooterPanel } from "../uv-shared-module/FooterPanel";
-import OpenSeadragonExtension from "../../extensions/uv-openseadragon-extension/Extension";
-import { Mode } from "../../extensions/uv-openseadragon-extension/Mode";
-import { AnnotationResults } from "../uv-shared-module/AnnotationResults";
-import { sanitize } from "../../../../Utils";
-import { Bools, Strings } from "@edsilv/utils";
-import * as KeyCodes from "@edsilv/key-codes";
-import { AnnotationGroup } from "@iiif/manifold";
-import { Canvas, LanguageMap } from "manifesto.js";
-import { Config } from "../../extensions/uv-openseadragon-extension/config/Config";
+const $ = require('jquery');
+import { AutoComplete } from '../uv-shared-module/AutoComplete';
+import { IIIFEvents } from '../../IIIFEvents';
+import { OpenSeadragonExtensionEvents } from '../../extensions/uv-openseadragon-extension/Events';
+import { FooterPanel as BaseFooterPanel } from '../uv-shared-module/FooterPanel';
+import OpenSeadragonExtension from '../../extensions/uv-openseadragon-extension/Extension';
+import { Mode } from '../../extensions/uv-openseadragon-extension/Mode';
+import { AnnotationResults } from '../uv-shared-module/AnnotationResults';
+import { sanitize } from '../../../../Utils';
+import { Bools, Strings } from '@edsilv/utils';
+import * as KeyCodes from '@edsilv/key-codes';
+import { AnnotationGroup } from '@iiif/manifold';
+import { Canvas, LanguageMap } from 'manifesto.js';
+import { Config } from '../../extensions/uv-openseadragon-extension/config/Config';
 
-export class FooterPanel extends BaseFooterPanel<
-  Config["modules"]["searchFooterPanel"]
-> {
+export class FooterPanel extends BaseFooterPanel<Config['modules']['searchFooterPanel']> {
   $clearSearchResultsButton: JQuery;
   $line: JQuery;
   $nextResultButton: JQuery;
@@ -46,7 +44,7 @@ export class FooterPanel extends BaseFooterPanel<
   }
 
   create(): void {
-    this.setConfig("searchFooterPanel");
+    this.setConfig('searchFooterPanel');
 
     super.create();
 
@@ -62,34 +60,22 @@ export class FooterPanel extends BaseFooterPanel<
     });
 
     // todo: this should be a setting
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.MODE_CHANGE,
-      () => {
-        this.settingsChanged();
-      }
-    );
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.MODE_CHANGE, () => {
+      this.settingsChanged();
+    });
 
-    this.extensionHost.subscribe(
-      OpenSeadragonExtensionEvents.SEARCH,
-      (terms: string) => {
-        this.terms = terms;
-      }
-    );
+    this.extensionHost.subscribe(OpenSeadragonExtensionEvents.SEARCH, (terms: string) => {
+      this.terms = terms;
+    });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.ANNOTATIONS,
-      (annotationResults: AnnotationResults) => {
-        if (annotationResults.annotations.length) {
-          this.displaySearchResults(
-            annotationResults.annotations,
-            annotationResults.terms
-          );
-          this.setCurrentSearchResultPlacemarker();
-          this.updatePrevButton();
-          this.updateNextButton();
-        }
+    this.extensionHost.subscribe(IIIFEvents.ANNOTATIONS, (annotationResults: AnnotationResults) => {
+      if (annotationResults.annotations.length) {
+        this.displaySearchResults(annotationResults.annotations, annotationResults.terms);
+        this.setCurrentSearchResultPlacemarker();
+        this.updatePrevButton();
+        this.updateNextButton();
       }
-    );
+    });
 
     this.extensionHost.subscribe(IIIFEvents.ANNOTATIONS_EMPTY, () => {
       this.hideSearchSpinner();
@@ -114,11 +100,7 @@ export class FooterPanel extends BaseFooterPanel<
     this.$searchOptions = $('<div class="searchOptions"></div>');
     this.$searchContainer.append(this.$searchOptions);
 
-    this.$searchLabel = $(
-      '<label class="label" for="searchWithinInput">' +
-        this.content.searchWithin +
-        "</label>"
-    );
+    this.$searchLabel = $('<label class="label" for="searchWithinInput">' + this.content.searchWithin + '</label>');
     this.$searchOptions.append(this.$searchLabel);
 
     this.$searchTextContainer = $('<div class="searchTextContainer"></div>');
@@ -129,15 +111,13 @@ export class FooterPanel extends BaseFooterPanel<
         this.content.enterKeyword +
         '" aria-label="' +
         this.content.searchWithin +
-        '"/>'
+        '"/>',
     );
     this.$searchTextContainer.append(this.$searchText);
 
-    this.$searchButton = $(
-      '<button class="imageButton searchButton"></button>'
-    );
-    this.$searchButton.attr("aria-label", this.content.searchWithin);
-    this.$searchButton.attr("title", this.content.searchWithin);
+    this.$searchButton = $('<button class="imageButton searchButton"></button>');
+    this.$searchButton.attr('aria-label', this.content.searchWithin);
+    this.$searchButton.attr('title', this.content.searchWithin);
     this.$searchTextContainer.append(this.$searchButton);
 
     // search results.
@@ -147,26 +127,18 @@ export class FooterPanel extends BaseFooterPanel<
     this.$searchPagerControls = $('<div class="controls"></div>');
     this.$searchPagerContainer.prepend(this.$searchPagerControls);
 
-    this.$previousResultButton = $(
-      '<button class="previousResult">' +
-        this.content.previousResult +
-        "</button>"
-    );
+    this.$previousResultButton = $('<button class="previousResult">' + this.content.previousResult + '</button>');
     this.$searchPagerControls.append(this.$previousResultButton);
 
     this.$searchResultsInfo = $(
-      '<div class="searchResultsInfo"><span class="info"><span class="number">x</span> <span class="foundFor"></span> \'<span class="terms">y</span>\'</span></div>'
+      '<div class="searchResultsInfo"><span class="info"><span class="number">x</span> <span class="foundFor"></span> \'<span class="terms">y</span>\'</span></div>',
     );
     this.$searchPagerControls.append(this.$searchResultsInfo);
 
-    this.$clearSearchResultsButton = $(
-      '<button class="clearSearch">' + this.content.clearSearch + "</button>"
-    );
+    this.$clearSearchResultsButton = $('<button class="clearSearch">' + this.content.clearSearch + '</button>');
     this.$searchResultsInfo.append(this.$clearSearchResultsButton);
 
-    this.$nextResultButton = $(
-      '<button class="nextResult">' + this.content.nextResult + "</button>"
-    );
+    this.$nextResultButton = $('<button class="nextResult">' + this.content.nextResult + '</button>');
     this.$searchPagerControls.append(this.$nextResultButton);
 
     // placemarker line.
@@ -185,12 +157,10 @@ export class FooterPanel extends BaseFooterPanel<
     this.$placemarkerDetails = $('<div class="placeMarkerDetails"></div>');
     this.$searchResultsContainer.append(this.$placemarkerDetails);
 
-    this.$placemarkerDetailsTop = $(
-      `<div role="heading" class="heading"></div>`
-    );
+    this.$placemarkerDetailsTop = $(`<div role="heading" class="heading"></div>`);
     this.$placemarkerDetails.append(this.$placemarkerDetailsTop);
 
-    this.$placemarkerDetailsBottom = $("<p></p>");
+    this.$placemarkerDetailsBottom = $('<p></p>');
     this.$placemarkerDetails.append(this.$placemarkerDetailsBottom);
 
     // initialise ui.
@@ -200,62 +170,49 @@ export class FooterPanel extends BaseFooterPanel<
     // ui event handlers.
     var that = this;
 
-    this.$searchButton.on("click", (e: any) => {
+    this.$searchButton.on('click', (e: any) => {
       e.preventDefault();
       this.search(this.$searchText.val());
     });
 
-    this.$searchText.on("focus", () => {
+    this.$searchText.on('focus', () => {
       // clear initial text.
-      if (this.$searchText.val() === this.content.enterKeyword)
-        this.$searchText.val("");
+      if (this.$searchText.val() === this.content.enterKeyword) this.$searchText.val('');
     });
 
-    this.$placemarkerDetails.on("mouseover", () => {
-      that.extensionHost.publish(
-        OpenSeadragonExtensionEvents.SEARCH_PREVIEW_START,
-        this.currentPlacemarkerIndex
-      );
+    this.$placemarkerDetails.on('mouseover', () => {
+      that.extensionHost.publish(OpenSeadragonExtensionEvents.SEARCH_PREVIEW_START, this.currentPlacemarkerIndex);
     });
 
-    this.$placemarkerDetails.on("mouseleave", function () {
+    this.$placemarkerDetails.on('mouseleave', function () {
       $(this).hide();
 
-      that.extensionHost.publish(
-        OpenSeadragonExtensionEvents.SEARCH_PREVIEW_FINISH
-      );
+      that.extensionHost.publish(OpenSeadragonExtensionEvents.SEARCH_PREVIEW_FINISH);
 
       // reset all placemarkers.
       var placemarkers = that.getSearchResultPlacemarkers();
-      placemarkers.removeClass("hover");
+      placemarkers.removeClass('hover');
     });
 
     this.onAccessibleClick(this.$placemarkerDetails, () => {
-      that.extensionHost.publish(
-        IIIFEvents.CANVAS_INDEX_CHANGE,
-        this.currentPlacemarkerIndex
-      );
+      that.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, this.currentPlacemarkerIndex);
     });
 
-    this.$previousResultButton.on("click", (e: any) => {
+    this.$previousResultButton.on('click', (e: any) => {
       e.preventDefault();
       if (this.isPreviousButtonEnabled()) {
-        that.extensionHost.publish(
-          OpenSeadragonExtensionEvents.PREV_SEARCH_RESULT
-        );
+        that.extensionHost.publish(OpenSeadragonExtensionEvents.PREV_SEARCH_RESULT);
       }
     });
 
-    this.$nextResultButton.on("click", (e: any) => {
+    this.$nextResultButton.on('click', (e: any) => {
       e.preventDefault();
       if (this.isNextButtonEnabled()) {
-        that.extensionHost.publish(
-          OpenSeadragonExtensionEvents.NEXT_SEARCH_RESULT
-        );
+        that.extensionHost.publish(OpenSeadragonExtensionEvents.NEXT_SEARCH_RESULT);
       }
     });
 
-    this.$clearSearchResultsButton.on("click", (e: any) => {
+    this.$clearSearchResultsButton.on('click', (e: any) => {
       e.preventDefault();
       that.extensionHost.publish(IIIFEvents.CLEAR_ANNOTATIONS);
     });
@@ -265,16 +222,14 @@ export class FooterPanel extends BaseFooterPanel<
       this.$searchContainer.hide();
       this.$searchPagerContainer.hide();
       this.$searchResultsContainer.hide();
-      this.$element.addClass("min");
+      this.$element.addClass('min');
     }
 
     if (this.extension.helper.getTotalCanvases() === 1) {
       this.$searchResultsContainer.hide();
     }
 
-    const autocompleteService: string | null = (<OpenSeadragonExtension>(
-      this.extension
-    )).getAutoCompleteUri();
+    const autocompleteService: string | null = (<OpenSeadragonExtension>this.extension).getAutoCompleteUri();
 
     if (autocompleteService) {
       new AutoComplete(
@@ -297,10 +252,10 @@ export class FooterPanel extends BaseFooterPanel<
         300,
         2,
         true,
-        Bools.getBool(this.options.autocompleteAllowWords, false)
+        Bools.getBool(this.options.autocompleteAllowWords, false),
       );
     } else {
-      this.$searchText.on("keyup", (e) => {
+      this.$searchText.on('keyup', (e) => {
         if (e.keyCode === KeyCodes.KeyDown.Enter) {
           that.search(that.$searchText.val());
         }
@@ -313,10 +268,7 @@ export class FooterPanel extends BaseFooterPanel<
 
     this.updatePrintButton();
 
-    var positionMarkerEnabled: boolean = Bools.getBool(
-      this.config.options.positionMarkerEnabled,
-      true
-    );
+    var positionMarkerEnabled: boolean = Bools.getBool(this.config.options.positionMarkerEnabled, true);
 
     if (!positionMarkerEnabled) {
       this.$pagePositionMarker.hide();
@@ -329,24 +281,16 @@ export class FooterPanel extends BaseFooterPanel<
   }
 
   isZoomToSearchResultEnabled(): boolean {
-    return Bools.getBool(
-      this.extension.data.config!.options.zoomToSearchResultEnabled,
-      true
-    );
+    return Bools.getBool(this.extension.data.config!.options.zoomToSearchResultEnabled, true);
   }
 
   isPreviousButtonEnabled(): boolean {
     const currentCanvasIndex: number = this.extension.helper.canvasIndex;
-    const firstSearchResultCanvasIndex: number =
-      this.getFirstSearchResultCanvasIndex();
-    const currentSearchResultRectIndex: number =
-      this.getCurrentSearchResultRectIndex();
+    const firstSearchResultCanvasIndex: number = this.getFirstSearchResultCanvasIndex();
+    const currentSearchResultRectIndex: number = this.getCurrentSearchResultRectIndex();
 
     // if zoom to search result is enabled and there is a highlighted search result.
-    if (
-      this.isZoomToSearchResultEnabled() &&
-      (<OpenSeadragonExtension>this.extension).currentAnnotationRect
-    ) {
+    if (this.isZoomToSearchResultEnabled() && (<OpenSeadragonExtension>this.extension).currentAnnotationRect) {
       if (currentCanvasIndex < firstSearchResultCanvasIndex) {
         return false;
       } else if (currentCanvasIndex === firstSearchResultCanvasIndex) {
@@ -363,16 +307,11 @@ export class FooterPanel extends BaseFooterPanel<
 
   isNextButtonEnabled(): boolean {
     const currentCanvasIndex: number = this.extension.helper.canvasIndex;
-    const lastSearchResultCanvasIndex: number =
-      this.getLastSearchResultCanvasIndex();
-    const currentSearchResultRectIndex: number =
-      this.getCurrentSearchResultRectIndex();
+    const lastSearchResultCanvasIndex: number = this.getLastSearchResultCanvasIndex();
+    const currentSearchResultRectIndex: number = this.getCurrentSearchResultRectIndex();
 
     // if zoom to search result is enabled and there is a highlighted search result.
-    if (
-      this.isZoomToSearchResultEnabled() &&
-      (<OpenSeadragonExtension>this.extension).currentAnnotationRect
-    ) {
+    if (this.isZoomToSearchResultEnabled() && (<OpenSeadragonExtension>this.extension).currentAnnotationRect) {
       if (currentCanvasIndex > lastSearchResultCanvasIndex) {
         //if you've moved past final result page
         return false;
@@ -396,9 +335,7 @@ export class FooterPanel extends BaseFooterPanel<
   }
 
   getCurrentSearchResultRectIndex(): number {
-    return (<OpenSeadragonExtension>(
-      this.extension
-    )).getCurrentAnnotationRectIndex();
+    return (<OpenSeadragonExtension>this.extension).getCurrentAnnotationRectIndex();
   }
 
   getFirstSearchResultCanvasIndex(): number {
@@ -411,15 +348,12 @@ export class FooterPanel extends BaseFooterPanel<
   getLastSearchResultCanvasIndex(): number {
     const searchResults: AnnotationGroup[] | null = this.getSearchResults();
     if (!searchResults || !searchResults.length) return -1;
-    let lastSearchResultCanvasIndex: number =
-      searchResults[searchResults.length - 1].canvasIndex;
+    let lastSearchResultCanvasIndex: number = searchResults[searchResults.length - 1].canvasIndex;
     return lastSearchResultCanvasIndex;
   }
 
   getLastSearchResultRectIndex(): number {
-    return (<OpenSeadragonExtension>(
-      this.extension
-    )).getLastAnnotationRectIndex();
+    return (<OpenSeadragonExtension>this.extension).getLastAnnotationRectIndex();
   }
 
   updateNextButton(): void {
@@ -427,9 +361,9 @@ export class FooterPanel extends BaseFooterPanel<
 
     if (searchResults && searchResults.length) {
       if (this.isNextButtonEnabled()) {
-        this.$nextResultButton.removeClass("disabled");
+        this.$nextResultButton.removeClass('disabled');
       } else {
-        this.$nextResultButton.addClass("disabled");
+        this.$nextResultButton.addClass('disabled');
       }
     }
   }
@@ -439,18 +373,15 @@ export class FooterPanel extends BaseFooterPanel<
 
     if (searchResults && searchResults.length) {
       if (this.isPreviousButtonEnabled()) {
-        this.$previousResultButton.removeClass("disabled");
+        this.$previousResultButton.removeClass('disabled');
       } else {
-        this.$previousResultButton.addClass("disabled");
+        this.$previousResultButton.addClass('disabled');
       }
     }
   }
 
   updatePrintButton(): void {
-    const configEnabled: boolean = Bools.getBool(
-      this.options.printEnabled,
-      false
-    );
+    const configEnabled: boolean = Bools.getBool(this.options.printEnabled, false);
     //var printService: manifesto.Service = this.extension.helper.manifest.getService(manifesto.ServiceProfile.printExtensions());
 
     //if (configEnabled && printService && this.extension.isOnHomeDomain()){
@@ -464,13 +395,10 @@ export class FooterPanel extends BaseFooterPanel<
   search(terms: string): void {
     this.terms = terms;
 
-    if (this.terms === "" || this.terms === this.content.enterKeyword) {
-      this.extension.showMessage(
-        this.extension.data.config!.modules.genericDialogue.content.emptyValue,
-        function () {
-          this.$searchText.focus();
-        }
-      );
+    if (this.terms === '' || this.terms === this.content.enterKeyword) {
+      this.extension.showMessage(this.extension.data.config!.modules.genericDialogue.content.emptyValue, function () {
+        this.$searchText.focus();
+      });
 
       return;
     }
@@ -484,18 +412,14 @@ export class FooterPanel extends BaseFooterPanel<
   }
 
   getSearchResultPlacemarkers(): JQuery {
-    return this.$searchResultsContainer.find(".searchResultPlacemarker");
+    return this.$searchResultsContainer.find('.searchResultPlacemarker');
   }
 
   setCurrentSearchResultPlacemarker(): void {
     const placemarkers: JQuery = this.getSearchResultPlacemarkers();
-    placemarkers.parent().find(".current").removeClass("current");
-    const $current: JQuery = $(
-      '.searchResultPlacemarker[data-index="' +
-        this.extension.helper.canvasIndex +
-        '"]'
-    );
-    $current.addClass("current");
+    placemarkers.parent().find('.current').removeClass('current');
+    const $current: JQuery = $('.searchResultPlacemarker[data-index="' + this.extension.helper.canvasIndex + '"]');
+    $current.addClass('current');
   }
 
   positionSearchResultPlacemarkers(): void {
@@ -518,11 +442,7 @@ export class FooterPanel extends BaseFooterPanel<
     for (let i = 0; i < searchResults.length; i++) {
       const result: AnnotationGroup = searchResults[i];
       const distance: number = result.canvasIndex * pageWidth;
-      const $placemarker: JQuery = $(
-        '<div class="searchResultPlacemarker" tabindex="0" data-index="' +
-          result.canvasIndex +
-          '"></div>'
-      );
+      const $placemarker: JQuery = $('<div class="searchResultPlacemarker" tabindex="0" data-index="' + result.canvasIndex + '"></div>');
 
       ($placemarker[0] as any).ontouchstart = function (e: any) {
         that.onPlacemarkerTouchStart.call(this, that);
@@ -540,13 +460,10 @@ export class FooterPanel extends BaseFooterPanel<
       this.onAccessibleClick(
         $placemarker,
         (e) => {
-          that.extensionHost.publish(
-            IIIFEvents.CANVAS_INDEX_CHANGE,
-            this.currentPlacemarkerIndex
-          );
+          that.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, this.currentPlacemarkerIndex);
           that.onPlacemarkerMouseLeave.call(this, e, that);
         },
-        false
+        false,
       );
       $placemarker.mouseleave(function (e: any) {
         that.onPlacemarkerMouseLeave.call(this, e, that);
@@ -596,14 +513,11 @@ export class FooterPanel extends BaseFooterPanel<
 
     const $placemarker: JQuery = $(this);
 
-    $placemarker.addClass("hover");
+    $placemarker.addClass('hover');
 
-    const canvasIndex: number = parseInt($placemarker.attr("data-index"));
+    const canvasIndex: number = parseInt($placemarker.attr('data-index'));
 
-    that.extensionHost.publish(
-      OpenSeadragonExtensionEvents.SEARCH_PREVIEW_START,
-      canvasIndex
-    );
+    that.extensionHost.publish(OpenSeadragonExtensionEvents.SEARCH_PREVIEW_START, canvasIndex);
 
     const $placemarkers: JQuery = that.getSearchResultPlacemarkers();
     const elemIndex: number = $placemarkers.index($placemarker[0]);
@@ -612,11 +526,10 @@ export class FooterPanel extends BaseFooterPanel<
 
     that.$placemarkerDetails.show();
 
-    let title: string = "{0} {1}";
+    let title: string = '{0} {1}';
 
     if (that.isPageModeEnabled()) {
-      const canvas: Canvas =
-        that.extension.helper.getCanvasByIndex(canvasIndex);
+      const canvas: Canvas = that.extension.helper.getCanvasByIndex(canvasIndex);
       let label: string | null = LanguageMap.getValue(canvas.getLabel());
 
       if (!label && that.extension.helper.manifest) {
@@ -627,11 +540,7 @@ export class FooterPanel extends BaseFooterPanel<
         title = Strings.format(title, that.content.pageCaps, label);
       }
     } else {
-      title = Strings.format(
-        title,
-        that.content.imageCaps,
-        String(canvasIndex + 1)
-      );
+      title = Strings.format(title, that.content.imageCaps, String(canvasIndex + 1));
     }
 
     that.$placemarkerDetailsTop.html(title);
@@ -641,28 +550,21 @@ export class FooterPanel extends BaseFooterPanel<
     if (searchResults) {
       const result: AnnotationGroup = searchResults[elemIndex];
 
-      let terms: string = "";
+      let terms: string = '';
 
       if (that.terms) {
-        terms = Strings.ellipsis(
-          that.terms,
-          that.options.elideDetailsTermsCount
-        );
+        terms = Strings.ellipsis(that.terms, that.options.elideDetailsTermsCount);
       }
 
       let instanceFoundText: string = that.content.instanceFound;
       let instancesFoundText: string = that.content.instancesFound;
-      let text: string = "";
+      let text: string = '';
 
       if (result.rects.length === 1) {
         text = Strings.format(instanceFoundText, terms);
         that.$placemarkerDetailsBottom.html(text);
       } else {
-        text = Strings.format(
-          instancesFoundText,
-          String(result.rects.length),
-          terms
-        );
+        text = Strings.format(instancesFoundText, String(result.rects.length), terms);
         that.$placemarkerDetailsBottom.html(text);
       }
     }
@@ -674,14 +576,8 @@ export class FooterPanel extends BaseFooterPanel<
 
     if (left < that.$placemarkerDetails.width() / 2) {
       left = 0 - $placemarker.width() / 2;
-    } else if (
-      left >
-      that.$line.width() - that.$placemarkerDetails.width() / 2
-    ) {
-      left =
-        that.$line.width() -
-        that.$placemarkerDetails.width() +
-        $placemarker.width() / 2;
+    } else if (left > that.$line.width() - that.$placemarkerDetails.width() / 2) {
+      left = that.$line.width() - that.$placemarkerDetails.width() + $placemarker.width() / 2;
     } else {
       left -= that.$placemarkerDetails.width() / 2;
     }
@@ -693,19 +589,15 @@ export class FooterPanel extends BaseFooterPanel<
   }
 
   onPlacemarkerMouseLeave(e: any, that: any): void {
-    that.extensionHost.publish(
-      OpenSeadragonExtensionEvents.SEARCH_PREVIEW_FINISH
-    );
+    that.extensionHost.publish(OpenSeadragonExtensionEvents.SEARCH_PREVIEW_FINISH);
 
     const $placemarker: JQuery = $(this);
     const newElement: Element = e.toElement || e.relatedTarget;
-    const isChild: number = $(newElement).closest(
-      that.$placemarkerDetails
-    ).length;
+    const isChild: number = $(newElement).closest(that.$placemarkerDetails).length;
 
     if (newElement != that.$placemarkerDetails.get(0) && isChild === 0) {
       that.$placemarkerDetails.hide();
-      $placemarker.removeClass("hover");
+      $placemarker.removeClass('hover');
     }
   }
 
@@ -732,11 +624,11 @@ export class FooterPanel extends BaseFooterPanel<
 
     if (left + this.$pagePositionLabel.outerWidth(true) > lineWidth) {
       left -= this.$pagePositionLabel.outerWidth(true);
-      this.$pagePositionLabel.removeClass("right");
-      this.$pagePositionLabel.addClass("left");
+      this.$pagePositionLabel.removeClass('right');
+      this.$pagePositionLabel.addClass('left');
     } else {
-      this.$pagePositionLabel.removeClass("left");
-      this.$pagePositionLabel.addClass("right");
+      this.$pagePositionLabel.removeClass('left');
+      this.$pagePositionLabel.addClass('right');
     }
 
     this.$pagePositionLabel.css({
@@ -795,46 +687,30 @@ export class FooterPanel extends BaseFooterPanel<
         label = this.content.defaultLabel;
       }
 
-      const lastCanvasOrderLabel: string | null =
-        this.extension.helper.getLastCanvasLabel(true);
+      const lastCanvasOrderLabel: string | null = this.extension.helper.getLastCanvasLabel(true);
 
       if (lastCanvasOrderLabel) {
-        this.$pagePositionLabel.html(
-          Strings.format(
-            displaying,
-            this.content.page,
-            sanitize(<string>label),
-            sanitize(<string>lastCanvasOrderLabel)
-          )
-        );
+        this.$pagePositionLabel.html(Strings.format(displaying, this.content.page, sanitize(<string>label), sanitize(<string>lastCanvasOrderLabel)));
       }
     } else {
-      this.$pagePositionLabel.html(
-        Strings.format(
-          displaying,
-          this.content.image,
-          String(index + 1),
-          this.extension.helper.getTotalCanvases().toString()
-        )
-      );
+      this.$pagePositionLabel.html(Strings.format(displaying, this.content.image, String(index + 1), this.extension.helper.getTotalCanvases().toString()));
     }
   }
 
   isPageModeEnabled(): boolean {
     return (
       this.config.options.pageModeEnabled &&
-      (<OpenSeadragonExtension>this.extension).getMode().toString() ===
-        Mode.page.toString() &&
+      (<OpenSeadragonExtension>this.extension).getMode().toString() === Mode.page.toString() &&
       !Bools.getBool(this.config.options.forceImageMode, false)
     );
   }
 
   showSearchSpinner(): void {
-    this.$searchText.addClass("searching");
+    this.$searchText.addClass('searching');
   }
 
   hideSearchSpinner(): void {
-    this.$searchText.removeClass("searching");
+    this.$searchText.removeClass('searching');
   }
 
   displaySearchResults(results: AnnotationGroup[], terms?: string): void {
@@ -852,17 +728,15 @@ export class FooterPanel extends BaseFooterPanel<
       left: 0,
     });
 
-    const $info: JQuery = this.$searchResultsInfo.find(".info");
-    const $number: JQuery = $info.find(".number");
-    const $foundFor: JQuery = $info.find(".foundFor");
-    const $terms: JQuery = $info.find(".terms");
+    const $info: JQuery = this.$searchResultsInfo.find('.info');
+    const $number: JQuery = $info.find('.number');
+    const $foundFor: JQuery = $info.find('.foundFor');
+    const $terms: JQuery = $info.find('.terms');
 
     if (terms) {
       $info.show();
 
-      $number.text(
-        (<OpenSeadragonExtension>this.extension).getTotalAnnotationRects()
-      );
+      $number.text((<OpenSeadragonExtension>this.extension).getTotalAnnotationRects());
 
       if (results.length === 1) {
         $foundFor.html(this.content.resultFoundFor);
@@ -871,7 +745,7 @@ export class FooterPanel extends BaseFooterPanel<
       }
 
       $terms.html(Strings.ellipsis(terms, this.options.elideResultsTermsCount));
-      $terms.prop("title", terms);
+      $terms.prop('title', terms);
     } else {
       $info.hide();
     }

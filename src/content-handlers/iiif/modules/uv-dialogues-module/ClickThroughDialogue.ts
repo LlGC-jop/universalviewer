@@ -1,12 +1,10 @@
-const $ = require("jquery");
-import { BaseConfig } from "../../BaseConfig";
-import { IIIFEvents } from "../../IIIFEvents";
-import { Dialogue } from "../uv-shared-module/Dialogue";
-import { IExternalResource } from "manifesto.js";
+const $ = require('jquery');
+import { BaseConfig } from '../../BaseConfig';
+import { IIIFEvents } from '../../IIIFEvents';
+import { Dialogue } from '../uv-shared-module/Dialogue';
+import { IExternalResource } from 'manifesto.js';
 
-export class ClickThroughDialogue extends Dialogue<
-  BaseConfig["modules"]["clickThroughDialogue"]
-> {
+export class ClickThroughDialogue extends Dialogue<BaseConfig['modules']['clickThroughDialogue']> {
   acceptCallback: any;
   $acceptTermsButton: JQuery;
   $message: JQuery;
@@ -18,7 +16,7 @@ export class ClickThroughDialogue extends Dialogue<
   }
 
   create(): void {
-    this.setConfig("clickThroughDialogue");
+    this.setConfig('clickThroughDialogue');
 
     super.create();
 
@@ -45,18 +43,18 @@ export class ClickThroughDialogue extends Dialogue<
                 <div class="buttons">\
                     <a class="acceptTerms btn btn-primary" href="#" target="_parent"></a>\
                 </div>\
-            </div>'
+            </div>',
     );
 
-    this.$message = this.$content.find(".message");
+    this.$message = this.$content.find('.message');
 
-    this.$acceptTermsButton = this.$content.find(".acceptTerms");
+    this.$acceptTermsButton = this.$content.find('.acceptTerms');
     // TODO: get from config this.$acceptTermsButton.text(this.content.acceptTerms); // figure out config
-    this.$acceptTermsButton.text("Accept Terms and Open");
+    this.$acceptTermsButton.text('Accept Terms and Open');
 
     this.$element.hide();
 
-    this.$acceptTermsButton.on("click", (e) => {
+    this.$acceptTermsButton.on('click', (e) => {
       e.preventDefault();
       this.close();
       this.extensionHost.publish(IIIFEvents.ACCEPT_TERMS);
@@ -68,15 +66,13 @@ export class ClickThroughDialogue extends Dialogue<
     super.open();
 
     if (this.resource.clickThroughService) {
-      this.$title.text(this.resource.clickThroughService.getProperty("label"));
-      this.$message.html(
-        this.resource.clickThroughService.getProperty("description")
-      );
+      this.$title.text(this.resource.clickThroughService.getProperty('label'));
+      this.$message.html(this.resource.clickThroughService.getProperty('description'));
       this.$message.targetBlank();
     }
 
-    this.$message.find("a").on("click", function () {
-      var url: string = $(this).attr("href");
+    this.$message.find('a').on('click', function () {
+      var url: string = $(this).attr('href');
       this.extensionHost.publish(IIIFEvents.EXTERNAL_LINK_CLICKED, url);
     });
 

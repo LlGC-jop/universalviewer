@@ -1,5 +1,5 @@
-import { ModuleConfig } from "../../BaseConfig";
-import { ExpandPanelContent, ExpandPanelOptions } from "./ExpandPanel";
+import { ModuleConfig } from '../../BaseConfig';
+import { ExpandPanelContent, ExpandPanelOptions } from './ExpandPanel';
 
 type ResourcesLeftPanelOptions = ExpandPanelOptions & {
   /** Determines if full expansion is enabled */

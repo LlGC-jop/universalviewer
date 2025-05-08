@@ -9,7 +9,7 @@ import {
   SettingsDialogueOptions,
   ShareDialogueContent,
   ShareDialogueOptions,
-} from "@/content-handlers/iiif/BaseConfig";
+} from '@/content-handlers/iiif/BaseConfig';
 
 type MediaElementCenterPanelOptions = CenterPanelOptions & {
   autoPlayOnSetTarget: boolean;

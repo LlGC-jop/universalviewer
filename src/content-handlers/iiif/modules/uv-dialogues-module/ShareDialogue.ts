@@ -1,13 +1,11 @@
-const $ = require("jquery");
-import { Bools, Clipboard, Numbers } from "@edsilv/utils";
-import type { ILabelValuePair } from "@iiif/manifold";
-import type { BaseConfig } from "../../BaseConfig";
-import { IIIFEvents } from "../../IIIFEvents";
-import { Dialogue } from "../uv-shared-module/Dialogue";
+const $ = require('jquery');
+import { Bools, Clipboard, Numbers } from '@edsilv/utils';
+import type { ILabelValuePair } from '@iiif/manifold';
+import type { BaseConfig } from '../../BaseConfig';
+import { IIIFEvents } from '../../IIIFEvents';
+import { Dialogue } from '../uv-shared-module/Dialogue';
 
-export class ShareDialogue<
-  T extends BaseConfig["modules"]["shareDialogue"]
-> extends Dialogue<T> {
+export class ShareDialogue<T extends BaseConfig['modules']['shareDialogue']> extends Dialogue<T> {
   copyToClipboardEnabled = true;
 
   $urlInput: JQuery;
@@ -46,26 +44,23 @@ export class ShareDialogue<
   }
 
   create(): void {
-    this.setConfig("shareDialogue");
+    this.setConfig('shareDialogue');
 
     super.create();
 
     // Accessibility.
-    this.$element.attr("role", "region");
-    this.$element.attr("aria-label", this.content.share);
+    this.$element.attr('role', 'region');
+    this.$element.attr('aria-label', this.content.share);
 
     this.openCommand = IIIFEvents.SHOW_SHARE_DIALOGUE;
     this.closeCommand = IIIFEvents.HIDE_SHARE_DIALOGUE;
     this.shareManifestsEnabled = this.options.shareManifestsEnabled || false;
 
     let lastElement: HTMLElement;
-    this.extensionHost.subscribe(
-      this.openCommand,
-      (triggerButton: HTMLElement) => {
-        lastElement = triggerButton;
-        this.open(triggerButton);
-      }
-    );
+    this.extensionHost.subscribe(this.openCommand, (triggerButton: HTMLElement) => {
+      lastElement = triggerButton;
+      this.open(triggerButton);
+    });
 
     this.extensionHost.subscribe(this.closeCommand, () => {
       if (lastElement) {
@@ -74,36 +69,27 @@ export class ShareDialogue<
       this.close();
     });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.SHOW_EMBED_DIALOGUE,
-      (triggerButton: HTMLElement) => {
-        this.open(triggerButton);
+    this.extensionHost.subscribe(IIIFEvents.SHOW_EMBED_DIALOGUE, (triggerButton: HTMLElement) => {
+      this.open(triggerButton);
 
-        if (triggerButton && $(triggerButton).is(".embed.btn")) {
-          // after setTimeout in Dialogue super class
-          setTimeout(() => {
-            this.$embedCode.focus();
-          }, 2);
-        }
+      if (triggerButton && $(triggerButton).is('.embed.btn')) {
+        // after setTimeout in Dialogue super class
+        setTimeout(() => {
+          this.$embedCode.focus();
+        }, 2);
       }
-    );
+    });
 
     // Title
-    const $title = $(
-      `<div role="heading" class="heading">${this.content.share}</div>`
-    );
+    const $title = $(`<div role="heading" class="heading">${this.content.share}</div>`);
     this.$content.append($title);
 
     // Share URL
 
-    this.$urlSection = $(
-      `<div class="share__section"><label class="share__label" for="embedCode">${this.content.shareLink}</label></div>`
-    );
+    this.$urlSection = $(`<div class="share__section"><label class="share__label" for="embedCode">${this.content.shareLink}</label></div>`);
 
     const shareUrl = this.getShareUrl();
-    this.$urlInput = $(
-      `<input class="copy-input" id="urlInput" type="text" value="${shareUrl}" readonly/>`
-    );
+    this.$urlInput = $(`<input class="copy-input" id="urlInput" type="text" value="${shareUrl}" readonly/>`);
     this.$urlInput.focus(function () {
       $(this).select();
     });
@@ -112,16 +98,10 @@ export class ShareDialogue<
 
     // Manifest URL
 
-    this.$manifestSection = $(
-      `<div class="share__section"><label class="share__label" for="manifestCode">${this.content.iiif}</label></div>`
-    );
+    this.$manifestSection = $(`<div class="share__section"><label class="share__label" for="manifestCode">${this.content.iiif}</label></div>`);
 
-    const iiifUrl: string = this.extension.getIIIFShareUrl(
-      this.shareManifestsEnabled
-    );
-    this.$manifestInput = $(
-      `<input class="copy-input" id="manifestInput" type="text" value="${iiifUrl}" readonly/>`
-    );
+    const iiifUrl: string = this.extension.getIIIFShareUrl(this.shareManifestsEnabled);
+    this.$manifestInput = $(`<input class="copy-input" id="manifestInput" type="text" value="${iiifUrl}" readonly/>`);
     this.$manifestInput.focus(function () {
       $(this).select();
     });
@@ -130,13 +110,9 @@ export class ShareDialogue<
 
     // Embed IFRAME code
 
-    this.$embedSection = $(
-      `<div class="share__section"><label class="share__label" for="embedCode">${this.content.embed}</label></div>`
-    );
+    this.$embedSection = $(`<div class="share__section"><label class="share__label" for="embedCode">${this.content.embed}</label></div>`);
 
-    this.$embedCode = $(
-      `<input class="copy-input" id="embedCode" type="text" readonly/>`
-    );
+    this.$embedCode = $(`<input class="copy-input" id="embedCode" type="text" readonly/>`);
     this.$embedCode.focus(function () {
       $(this).select();
     });
@@ -147,35 +123,21 @@ export class ShareDialogue<
 
     this.$customSize = $('<div class="customSize"></div>');
 
-    this.$size = $(
-      `<label for="size" class="size">${this.content.size}</label>`
-    );
+    this.$size = $(`<label for="size" class="size">${this.content.size}</label>`);
     this.$customSize.append(this.$size);
 
-    this.$customSizeDropDown = $(
-      `<select class="embed-size-select" id="size" aria-label="${this.content.size}"></select>`
-    );
-    this.$customSizeDropDown.append(
-      '<option value="small" data-width="560" data-height="420">560 x 420</option>'
-    );
-    this.$customSizeDropDown.append(
-      '<option value="medium" data-width="640" data-height="480">640 x 480</option>'
-    );
-    this.$customSizeDropDown.append(
-      '<option value="large" data-width="800" data-height="600">800 x 600</option>'
-    );
-    this.$customSizeDropDown.append(
-      `<option value="custom">${this.content.customSize}</option>`
-    );
+    this.$customSizeDropDown = $(`<select class="embed-size-select" id="size" aria-label="${this.content.size}"></select>`);
+    this.$customSizeDropDown.append('<option value="small" data-width="560" data-height="420">560 x 420</option>');
+    this.$customSizeDropDown.append('<option value="medium" data-width="640" data-height="480">640 x 480</option>');
+    this.$customSizeDropDown.append('<option value="large" data-width="800" data-height="600">800 x 600</option>');
+    this.$customSizeDropDown.append(`<option value="custom">${this.content.customSize}</option>`);
     this.$customSizeDropDown.change(() => {
       this.update();
     });
     this.$customSize.append(this.$customSizeDropDown);
 
-    this.$widthInput = $(
-      `<input class="width" type="text" maxlength="10" aria-label="${this.content.width}"/>`
-    );
-    this.$widthInput.on("keydown", (e) => {
+    this.$widthInput = $(`<input class="width" type="text" maxlength="10" aria-label="${this.content.width}"/>`);
+    this.$widthInput.on('keydown', (e) => {
       return Numbers.numericalInput(e);
     });
     this.$widthInput.change(() => {
@@ -190,10 +152,8 @@ export class ShareDialogue<
     this.$x = $('<span class="x">x</span>');
     this.$customSize.append(this.$x);
 
-    this.$heightInput = $(
-      `<input class="height" type="text" maxlength="10" aria-label="${this.content.height}"/>`
-    );
-    this.$heightInput.on("keydown", (e) => {
+    this.$heightInput = $(`<input class="height" type="text" maxlength="10" aria-label="${this.content.height}"/>`);
+    this.$heightInput.on('keydown', (e) => {
       return Numbers.numericalInput(e);
     });
     this.$heightInput.change(() => {
@@ -205,17 +165,13 @@ export class ShareDialogue<
     // IIIF Drag and Drop
 
     const $iiifSection = $('<div class="iiif-section"></div>');
-    this.$iiifButton = $(
-      `<a class="imageBtn iiif" href="${iiifUrl}" title="${this.content.iiif}" target="_blank"></a>`
-    );
+    this.$iiifButton = $(`<a class="imageBtn iiif" href="${iiifUrl}" title="${this.content.iiif}" target="_blank"></a>`);
     $iiifSection.append(this.$iiifButton);
     this.$content.append($iiifSection);
 
     // Terms of Use Link
 
-    this.$termsOfUseButton = $(
-      `<a href="#">${this.extension.data.config?.content.termsOfUse}</a>`
-    );
+    this.$termsOfUseButton = $(`<a href="#">${this.extension.data.config?.content.termsOfUse}</a>`);
     $iiifSection.append(this.$termsOfUseButton);
 
     // Options
@@ -264,9 +220,7 @@ export class ShareDialogue<
   }
 
   addCopyButton($input) {
-    const $btn = $(
-      `<button class="copyBtn" aria-label="${this.content.copyToClipboard}">${this.content.copyBtn}</button>`
-    );
+    const $btn = $(`<button class="copyBtn" aria-label="${this.content.copyToClipboard}">${this.content.copyBtn}</button>`);
 
     this.onAccessibleClick(
       $btn,
@@ -275,7 +229,7 @@ export class ShareDialogue<
         $input.focus();
       },
       true,
-      true
+      true,
     );
 
     // sleight of hand
@@ -294,7 +248,7 @@ export class ShareDialogue<
 
     const $selected: JQuery = this.getSelectedSize();
 
-    if ($selected.val() === "custom") {
+    if ($selected.val() === 'custom') {
       this.$widthInput.show();
       this.$x.show();
       this.$heightInput.show();
@@ -302,8 +256,8 @@ export class ShareDialogue<
       this.$widthInput.hide();
       this.$x.hide();
       this.$heightInput.hide();
-      this.currentWidth = Number($selected.data("width"));
-      this.currentHeight = Number($selected.data("height"));
+      this.currentWidth = Number($selected.data('width'));
+      this.currentHeight = Number($selected.data('height'));
       this.$widthInput.val(String(this.currentWidth));
       this.$heightInput.val(String(this.currentHeight));
     }
@@ -321,7 +275,7 @@ export class ShareDialogue<
   }
 
   getSelectedSize(): JQuery {
-    return this.$customSizeDropDown.find(":selected");
+    return this.$customSizeDropDown.find(':selected');
   }
 
   updateWidthRatio(): void {
@@ -351,17 +305,9 @@ export class ShareDialogue<
   }
 
   updateTermsOfUseButton(): void {
-    const requiredStatement: ILabelValuePair | null =
-      this.extension.helper.getRequiredStatement();
+    const requiredStatement: ILabelValuePair | null = this.extension.helper.getRequiredStatement();
 
-    if (
-      Bools.getBool(
-        this.extension.data.config?.options.termsOfUseEnabled,
-        true
-      ) &&
-      requiredStatement &&
-      requiredStatement.value
-    ) {
+    if (Bools.getBool(this.extension.data.config?.options.termsOfUseEnabled, true) && requiredStatement && requiredStatement.value) {
       this.$termsOfUseButton.show();
     } else {
       this.$termsOfUseButton.hide();

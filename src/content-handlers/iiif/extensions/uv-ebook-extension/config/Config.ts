@@ -9,11 +9,8 @@ import {
   SettingsDialogueOptions,
   ShareDialogueContent,
   ShareDialogueOptions,
-} from "@/content-handlers/iiif/BaseConfig";
-import {
-  ExpandPanelContent,
-  ExpandPanelOptions,
-} from "../../config/ExpandPanel";
+} from '@/content-handlers/iiif/BaseConfig';
+import { ExpandPanelContent, ExpandPanelOptions } from '../../config/ExpandPanel';
 
 type EbookLeftPanelOptions = ExpandPanelOptions & {};
 

@@ -1,7 +1,7 @@
-import { IUVData } from "./IUVData";
-import { IContentHandler } from "./IContentHandler";
-import BaseContentHandler, { EventListener } from "./BaseContentHandler";
-import { ContentType } from "./ContentType";
+import { IUVData } from './IUVData';
+import { IContentHandler } from './IContentHandler';
+import BaseContentHandler, { EventListener } from './BaseContentHandler';
+import { ContentType } from './ContentType';
 
 export interface IUVOptions {
   target: HTMLElement;
@@ -13,14 +13,8 @@ interface IContentHandlerRegistry {
 }
 
 const ContentHandler: IContentHandlerRegistry = {
-  [ContentType.IIIF]: () =>
-    /* webpackMode: "lazy" */ import(
-      "./content-handlers/iiif/IIIFContentHandler"
-    ),
-  [ContentType.YOUTUBE]: () =>
-    /* webpackMode: "lazy" */ import(
-      "./content-handlers/youtube/YouTubeContentHandler"
-    ),
+  [ContentType.IIIF]: () => /* webpackMode: "lazy" */ import('./content-handlers/iiif/IIIFContentHandler'),
+  [ContentType.YOUTUBE]: () => /* webpackMode: "lazy" */ import('./content-handlers/youtube/YouTubeContentHandler'),
 };
 
 export class UniversalViewer extends BaseContentHandler<IUVData<any>> {
@@ -71,22 +65,21 @@ export class UniversalViewer extends BaseContentHandler<IUVData<any>> {
     const handlerChanged: boolean = this.contentType !== contentType;
 
     if (contentType === ContentType.UNKNOWN) {
-      console.error("Unknown content type");
+      console.error('Unknown content type');
     } else if (handlerChanged) {
       this.contentType = this._contentType = contentType; // set content type
       this.assignedContentHandler?.dispose(); // dispose previous content handler
       const m = await ContentHandler[contentType](); // import content handler
       this.showSpinner(); // show spinner
       // include _assignedContentHandler for backwards compat, remove in next major version (UV5)
-      this.assignedContentHandler = this._assignedContentHandler =
-        new m.default(
-          {
-            target: this._el,
-            data: data,
-          },
-          this.adapter,
-          this._externalEventListeners
-        ); // create content handler
+      this.assignedContentHandler = this._assignedContentHandler = new m.default(
+        {
+          target: this._el,
+          data: data,
+        },
+        this.adapter,
+        this._externalEventListeners,
+      ); // create content handler
     }
 
     return handlerChanged;

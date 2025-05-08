@@ -1,24 +1,15 @@
-const $ = require("jquery");
-import { IIIFEvents } from "../../IIIFEvents";
-import { Dialogue } from "../uv-shared-module/Dialogue";
-import { DownloadOption } from "../uv-shared-module/DownloadOption";
-import { IRenderingOption } from "../uv-shared-module/IRenderingOption";
-import { Bools, Files, Strings } from "@edsilv/utils";
-import {
-  Annotation,
-  AnnotationBody,
-  Canvas,
-  LanguageMap,
-  ManifestResource,
-  Rendering,
-} from "manifesto.js";
-import { RenderingFormat, MediaType } from "@iiif/vocabulary/dist-commonjs/";
-import { ILabelValuePair } from "@iiif/manifold";
-import { BaseConfig } from "../../BaseConfig";
+const $ = require('jquery');
+import { IIIFEvents } from '../../IIIFEvents';
+import { Dialogue } from '../uv-shared-module/Dialogue';
+import { DownloadOption } from '../uv-shared-module/DownloadOption';
+import { IRenderingOption } from '../uv-shared-module/IRenderingOption';
+import { Bools, Files, Strings } from '@edsilv/utils';
+import { Annotation, AnnotationBody, Canvas, LanguageMap, ManifestResource, Rendering } from 'manifesto.js';
+import { RenderingFormat, MediaType } from '@iiif/vocabulary/dist-commonjs/';
+import { ILabelValuePair } from '@iiif/manifold';
+import { BaseConfig } from '../../BaseConfig';
 
-export class DownloadDialogue extends Dialogue<
-  BaseConfig["modules"]["downloadDialogue"]
-> {
+export class DownloadDialogue extends Dialogue<BaseConfig['modules']['downloadDialogue']> {
   $downloadOptions: JQuery;
   $noneAvailable: JQuery;
   $title: JQuery;
@@ -33,25 +24,22 @@ export class DownloadDialogue extends Dialogue<
   }
 
   create(): void {
-    this.setConfig("downloadDialogue");
+    this.setConfig('downloadDialogue');
 
     super.create();
 
     // Accessibility.
-    this.$element.attr("role", "region");
-    this.$element.attr("aria-label", this.content.title);
+    this.$element.attr('role', 'region');
+    this.$element.attr('aria-label', this.content.title);
 
     this.openCommand = IIIFEvents.SHOW_DOWNLOAD_DIALOGUE;
     this.closeCommand = IIIFEvents.HIDE_DOWNLOAD_DIALOGUE;
 
     let lastButton: HTMLElement;
-    this.extensionHost.subscribe(
-      this.openCommand,
-      (triggerButton: HTMLElement) => {
-        lastButton = triggerButton;
-        this.open(triggerButton);
-      }
-    );
+    this.extensionHost.subscribe(this.openCommand, (triggerButton: HTMLElement) => {
+      lastButton = triggerButton;
+      this.open(triggerButton);
+    });
 
     this.extensionHost.subscribe(this.closeCommand, () => {
       if (lastButton) {
@@ -61,14 +49,10 @@ export class DownloadDialogue extends Dialogue<
     });
 
     // create ui.
-    this.$title = $(
-      `<div role="heading" class="heading">${this.content.title}</div>`
-    );
+    this.$title = $(`<div role="heading" class="heading">${this.content.title}</div>`);
     this.$content.append(this.$title);
 
-    this.$noneAvailable = $(
-      '<div class="noneAvailable">' + this.content.noneAvailable + "</div>"
-    );
+    this.$noneAvailable = $('<div class="noneAvailable">' + this.content.noneAvailable + '</div>');
     this.$content.append(this.$noneAvailable);
 
     this.$downloadOptions = $('<ol class="options"></ol>');
@@ -77,9 +61,7 @@ export class DownloadDialogue extends Dialogue<
     this.$footer = $('<div class="footer"></div>');
     this.$content.append(this.$footer);
 
-    this.$termsOfUseButton = $(
-      '<a href="#">' + this.extension.data.config!.content.termsOfUse + "</a>"
-    );
+    this.$termsOfUseButton = $('<a href="#">' + this.extension.data.config!.content.termsOfUse + '</a>');
     this.$footer.append(this.$termsOfUseButton);
 
     this.$termsOfUseButton.onPressed(() => {
@@ -92,9 +74,7 @@ export class DownloadDialogue extends Dialogue<
   }
 
   addEntireFileDownloadOptions(): void {
-    if (
-      this.isDownloadOptionAvailable(DownloadOption.ENTIRE_FILE_AS_ORIGINAL)
-    ) {
+    if (this.isDownloadOptionAvailable(DownloadOption.ENTIRE_FILE_AS_ORIGINAL)) {
       this.$downloadOptions.empty();
 
       //
@@ -109,15 +89,11 @@ export class DownloadDialogue extends Dialogue<
       for (let i = 0; i < renderings.length; i++) {
         const rendering: Rendering = renderings[i];
         const renderingFormat: RenderingFormat = rendering.getFormat();
-        let format: string = "";
+        let format: string = '';
         if (renderingFormat) {
           format = renderingFormat.toString();
         }
-        this.addEntireFileDownloadOption(
-          rendering.id,
-          <string>LanguageMap.getValue(rendering.getLabel()),
-          format
-        );
+        this.addEntireFileDownloadOption(rendering.id, <string>LanguageMap.getValue(rendering.getLabel()), format);
         renderingFound = true;
       }
 
@@ -134,28 +110,20 @@ export class DownloadDialogue extends Dialogue<
             const format: MediaType | null = body[0].getFormat();
 
             if (format) {
-              this.addEntireFileDownloadOption(
-                body[0].id,
-                "",
-                format.toString()
-              );
+              this.addEntireFileDownloadOption(body[0].id, '', format.toString());
               annotationFound = true;
             }
           }
         }
 
         if (!annotationFound) {
-          this.addEntireFileDownloadOption(canvas.id, "", "");
+          this.addEntireFileDownloadOption(canvas.id, '', '');
         }
       }
     }
   }
 
-  addEntireFileDownloadOption(
-    uri: string,
-    label: string,
-    format: string
-  ): void {
+  addEntireFileDownloadOption(uri: string, label: string, format: string): void {
     let fileType: string | null;
 
     if (format) {
@@ -169,29 +137,19 @@ export class DownloadDialogue extends Dialogue<
     }
 
     if (fileType) {
-      label += " (" + fileType + ")";
+      label += ' (' + fileType + ')';
     }
 
-    this.$downloadOptions.append(
-      '<li><a href="' +
-        uri +
-        '" target="_blank" download tabindex="0">' +
-        label +
-        "</li>"
-    );
+    this.$downloadOptions.append('<li><a href="' + uri + '" target="_blank" download tabindex="0">' + label + '</li>');
   }
 
   resetDynamicDownloadOptions(): void {
     this.renderingUrls = [];
     this.renderingUrlsCount = 0;
-    this.$downloadOptions.find("li.dynamic").remove();
+    this.$downloadOptions.find('li.dynamic').remove();
   }
 
-  getDownloadOptionsForRenderings(
-    resource: ManifestResource,
-    defaultLabel: string,
-    type: DownloadOption
-  ): IRenderingOption[] {
+  getDownloadOptionsForRenderings(resource: ManifestResource, defaultLabel: string, type: DownloadOption): IRenderingOption[] {
     const renderings: Rendering[] = resource.getRenderings();
 
     const downloadOptions: any[] = [];
@@ -199,19 +157,14 @@ export class DownloadDialogue extends Dialogue<
     for (let i = 0; i < renderings.length; i++) {
       const rendering: Rendering = renderings[i];
       if (rendering) {
-        let label: string | null = LanguageMap.getValue(
-          rendering.getLabel(),
-          this.extension.getLocale()
-        );
-        const currentId: string = "downloadOption" + ++this.renderingUrlsCount;
+        let label: string | null = LanguageMap.getValue(rendering.getLabel(), this.extension.getLocale());
+        const currentId: string = 'downloadOption' + ++this.renderingUrlsCount;
         if (label) {
-          label += " ({0})";
+          label += ' ({0})';
         } else {
           label = defaultLabel;
         }
-        const mime: string = Files.simplifyMimeType(
-          rendering.getFormat().toString()
-        );
+        const mime: string = Files.simplifyMimeType(rendering.getFormat().toString());
         label = Strings.format(label, mime);
         this.renderingUrls[<any>currentId] = rendering.id;
         const $button: JQuery = $(
@@ -225,7 +178,7 @@ export class DownloadDialogue extends Dialogue<
             currentId +
             '">' +
             label +
-            "</label></li>"
+            '</label></li>',
         );
 
         downloadOptions.push({
@@ -239,7 +192,7 @@ export class DownloadDialogue extends Dialogue<
   }
 
   getSelectedOption() {
-    return this.$downloadOptions.find("li.option input:checked");
+    return this.$downloadOptions.find('li.option input:checked');
   }
 
   getCurrentResourceId(): string {
@@ -256,11 +209,11 @@ export class DownloadDialogue extends Dialogue<
 
   getCurrentResourceFormat(): string {
     const id: string = this.getCurrentResourceId();
-    return id?.substr(id.lastIndexOf(".") + 1).toLowerCase();
+    return id?.substr(id.lastIndexOf('.') + 1).toLowerCase();
   }
 
   updateNoneAvailable(): void {
-    if (!this.$downloadOptions.find("li:visible").length) {
+    if (!this.$downloadOptions.find('li:visible').length) {
       this.$noneAvailable.show();
     } else {
       // select first option.
@@ -269,17 +222,9 @@ export class DownloadDialogue extends Dialogue<
   }
 
   updateTermsOfUseButton(): void {
-    const requiredStatement: ILabelValuePair | null =
-      this.extension.helper.getRequiredStatement();
+    const requiredStatement: ILabelValuePair | null = this.extension.helper.getRequiredStatement();
 
-    if (
-      Bools.getBool(
-        this.extension.data.config!.options.termsOfUseEnabled,
-        false
-      ) &&
-      requiredStatement &&
-      requiredStatement.value
-    ) {
+    if (Bools.getBool(this.extension.data.config!.options.termsOfUseEnabled, false) && requiredStatement && requiredStatement.value) {
       this.$termsOfUseButton.show();
     } else {
       this.$termsOfUseButton.hide();
@@ -287,10 +232,10 @@ export class DownloadDialogue extends Dialogue<
   }
 
   getFileExtension(fileUri: string): string | null {
-    let extension: string = <string>fileUri.split(".").pop();
+    let extension: string = <string>fileUri.split('.').pop();
 
     // if it's not a valid file extension
-    if (extension.length > 5 || extension.indexOf("/") !== -1) {
+    if (extension.length > 5 || extension.indexOf('/') !== -1) {
       return null;
     }
 
@@ -298,7 +243,7 @@ export class DownloadDialogue extends Dialogue<
   }
 
   isMediaDownloadEnabled(): boolean {
-    return this.extension.helper.isUIEnabled("mediaDownload");
+    return this.extension.helper.isUIEnabled('mediaDownload');
   }
 
   isDownloadOptionAvailable(option: DownloadOption): boolean {

@@ -1,31 +1,28 @@
-import { IIIFEvents } from "../../IIIFEvents";
-import { BaseExtension } from "../../modules/uv-shared-module/BaseExtension";
-import { FileLinkCenterPanel } from "../../modules/uv-filelinkcenterpanel-module/FileLinkCenterPanel";
-import { FooterPanel } from "../../modules/uv-shared-module/FooterPanel";
-import { HeaderPanel } from "../../modules/uv-shared-module/HeaderPanel";
-import { HelpDialogue } from "../../modules/uv-dialogues-module/HelpDialogue";
-import { IDefaultExtension } from "./IDefaultExtension";
-import { MoreInfoRightPanel } from "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel";
-import { ResourcesLeftPanel } from "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel";
-import { SettingsDialogue } from "./SettingsDialogue";
-import { ShareDialogue } from "./ShareDialogue";
-import { Bools } from "@edsilv/utils";
-import "./theme/theme.less";
-import defaultConfig from "./config/config.json";
-import { Config } from "./config/Config";
+import { IIIFEvents } from '../../IIIFEvents';
+import { BaseExtension } from '../../modules/uv-shared-module/BaseExtension';
+import { FileLinkCenterPanel } from '../../modules/uv-filelinkcenterpanel-module/FileLinkCenterPanel';
+import { FooterPanel } from '../../modules/uv-shared-module/FooterPanel';
+import { HeaderPanel } from '../../modules/uv-shared-module/HeaderPanel';
+import { HelpDialogue } from '../../modules/uv-dialogues-module/HelpDialogue';
+import { IDefaultExtension } from './IDefaultExtension';
+import { MoreInfoRightPanel } from '../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel';
+import { ResourcesLeftPanel } from '../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel';
+import { SettingsDialogue } from './SettingsDialogue';
+import { ShareDialogue } from './ShareDialogue';
+import { Bools } from '@edsilv/utils';
+import './theme/theme.less';
+import defaultConfig from './config/config.json';
+import { Config } from './config/Config';
 
-export default class Extension
-  extends BaseExtension<Config>
-  implements IDefaultExtension
-{
+export default class Extension extends BaseExtension<Config> implements IDefaultExtension {
   $downloadDialogue: JQuery;
   $shareDialogue: JQuery;
   $helpDialogue: JQuery;
   $settingsDialogue: JQuery;
   centerPanel: FileLinkCenterPanel;
   shareDialogue: ShareDialogue;
-  footerPanel: FooterPanel<Config["modules"]["footerPanel"]>;
-  headerPanel: HeaderPanel<Config["modules"]["headerPanel"]>;
+  footerPanel: FooterPanel<Config['modules']['footerPanel']>;
+  headerPanel: HeaderPanel<Config['modules']['headerPanel']>;
   helpDialogue: HelpDialogue;
   leftPanel: ResourcesLeftPanel;
   rightPanel: MoreInfoRightPanel;
@@ -35,19 +32,13 @@ export default class Extension
   create(): void {
     super.create();
 
-    this.extensionHost.subscribe(
-      IIIFEvents.CANVAS_INDEX_CHANGE,
-      (canvasIndex: number) => {
-        this.viewCanvas(canvasIndex);
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.CANVAS_INDEX_CHANGE, (canvasIndex: number) => {
+      this.viewCanvas(canvasIndex);
+    });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.THUMB_SELECTED,
-      (canvasIndex: number) => {
-        this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, canvasIndex);
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.THUMB_SELECTED, (canvasIndex: number) => {
+      this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, canvasIndex);
+    });
   }
 
   createModules(): void {
@@ -75,21 +66,15 @@ export default class Extension
       this.shell.$footerPanel.hide();
     }
 
-    this.$helpDialogue = $(
-      '<div class="overlay help" aria-hidden="true"></div>'
-    );
+    this.$helpDialogue = $('<div class="overlay help" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$helpDialogue);
     this.helpDialogue = new HelpDialogue(this.$helpDialogue);
 
-    this.$shareDialogue = $(
-      '<div class="overlay share" aria-hidden="true"></div>'
-    );
+    this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$shareDialogue);
     this.shareDialogue = new ShareDialogue(this.$shareDialogue);
 
-    this.$settingsDialogue = $(
-      '<div class="overlay settings" aria-hidden="true"></div>'
-    );
+    this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$settingsDialogue);
     this.settingsDialogue = new SettingsDialogue(this.$settingsDialogue);
 
@@ -107,12 +92,7 @@ export default class Extension
   }
 
   isLeftPanelEnabled(): boolean {
-    return (
-      Bools.getBool(this.data.config!.options.leftPanelEnabled, true) &&
-      (this.helper.isMultiCanvas() ||
-        this.helper.isMultiSequence() ||
-        this.helper.hasResources())
-    );
+    return Bools.getBool(this.data.config!.options.leftPanelEnabled, true) && (this.helper.isMultiCanvas() || this.helper.isMultiSequence() || this.helper.hasResources());
   }
 
   getEmbedScript(template: string, width: number, height: number): string {

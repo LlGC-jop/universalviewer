@@ -1,22 +1,17 @@
-const $ = require("jquery");
-import { Auth09 } from "./Auth09";
-import { Auth1 } from "./Auth1";
-import { AuthDialogue } from "../uv-dialogues-module/AuthDialogue";
-import { ClickThroughDialogue } from "../uv-dialogues-module/ClickThroughDialogue";
-import { ExtensionLoader, IExtension } from "./IExtension";
-import { ILocale } from "./ILocale";
-import { ISharePreview } from "./ISharePreview";
-import { IIIFExtensionHost } from "../../IIIFExtensionHost";
-import { IUVData } from "@/IUVData";
-import { LoginDialogue } from "../uv-dialogues-module/LoginDialogue";
-import { RestrictedDialogue } from "../uv-dialogues-module/RestrictedDialogue";
-import { Shell } from "./Shell";
-import {
-  AnnotationGroup,
-  ExternalResource,
-  Helper,
-  ILabelValuePair,
-} from "@iiif/manifold";
+const $ = require('jquery');
+import { Auth09 } from './Auth09';
+import { Auth1 } from './Auth1';
+import { AuthDialogue } from '../uv-dialogues-module/AuthDialogue';
+import { ClickThroughDialogue } from '../uv-dialogues-module/ClickThroughDialogue';
+import { ExtensionLoader, IExtension } from './IExtension';
+import { ILocale } from './ILocale';
+import { ISharePreview } from './ISharePreview';
+import { IIIFExtensionHost } from '../../IIIFExtensionHost';
+import { IUVData } from '@/IUVData';
+import { LoginDialogue } from '../uv-dialogues-module/LoginDialogue';
+import { RestrictedDialogue } from '../uv-dialogues-module/RestrictedDialogue';
+import { Shell } from './Shell';
+import { AnnotationGroup, ExternalResource, Helper, ILabelValuePair } from '@iiif/manifold';
 // import { ExternalResource } from "./TestExternalResource";
 import {
   Annotation,
@@ -30,24 +25,16 @@ import {
   IManifestoOptions,
   Manifest,
   Range,
-} from "manifesto.js";
-import { ViewingHint } from "@iiif/vocabulary/dist-commonjs/";
-import * as KeyCodes from "@edsilv/key-codes";
-import {
-  Bools,
-  Documents,
-  Objects,
-  Storage,
-  StorageType,
-  Urls,
-  Strings,
-} from "@edsilv/utils";
-import { defaultLocale, isVisible } from "../../../../Utils";
-import { IIIFEvents } from "../../IIIFEvents";
-import { Events } from "../../../../Events";
-import type { StoreApi } from "zustand/vanilla";
-import { ExtensionState } from "./ExtensionState";
-import { BaseConfig, Metric, MetricType } from "../../BaseConfig";
+} from 'manifesto.js';
+import { ViewingHint } from '@iiif/vocabulary/dist-commonjs/';
+import * as KeyCodes from '@edsilv/key-codes';
+import { Bools, Documents, Objects, Storage, StorageType, Urls, Strings } from '@edsilv/utils';
+import { defaultLocale, isVisible } from '../../../../Utils';
+import { IIIFEvents } from '../../IIIFEvents';
+import { Events } from '../../../../Events';
+import type { StoreApi } from 'zustand/vanilla';
+import { ExtensionState } from './ExtensionState';
+import { BaseConfig, Metric, MetricType } from '../../BaseConfig';
 
 export class BaseExtension<T extends BaseConfig> implements IExtension {
   $authDialogue: JQuery;
@@ -81,11 +68,11 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
   locales = {};
   defaultConfig: T = {} as any;
   localeLoaders: Record<string, () => Promise<any>> = {
-    "en-GB": () => import("../../../../locales/en-GB.json"),
-    "cy-GB": () => import("../../../../locales/cy-GB.json"),
-    "fr-FR": () => import("../../../../locales/fr-FR.json"),
-    "pl-PL": () => import("../../../../locales/pl-PL.json"),
-    "sv-SE": () => import("../../../../locales/sv-SE.json"),
+    'en-GB': () => import('../../../../locales/en-GB.json'),
+    'cy-GB': () => import('../../../../locales/cy-GB.json'),
+    'fr-FR': () => import('../../../../locales/fr-FR.json'),
+    'pl-PL': () => import('../../../../locales/pl-PL.json'),
+    'sv-SE': () => import('../../../../locales/sv-SE.json'),
   };
 
   public create(): void {
@@ -98,7 +85,7 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
     Auth1.publish = this.extensionHost.publish.bind(this.extensionHost);
 
     this.$element = $(this.extensionHost.options.target);
-    this.$element.data("component", this.extensionHost);
+    this.$element.data('component', this.extensionHost);
 
     this._parseMetrics();
     this._updateMetric();
@@ -107,47 +94,47 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
     // add/remove classes.
     this.$element.empty();
     this.$element.removeClass();
-    this.$element.addClass("uv-iiif-extension-host");
-    this.$element.addClass("loading");
+    this.$element.addClass('uv-iiif-extension-host');
+    this.$element.addClass('loading');
     if (this.data.locales) {
       this.$element.addClass(this.data.locales[0].name.toLowerCase());
-      this.$element.prop("lang", this.data.locales[0].name.substring(0, 2));
+      this.$element.prop('lang', this.data.locales[0].name.substring(0, 2));
     } else {
-      this.$element.prop("lang", defaultLocale[0].name.substring(0, 2));
+      this.$element.prop('lang', defaultLocale[0].name.substring(0, 2));
     }
 
     if (this.isRightPanelEnabled()) {
-      this.$element.addClass("right-panel-enabled");
+      this.$element.addClass('right-panel-enabled');
     }
     if (this.isLeftPanelEnabled()) {
-      this.$element.addClass("left-panel-enabled");
+      this.$element.addClass('left-panel-enabled');
     }
     if (this.isFooterPanelEnabled()) {
-      this.$element.addClass("footer-panel-enabled");
+      this.$element.addClass('footer-panel-enabled');
     }
 
     this.$element.addClass(this.type.name);
-    this.$element.addClass("browser-" + this.browserDetect.browser);
-    this.$element.addClass("browser-version-" + this.browserDetect.version);
-    this.$element.prop("tabindex", -1);
+    this.$element.addClass('browser-' + this.browserDetect.browser);
+    this.$element.addClass('browser-version-' + this.browserDetect.version);
+    this.$element.prop('tabindex', -1);
 
     if (this.data.embedded) {
-      this.$element.addClass("embedded");
+      this.$element.addClass('embedded');
     }
 
     if (this.isMobile()) {
-      this.$element.addClass("mobile");
+      this.$element.addClass('mobile');
     }
 
     if (Documents.supportsFullscreen()) {
-      this.$element.addClass("fullscreen-supported");
+      this.$element.addClass('fullscreen-supported');
     }
 
     if (this.isFullScreen()) {
-      this.$element.addClass("fullscreen");
+      this.$element.addClass('fullscreen');
     }
 
-    this.$element.on("mousemove", (e) => {
+    this.$element.on('mousemove', (e) => {
       this.mouseX = e.pageX;
       this.mouseY = e.pageY;
     });
@@ -157,8 +144,7 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
       const visibilityProp: string | null = Documents.getHiddenProp();
 
       if (visibilityProp) {
-        const event: string =
-          visibilityProp.replace(/[H|h]idden/, "") + "visibilitychange";
+        const event: string = visibilityProp.replace(/[H|h]idden/, '') + 'visibilitychange';
         document.addEventListener(event, () => {
           // resize after a tab has been shown (fixes safari layout issue)
           if (!Documents.isHidden()) {
@@ -168,21 +154,15 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
       }
 
       if (Bools.getBool(this.data.config!.options.dropEnabled, true)) {
-        this.$element.on("drop", (e) => {
+        this.$element.on('drop', (e) => {
           e.preventDefault();
-          const dropUrl: any = (<any>e.originalEvent).dataTransfer.getData(
-            "URL"
-          );
+          const dropUrl: any = (<any>e.originalEvent).dataTransfer.getData('URL');
           const a: HTMLAnchorElement = Urls.getUrlParts(dropUrl);
-          let manifestUri: string | null =
-            Urls.getQuerystringParameterFromString("manifest", a.search);
+          let manifestUri: string | null = Urls.getQuerystringParameterFromString('manifest', a.search);
 
           if (!manifestUri) {
             // look for collection param
-            manifestUri = Urls.getQuerystringParameterFromString(
-              "collection",
-              a.search
-            );
+            manifestUri = Urls.getQuerystringParameterFromString('collection', a.search);
           }
           //var canvasUri = Urls.getQuerystringParameterFromString('canvas', url.search);
 
@@ -195,19 +175,19 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
         });
       }
 
-      this.$element.on("dragover", (e) => {
+      this.$element.on('dragover', (e) => {
         // allow drop
         e.preventDefault();
       });
 
       // keyboard events.
 
-      this.$element.on("keyup keydown", (e: any) => {
+      this.$element.on('keyup keydown', (e: any) => {
         this.shifted = e.shiftKey;
         this.tabbing = e.keyCode === KeyCodes.KeyDown.Tab;
       });
 
-      this.$element.on("keydown", (e: any) => {
+      this.$element.on('keydown', (e: any) => {
         let event: string | null = null;
         let preventDefault: boolean = true;
 
@@ -218,36 +198,23 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
           }
           if (e.keyCode === KeyCodes.KeyDown.Escape) event = IIIFEvents.ESCAPE;
           if (e.keyCode === KeyCodes.KeyDown.PageUp) event = IIIFEvents.PAGE_UP;
-          if (e.keyCode === KeyCodes.KeyDown.PageDown)
-            event = IIIFEvents.PAGE_DOWN;
+          if (e.keyCode === KeyCodes.KeyDown.PageDown) event = IIIFEvents.PAGE_DOWN;
           if (e.keyCode === KeyCodes.KeyDown.End) event = IIIFEvents.END;
           if (e.keyCode === KeyCodes.KeyDown.Home) event = IIIFEvents.HOME;
-          if (
-            e.keyCode === KeyCodes.KeyDown.NumpadPlus ||
-            e.keyCode === 171 ||
-            e.keyCode === KeyCodes.KeyDown.Equals
-          ) {
+          if (e.keyCode === KeyCodes.KeyDown.NumpadPlus || e.keyCode === 171 || e.keyCode === KeyCodes.KeyDown.Equals) {
             event = IIIFEvents.PLUS;
             preventDefault = false;
           }
-          if (
-            e.keyCode === KeyCodes.KeyDown.NumpadMinus ||
-            e.keyCode === 173 ||
-            e.keyCode === KeyCodes.KeyDown.Dash
-          ) {
+          if (e.keyCode === KeyCodes.KeyDown.NumpadMinus || e.keyCode === 173 || e.keyCode === KeyCodes.KeyDown.Dash) {
             event = IIIFEvents.MINUS;
             preventDefault = false;
           }
 
           if (that.useArrowKeysToNavigate()) {
-            if (e.keyCode === KeyCodes.KeyDown.LeftArrow)
-              event = IIIFEvents.LEFT_ARROW;
-            if (e.keyCode === KeyCodes.KeyDown.UpArrow)
-              event = IIIFEvents.UP_ARROW;
-            if (e.keyCode === KeyCodes.KeyDown.RightArrow)
-              event = IIIFEvents.RIGHT_ARROW;
-            if (e.keyCode === KeyCodes.KeyDown.DownArrow)
-              event = IIIFEvents.DOWN_ARROW;
+            if (e.keyCode === KeyCodes.KeyDown.LeftArrow) event = IIIFEvents.LEFT_ARROW;
+            if (e.keyCode === KeyCodes.KeyDown.UpArrow) event = IIIFEvents.UP_ARROW;
+            if (e.keyCode === KeyCodes.KeyDown.RightArrow) event = IIIFEvents.RIGHT_ARROW;
+            if (e.keyCode === KeyCodes.KeyDown.DownArrow) event = IIIFEvents.DOWN_ARROW;
           }
         }
 
@@ -307,18 +274,14 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
       this.bookmark();
     });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.CANVAS_INDEX_CHANGE,
-      (canvasIndex: number) => {
-        this.data.canvasIndex = canvasIndex;
-        this.lastCanvasIndex = this.helper.canvasIndex;
-        this.helper.canvasIndex = canvasIndex;
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.CANVAS_INDEX_CHANGE, (canvasIndex: number) => {
+      this.data.canvasIndex = canvasIndex;
+      this.lastCanvasIndex = this.helper.canvasIndex;
+      this.helper.canvasIndex = canvasIndex;
+    });
 
     this.extensionHost.subscribe(IIIFEvents.CLOSE_LEFT_PANEL, () => {
-      if (that.$element.hasClass("loading"))
-        that.$element.removeClass("loading");
+      if (that.$element.hasClass('loading')) that.$element.removeClass('loading');
       this.resize();
     });
 
@@ -326,12 +289,9 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
       this.resize();
     });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.COLLECTION_INDEX_CHANGE,
-      (collectionIndex: number) => {
-        this.data.collectionIndex = collectionIndex;
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.COLLECTION_INDEX_CHANGE, (collectionIndex: number) => {
+      this.data.collectionIndex = collectionIndex;
+    });
 
     this.extensionHost.subscribe(Events.CREATED, () => {
       this.isCreated = true;
@@ -347,7 +307,7 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
       setTimeout(() => {
         this.extensionHost.publish(Events.RESIZE);
         this.fire(Events.LOAD, this.helper.getCurrentCanvas().id);
-        this.$element.removeClass("loading");
+        this.$element.removeClass('loading');
       }, 100); // firefox needs this :-(
     });
 
@@ -360,63 +320,45 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
     });
 
     this.extensionHost.subscribe(Events.LOAD_FAILED, () => {
-      if (
-        !that.lastCanvasIndex == null &&
-        that.lastCanvasIndex !== that.helper.canvasIndex
-      ) {
-        this.extensionHost.publish(
-          IIIFEvents.CANVAS_INDEX_CHANGE,
-          that.lastCanvasIndex
-        );
+      if (!that.lastCanvasIndex == null && that.lastCanvasIndex !== that.helper.canvasIndex) {
+        this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, that.lastCanvasIndex);
       }
     });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.MANIFEST_INDEX_CHANGE,
-      (manifestIndex: number) => {
-        this.data.manifestIndex = manifestIndex;
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.MANIFEST_INDEX_CHANGE, (manifestIndex: number) => {
+      this.data.manifestIndex = manifestIndex;
+    });
 
     this.extensionHost.subscribe(IIIFEvents.OPEN, () => {
-      const openUri: string = Strings.format(
-        this.data.config!.options.openTemplate,
-        this.helper.manifestUri
-      );
+      const openUri: string = Strings.format(this.data.config!.options.openTemplate, this.helper.manifestUri);
       window.open(openUri);
     });
 
     this.extensionHost.subscribe(IIIFEvents.OPEN_LEFT_PANEL, () => {
-      if (!this.$element.hasClass("loading")) {
+      if (!this.$element.hasClass('loading')) {
         this.resize();
       }
     });
 
     this.extensionHost.subscribe(IIIFEvents.OPEN_RIGHT_PANEL, () => {
-      if (!this.$element.hasClass("loading")) {
+      if (!this.$element.hasClass('loading')) {
         this.resize();
       }
     });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.RANGE_CHANGE,
-      (range: Range | null) => {
-        if (range) {
-          this.data.rangeId = range.id;
-          this.helper.rangeId = range.id;
-        } else {
-          this.data.rangeId = undefined;
-          this.helper.rangeId = undefined;
-        }
+    this.extensionHost.subscribe(IIIFEvents.RANGE_CHANGE, (range: Range | null) => {
+      if (range) {
+        this.data.rangeId = range.id;
+        this.helper.rangeId = range.id;
+      } else {
+        this.data.rangeId = undefined;
+        this.helper.rangeId = undefined;
       }
-    );
+    });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.RESOURCE_DEGRADED,
-      (resource: IExternalResource) => {
-        Auth09.handleDegraded(resource);
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.RESOURCE_DEGRADED, (resource: IExternalResource) => {
+      Auth09.handleDegraded(resource);
+    });
 
     this.extensionHost.subscribe(IIIFEvents.SHOW_MESSAGE, (message: string) => {
       this.showMessage(message);
@@ -426,8 +368,7 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
       let terms: string | null = this.helper.getLicense();
 
       if (!terms) {
-        const requiredStatement: ILabelValuePair | null =
-          this.helper.getRequiredStatement();
+        const requiredStatement: ILabelValuePair | null = this.helper.getRequiredStatement();
 
         if (requiredStatement && requiredStatement.value) {
           terms = requiredStatement.value;
@@ -440,18 +381,17 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
     });
 
     this.extensionHost.subscribe(Events.TOGGLE_FULLSCREEN, () => {
-      const overrideFullScreen: boolean =
-        this.data.config!.options.overrideFullScreen;
+      const overrideFullScreen: boolean = this.data.config!.options.overrideFullScreen;
 
       this.extensionHost.isFullScreen = !this.extensionHost.isFullScreen;
 
       if (!overrideFullScreen) {
-        $("#top").focus();
+        $('#top').focus();
 
         if (this.extensionHost.isFullScreen) {
-          this.$element.addClass("fullscreen");
+          this.$element.addClass('fullscreen');
         } else {
-          this.$element.removeClass("fullscreen");
+          this.$element.removeClass('fullscreen');
         }
       }
 
@@ -478,18 +418,14 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
     return this.translateLocale(this.defaultConfig, locale);
   }
 
-  private async translateLocale(
-    config: Object,
-    locale: String
-  ): Promise<Object> {
-    let loader =
-      this.localeLoaders[locale as any] || this.localeLoaders["en-GB"];
+  private async translateLocale(config: Object, locale: String): Promise<Object> {
+    let loader = this.localeLoaders[locale as any] || this.localeLoaders['en-GB'];
     let localeStrings = (await loader()) || {};
     let conf = JSON.stringify(config);
 
     for (let str in localeStrings) {
-      let replaceStr = str.replace("$", "");
-      let re = new RegExp(`\\$${replaceStr}\\b`, "g");
+      let replaceStr = str.replace('$', '');
+      let re = new RegExp(`\\$${replaceStr}\\b`, 'g');
       conf = conf.replace(re, localeStrings[str]);
     }
 
@@ -499,29 +435,19 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
   }
 
   createModules(): void {
-    this.$authDialogue = $(
-      '<div class="overlay auth" aria-hidden="true"></div>'
-    );
+    this.$authDialogue = $('<div class="overlay auth" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$authDialogue);
     this.authDialogue = new AuthDialogue(this.$authDialogue);
 
-    this.$clickThroughDialogue = $(
-      '<div class="overlay clickthrough" aria-hidden="true"></div>'
-    );
+    this.$clickThroughDialogue = $('<div class="overlay clickthrough" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$clickThroughDialogue);
-    this.clickThroughDialogue = new ClickThroughDialogue(
-      this.$clickThroughDialogue
-    );
+    this.clickThroughDialogue = new ClickThroughDialogue(this.$clickThroughDialogue);
 
-    this.$restrictedDialogue = $(
-      '<div class="overlay login" aria-hidden="true"></div>'
-    );
+    this.$restrictedDialogue = $('<div class="overlay login" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$restrictedDialogue);
     this.restrictedDialogue = new RestrictedDialogue(this.$restrictedDialogue);
 
-    this.$loginDialogue = $(
-      '<div class="overlay login" aria-hidden="true"></div>'
-    );
+    this.$loginDialogue = $('<div class="overlay login" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$loginDialogue);
     this.loginDialogue = new LoginDialogue(this.$loginDialogue);
   }
@@ -529,7 +455,7 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
   private _setDefaultFocus(): void {
     setTimeout(() => {
       if (this.data.config!.options.allowStealFocus) {
-        $("[tabindex=0]").focus();
+        $('[tabindex=0]').focus();
       }
     }, 1);
   }
@@ -562,25 +488,13 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
   }
 
   render(): void {
-    if (
-      !this.isCreated ||
-      this.data.collectionIndex !== this.helper.collectionIndex
-    ) {
-      this.extensionHost.publish(
-        IIIFEvents.COLLECTION_INDEX_CHANGE,
-        this.data.collectionIndex
-      );
+    if (!this.isCreated || this.data.collectionIndex !== this.helper.collectionIndex) {
+      this.extensionHost.publish(IIIFEvents.COLLECTION_INDEX_CHANGE, this.data.collectionIndex);
     }
 
-    if (
-      !this.isCreated ||
-      this.data.manifestIndex !== this.helper.manifestIndex
-    ) {
+    if (!this.isCreated || this.data.manifestIndex !== this.helper.manifestIndex) {
       if (this.data.iiifManifestId !== undefined) {
-        this.extensionHost.publish(
-          IIIFEvents.MANIFEST_INDEX_CHANGE,
-          this.data.manifestIndex
-        );
+        this.extensionHost.publish(IIIFEvents.MANIFEST_INDEX_CHANGE, this.data.manifestIndex);
       }
     }
 
@@ -593,10 +507,7 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
         this.data.canvasIndex = this.helper.canvasIndex;
       }
 
-      this.extensionHost.publish(
-        IIIFEvents.CANVAS_INDEX_CHANGE,
-        this.data.canvasIndex
-      );
+      this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, this.data.canvasIndex);
     }
 
     if (!this.isCreated || this.data.rangeId !== this.helper.rangeId) {
@@ -606,15 +517,14 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
         if (range) {
           this.extensionHost.publish(IIIFEvents.RANGE_CHANGE, range);
         } else {
-          console.warn("range id not found:", this.data.rangeId);
+          console.warn('range id not found:', this.data.rangeId);
         }
       }
     }
   }
 
   private _initLocales(): void {
-    const availableLocales: any[] =
-      this.data.config!.localisation.locales.slice(0);
+    const availableLocales: any[] = this.data.config!.localisation.locales.slice(0);
     const configuredLocales: ILocale[] | undefined = this.data.locales;
     const finalLocales: ILocale[] = [];
 
@@ -638,10 +548,7 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
         }
       });
 
-      const limitLocales: boolean = Bools.getBool(
-        this.data.config!.options.limitLocales,
-        false
-      );
+      const limitLocales: boolean = Bools.getBool(this.data.config!.options.limitLocales, false);
 
       if (!limitLocales) {
         availableLocales.forEach((availableLocale: any) => {
@@ -654,7 +561,7 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
 
       this.data.locales = finalLocales;
     } else {
-      console.warn("No locales configured");
+      console.warn('No locales configured');
     }
   }
 
@@ -725,7 +632,7 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
         if (related && related.length) {
           related = related[0];
         }
-        return related["@id"];
+        return related['@id'];
       }
 
       // If there's a `homepage` property in the manifest
@@ -765,7 +672,7 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
 
   getSettings(): ISettings {
     if (Bools.getBool(this.data.config!.options.saveUserSettings, false)) {
-      const settings: any = Storage.get("uv.settings", StorageType.LOCAL);
+      const settings: any = Storage.get('uv.settings', StorageType.LOCAL);
 
       if (settings) {
         return $.extend(this.data.config!.options, settings.value);
@@ -777,14 +684,14 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
 
   updateSettings(settings: ISettings): void {
     if (Bools.getBool(this.data.config!.options.saveUserSettings, false)) {
-      const storedSettings: any = Storage.get("uv.settings", StorageType.LOCAL);
+      const storedSettings: any = Storage.get('uv.settings', StorageType.LOCAL);
 
       if (storedSettings) {
         settings = $.extend(storedSettings.value, settings);
       }
 
       // store for ten years
-      Storage.set("uv.settings", settings, 315360000, StorageType.LOCAL);
+      Storage.set('uv.settings', settings, 315360000, StorageType.LOCAL);
     }
 
     this.data.config!.options = $.extend(this.data.config!.options, settings);
@@ -800,12 +707,10 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
     // todo: use getThumb (when implemented)
 
     const canvas: Canvas = this.helper.getCurrentCanvas();
-    let thumbnail: string = canvas.getProperty("thumbnail");
+    let thumbnail: string = canvas.getProperty('thumbnail');
 
-    if (!thumbnail || !(typeof thumbnail === "string")) {
-      thumbnail = canvas.getCanonicalImageUri(
-        this.data.config!.options.bookmarkThumbWidth
-      );
+    if (!thumbnail || !(typeof thumbnail === 'string')) {
+      thumbnail = canvas.getCanonicalImageUri(this.data.config!.options.bookmarkThumbWidth);
     }
 
     return <ISharePreview>{
@@ -817,42 +722,27 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
   getAppUri(): string {
     const options = this.data.config!.modules.shareDialogue.options;
 
-    const host =
-      options?.embedHost ??
-      `${window.location.protocol}//${window.location.hostname}`;
+    const host = options?.embedHost ?? `${window.location.protocol}//${window.location.hostname}`;
     const port = options?.embedPort ?? window.location.port;
-    const path = options?.embedPath ?? "/uv.html";
+    const path = options?.embedPath ?? '/uv.html';
 
-    return `${host}${port ? `:${port}` : ""}${path}`;
+    return `${host}${port ? `:${port}` : ''}${path}`;
   }
 
-  buildEmbedScript(
-    template: string,
-    width: number,
-    height: number,
-    hashParams: URLSearchParams
-  ): string {
+  buildEmbedScript(template: string, width: number, height: number, hashParams: URLSearchParams): string {
     let appUri: string = this.getAppUri();
-    const title: string = this.helper.getLabel() ?? "";
+    const title: string = this.helper.getLabel() ?? '';
 
     if ((hashParams?.size ?? 0) > 0) {
       appUri += `#${hashParams.toString()}`;
     }
 
-    const script: string = Strings.format(
-      template,
-      appUri,
-      width.toString(),
-      height.toString(),
-      title
-    );
+    const script: string = Strings.format(template, appUri, width.toString(), height.toString(), title);
 
     return script;
   }
 
-  public getPagedIndices(
-    canvasIndex: number = this.helper.canvasIndex
-  ): number[] {
+  public getPagedIndices(canvasIndex: number = this.helper.canvasIndex): number[] {
     return [canvasIndex];
   }
 
@@ -873,14 +763,14 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
 
   public getCanvasLabels(label: string): string {
     const indices: number[] = this.getPagedIndices();
-    let labels: string = "";
+    let labels: string = '';
 
     if (indices.length === 1) {
       labels = label;
     } else {
       for (let i = 1; i <= indices.length; i++) {
-        if (labels.length) labels += ",";
-        labels += label + " " + i;
+        if (labels.length) labels += ',';
+        labels += label + ' ' + i;
       }
     }
 
@@ -890,16 +780,12 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
   public getCurrentCanvasRange(): Range | null {
     //var rangePath: string = this.currentRangePath ? this.currentRangePath : '';
     //var range: manifesto.Range = this.helper.getCanvasRange(this.helper.getCurrentCanvas(), rangePath);
-    const range: Range | null = this.helper.getCanvasRange(
-      this.helper.getCurrentCanvas()
-    );
+    const range: Range | null = this.helper.getCanvasRange(this.helper.getCurrentCanvas());
     return range;
   }
 
   // todo: move to manifold?
-  public getExternalResources(
-    resources?: IExternalResource[]
-  ): Promise<IExternalResourceData[]> {
+  public getExternalResources(resources?: IExternalResource[]): Promise<IExternalResourceData[]> {
     const indices: number[] = this.getPagedIndices();
     const resourcesToLoad: IExternalResource[] = [];
 
@@ -917,11 +803,9 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
 
       // reload resources if passed
       if (resources) {
-        const found: IExternalResource | undefined = resources.find(
-          (f: IExternalResource) => {
-            return f.dataUri === r.dataUri;
-          }
-        );
+        const found: IExternalResource | undefined = resources.find((f: IExternalResource) => {
+          return f.dataUri === r.dataUri;
+        });
 
         if (found) {
           resourcesToLoad.push(found);
@@ -933,8 +817,7 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
       }
     });
 
-    const storageStrategy: StorageType = this.data.config!.options
-      .tokenStorage as StorageType;
+    const storageStrategy: StorageType = this.data.config!.options.tokenStorage as StorageType;
     const authAPIVersion: number = this.data.config!.options.authAPIVersion;
 
     // if using auth api v1
@@ -944,11 +827,7 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
           locale: this.helper.options.locale,
         };
 
-        Auth1.loadExternalResources(
-          resourcesToLoad,
-          storageStrategy,
-          options
-        ).then((r: IExternalResource[]) => {
+        Auth1.loadExternalResources(resourcesToLoad, storageStrategy, options).then((r: IExternalResource[]) => {
           this.resources = r.map((resource: IExternalResource) => {
             return this._prepareResourceData(resource);
           });
@@ -958,15 +837,13 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
       });
     } else {
       return new Promise<any[]>((resolve) => {
-        Auth09.loadExternalResources(resourcesToLoad, storageStrategy).then(
-          (r: any[]) => {
-            this.resources = r.map((resource: IExternalResource) => {
-              return this._prepareResourceData(resource);
-            });
+        Auth09.loadExternalResources(resourcesToLoad, storageStrategy).then((r: any[]) => {
+          this.resources = r.map((resource: IExternalResource) => {
+            return this._prepareResourceData(resource);
+          });
 
-            resolve(this.resources);
-          }
-        );
+          resolve(this.resources);
+        });
       });
     }
   }
@@ -1000,7 +877,7 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
         id: canvas.id,
         type: canvas.getType(),
         getFormat: function () {
-          return "";
+          return '';
         },
       };
 
@@ -1017,12 +894,7 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
     this.extensionHost.publish(IIIFEvents.OPEN_EXTERNAL_RESOURCE);
   }
 
-  showMessage(
-    message: string,
-    acceptCallback?: Function,
-    buttonText?: string,
-    allowClose?: boolean
-  ): void {
+  showMessage(message: string, acceptCallback?: Function, buttonText?: string, allowClose?: boolean): void {
     this.closeActiveDialogue();
 
     this.extensionHost.publish(IIIFEvents.SHOW_GENERIC_DIALOGUE, {
@@ -1042,15 +914,15 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
   }
 
   isDesktopMetric(): boolean {
-    return this.metric === "lg" || this.metric === "xl";
+    return this.metric === 'lg' || this.metric === 'xl';
   }
 
   isMobileMetric(): boolean {
-    return this.metric === "sm" || this.metric === "md";
+    return this.metric === 'sm' || this.metric === 'md';
   }
 
   isMetric(metric: string | string[]): boolean {
-    if (typeof metric === "string") {
+    if (typeof metric === 'string') {
       return this.metric === metric;
     }
 
@@ -1072,9 +944,7 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
   viewCollection(collection: Collection): void {
     const data: IUVData<T> = <IUVData<T>>{};
     //data.manifestUri = this.helper.manifestUri;
-    data.iiifManifestId = collection.parentCollection
-      ? collection.parentCollection.id
-      : this.helper.manifestUri;
+    data.iiifManifestId = collection.parentCollection ? collection.parentCollection.id : this.helper.manifestUri;
     data.collectionIndex = collection.index;
     data.manifestIndex = 0;
     data.canvasIndex = 0;
@@ -1097,10 +967,7 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
       } else if (this.helper.isMultiCanvas()) {
         const viewingHint: ViewingHint | null = this.helper.getViewingHint();
 
-        if (
-          !viewingHint ||
-          (viewingHint && viewingHint !== ViewingHint.CONTINUOUS)
-        ) {
+        if (!viewingHint || (viewingHint && viewingHint !== ViewingHint.CONTINUOUS)) {
           return true;
         }
       }
@@ -1128,10 +995,10 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
     const a = navigator.userAgent || navigator.vendor || window.opera;
     const isMobile =
       /(android|bb\d+|meego).+mobile|avantgo|bada\/|android|ipad|playbook|silk|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(
-        a
+        a,
       ) ||
       /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(
-        a.substr(0, 4)
+        a.substr(0, 4),
       );
 
     //console.log("is mobile", isMobile);
@@ -1139,10 +1006,7 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
   }
 
   useArrowKeysToNavigate(): boolean {
-    return Bools.getBool(
-      this.data.config!.options.useArrowKeysToNavigate,
-      true
-    );
+    return Bools.getBool(this.data.config!.options.useArrowKeysToNavigate, true);
   }
 
   bookmark(): void {
@@ -1172,14 +1036,14 @@ export class BaseExtension<T extends BaseConfig> implements IExtension {
   }
 
   serializeLocales(locales: ILocale[]): string {
-    let serializedLocales: string = "";
+    let serializedLocales: string = '';
 
     for (let i = 0; i < locales.length; i++) {
       const l = locales[i];
-      if (i > 0) serializedLocales += ",";
+      if (i > 0) serializedLocales += ',';
       serializedLocales += l.name;
       if (l.label) {
-        serializedLocales += ":" + l.label;
+        serializedLocales += ':' + l.label;
       }
     }
 
@@ -1215,26 +1079,19 @@ class BrowserDetect {
   versionSearchString: string;
 
   dataBrowser = [
-    { string: navigator.userAgent, subString: "Chrome", identity: "Chrome" },
-    { string: navigator.userAgent, subString: "MSIE", identity: "Explorer" },
-    { string: navigator.userAgent, subString: "Trident", identity: "Explorer" },
-    { string: navigator.userAgent, subString: "Firefox", identity: "Firefox" },
-    { string: navigator.userAgent, subString: "Safari", identity: "Safari" },
-    { string: navigator.userAgent, subString: "Opera", identity: "Opera" },
+    { string: navigator.userAgent, subString: 'Chrome', identity: 'Chrome' },
+    { string: navigator.userAgent, subString: 'MSIE', identity: 'Explorer' },
+    { string: navigator.userAgent, subString: 'Trident', identity: 'Explorer' },
+    { string: navigator.userAgent, subString: 'Firefox', identity: 'Firefox' },
+    { string: navigator.userAgent, subString: 'Safari', identity: 'Safari' },
+    { string: navigator.userAgent, subString: 'Opera', identity: 'Opera' },
   ];
 
   public init() {
-    this.browser = this.searchString(this.dataBrowser) || "Other";
-    this.version =
-      this.searchVersion(navigator.userAgent) ||
-      this.searchVersion(navigator.appVersion) ||
-      "Unknown";
+    this.browser = this.searchString(this.dataBrowser) || 'Other';
+    this.version = this.searchVersion(navigator.userAgent) || this.searchVersion(navigator.appVersion) || 'Unknown';
     // detect IE 11
-    if (
-      this.browser == "Explorer" &&
-      this.version == "7" &&
-      navigator.userAgent.match(/Trident/i)
-    ) {
+    if (this.browser == 'Explorer' && this.version == '7' && navigator.userAgent.match(/Trident/i)) {
       this.version = this.searchVersionIE();
     }
   }
@@ -1253,19 +1110,16 @@ class BrowserDetect {
   searchVersion(dataString) {
     var index = dataString.indexOf(this.versionSearchString);
     if (index == -1) return undefined;
-    return parseFloat(
-      dataString.substring(index + this.versionSearchString.length + 1)
-    );
+    return parseFloat(dataString.substring(index + this.versionSearchString.length + 1));
   }
 
   searchVersionIE() {
     var ua = navigator.userAgent.toString().toLowerCase(),
-      match = /(trident)(?:.*rv:([\w.]+))?/.exec(ua) ||
-        /(msie) ([\w.]+)/.exec(ua) || ["", null, -1],
-      ver = "unknown";
+      match = /(trident)(?:.*rv:([\w.]+))?/.exec(ua) || /(msie) ([\w.]+)/.exec(ua) || ['', null, -1],
+      ver = 'unknown';
 
     if (match !== null && match.length === 3 && match[2]) {
-      ver = (match[2] as string).split(".")[0]; // version
+      ver = (match[2] as string).split('.')[0]; // version
     }
 
     return ver;

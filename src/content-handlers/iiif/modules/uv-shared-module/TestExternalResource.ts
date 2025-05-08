@@ -1,16 +1,6 @@
-import { ServiceProfile } from "@iiif/vocabulary/dist-commonjs";
-import * as HTTPStatusCode from "@edsilv/http-status-codes";
-import {
-  Annotation,
-  AnnotationBody,
-  Canvas,
-  IAccessToken,
-  IExternalResource,
-  IExternalResourceOptions,
-  Resource,
-  Service,
-  Utils,
-} from "manifesto.js";
+import { ServiceProfile } from '@iiif/vocabulary/dist-commonjs';
+import * as HTTPStatusCode from '@edsilv/http-status-codes';
+import { Annotation, AnnotationBody, Canvas, IAccessToken, IExternalResource, IExternalResourceOptions, Resource, Service, Utils } from 'manifesto.js';
 
 export class ExternalResource implements IExternalResource {
   public authAPIVersion: number;
@@ -50,15 +40,11 @@ export class ExternalResource implements IExternalResource {
       const service: Service = services[i];
       let id: string = service.id;
 
-      if (!id.endsWith("/")) {
-        id += "/";
+      if (!id.endsWith('/')) {
+        id += '/';
       }
-      if (
-        service.getProfile() &&
-        (Utils.isImageProfile(service.getProfile()) ||
-          Utils.isImageServiceType(service.getIIIFResourceType()))
-      ) {
-        infoUri = id + "info.json";
+      if (service.getProfile() && (Utils.isImageProfile(service.getProfile()) || Utils.isImageServiceType(service.getIIIFResourceType()))) {
+        infoUri = id + 'info.json';
       }
     }
 
@@ -122,42 +108,21 @@ export class ExternalResource implements IExternalResource {
   }
 
   private _parseAuthServices(resource: any): void {
-    console.log("parseAuthServices");
+    console.log('parseAuthServices');
     if (this.authAPIVersion === 0.9) {
-      this.clickThroughService = Utils.getService(
-        resource,
-        ServiceProfile.AUTH_0_CLICK_THROUGH
-      );
-      this.loginService = Utils.getService(
-        resource,
-        ServiceProfile.AUTH_0_LOGIN
-      );
-      this.restrictedService = Utils.getService(
-        resource,
-        ServiceProfile.AUTH_0_RESTRICTED
-      );
+      this.clickThroughService = Utils.getService(resource, ServiceProfile.AUTH_0_CLICK_THROUGH);
+      this.loginService = Utils.getService(resource, ServiceProfile.AUTH_0_LOGIN);
+      this.restrictedService = Utils.getService(resource, ServiceProfile.AUTH_0_RESTRICTED);
 
       if (this.clickThroughService) {
-        this.logoutService = this.clickThroughService.getService(
-          ServiceProfile.AUTH_0_LOGOUT
-        );
-        this.tokenService = this.clickThroughService.getService(
-          ServiceProfile.AUTH_0_TOKEN
-        );
+        this.logoutService = this.clickThroughService.getService(ServiceProfile.AUTH_0_LOGOUT);
+        this.tokenService = this.clickThroughService.getService(ServiceProfile.AUTH_0_TOKEN);
       } else if (this.loginService) {
-        this.logoutService = this.loginService.getService(
-          ServiceProfile.AUTH_0_LOGOUT
-        );
-        this.tokenService = this.loginService.getService(
-          ServiceProfile.AUTH_0_TOKEN
-        );
+        this.logoutService = this.loginService.getService(ServiceProfile.AUTH_0_LOGOUT);
+        this.tokenService = this.loginService.getService(ServiceProfile.AUTH_0_TOKEN);
       } else if (this.restrictedService) {
-        this.logoutService = this.restrictedService.getService(
-          ServiceProfile.AUTH_0_LOGOUT
-        );
-        this.tokenService = this.restrictedService.getService(
-          ServiceProfile.AUTH_0_TOKEN
-        );
+        this.logoutService = this.restrictedService.getService(ServiceProfile.AUTH_0_LOGOUT);
+        this.tokenService = this.restrictedService.getService(ServiceProfile.AUTH_0_TOKEN);
       }
     } else {
       // auth 1
@@ -176,87 +141,42 @@ export class ExternalResource implements IExternalResource {
         }
       }
 
-      this.clickThroughService = Utils.getService(
-        resource,
-        ServiceProfile.AUTH_1_CLICK_THROUGH
-      );
-      this.loginService = Utils.getService(
-        resource,
-        ServiceProfile.AUTH_1_LOGIN
-      );
-      this.externalService = Utils.getService(
-        resource,
-        ServiceProfile.AUTH_1_EXTERNAL
-      );
-      this.kioskService = Utils.getService(
-        resource,
-        ServiceProfile.AUTH_1_KIOSK
-      );
+      this.clickThroughService = Utils.getService(resource, ServiceProfile.AUTH_1_CLICK_THROUGH);
+      this.loginService = Utils.getService(resource, ServiceProfile.AUTH_1_LOGIN);
+      this.externalService = Utils.getService(resource, ServiceProfile.AUTH_1_EXTERNAL);
+      this.kioskService = Utils.getService(resource, ServiceProfile.AUTH_1_KIOSK);
 
       if (this.clickThroughService) {
-        this.logoutService = this.clickThroughService.getService(
-          ServiceProfile.AUTH_1_LOGOUT
-        );
-        this.tokenService = this.clickThroughService.getService(
-          ServiceProfile.AUTH_1_TOKEN
-        );
-        this.probeService = this.clickThroughService.getService(
-          ServiceProfile.AUTH_1_PROBE
-        );
+        this.logoutService = this.clickThroughService.getService(ServiceProfile.AUTH_1_LOGOUT);
+        this.tokenService = this.clickThroughService.getService(ServiceProfile.AUTH_1_TOKEN);
+        this.probeService = this.clickThroughService.getService(ServiceProfile.AUTH_1_PROBE);
       } else if (this.loginService) {
-        this.logoutService = this.loginService.getService(
-          ServiceProfile.AUTH_1_LOGOUT
-        );
-        this.tokenService = this.loginService.getService(
-          ServiceProfile.AUTH_1_TOKEN
-        );
+        this.logoutService = this.loginService.getService(ServiceProfile.AUTH_1_LOGOUT);
+        this.tokenService = this.loginService.getService(ServiceProfile.AUTH_1_TOKEN);
 
-        this.probeService = Utils.getService(
-          resource,
-          ServiceProfile.AUTH_1_PROBE
-        );
+        this.probeService = Utils.getService(resource, ServiceProfile.AUTH_1_PROBE);
 
         // @deprecated - the probe should be on the resource.
         if (!this.probeService) {
-          this.probeService = this.loginService.getService(
-            ServiceProfile.AUTH_1_PROBE
-          );
+          this.probeService = this.loginService.getService(ServiceProfile.AUTH_1_PROBE);
         }
       } else if (this.externalService) {
-        this.logoutService = this.externalService.getService(
-          ServiceProfile.AUTH_1_LOGOUT
-        );
-        this.tokenService = this.externalService.getService(
-          ServiceProfile.AUTH_1_TOKEN
-        );
-        this.probeService = Utils.getService(
-          resource,
-          ServiceProfile.AUTH_1_PROBE
-        );
+        this.logoutService = this.externalService.getService(ServiceProfile.AUTH_1_LOGOUT);
+        this.tokenService = this.externalService.getService(ServiceProfile.AUTH_1_TOKEN);
+        this.probeService = Utils.getService(resource, ServiceProfile.AUTH_1_PROBE);
 
         // @deprecated - the probe should be on the resource.
         if (!this.probeService) {
-          this.probeService = this.externalService.getService(
-            ServiceProfile.AUTH_1_PROBE
-          );
+          this.probeService = this.externalService.getService(ServiceProfile.AUTH_1_PROBE);
         }
       } else if (this.kioskService) {
-        this.logoutService = this.kioskService.getService(
-          ServiceProfile.AUTH_1_LOGOUT
-        );
-        this.tokenService = this.kioskService.getService(
-          ServiceProfile.AUTH_1_TOKEN
-        );
-        this.probeService = Utils.getService(
-          resource,
-          ServiceProfile.AUTH_1_PROBE
-        );
+        this.logoutService = this.kioskService.getService(ServiceProfile.AUTH_1_LOGOUT);
+        this.tokenService = this.kioskService.getService(ServiceProfile.AUTH_1_TOKEN);
+        this.probeService = Utils.getService(resource, ServiceProfile.AUTH_1_PROBE);
 
         // @deprecated - the probe should be on the resource.
         if (!this.probeService) {
-          this.probeService = this.kioskService.getService(
-            ServiceProfile.AUTH_1_PROBE
-          );
+          this.probeService = this.kioskService.getService(ServiceProfile.AUTH_1_PROBE);
         }
       }
     }
@@ -297,13 +217,7 @@ export class ExternalResource implements IExternalResource {
   }
 
   public isAccessControlled(): boolean {
-    if (
-      this.clickThroughService ||
-      this.loginService ||
-      this.externalService ||
-      this.kioskService ||
-      this.probeService
-    ) {
+    if (this.clickThroughService || this.loginService || this.externalService || this.kioskService || this.probeService) {
       return true;
     }
     return false;
@@ -311,7 +225,7 @@ export class ExternalResource implements IExternalResource {
 
   public hasServiceDescriptor(): boolean {
     if (this.dataUri) {
-      return this.dataUri.endsWith("info.json");
+      return this.dataUri.endsWith('info.json');
     }
 
     return false;
@@ -323,7 +237,7 @@ export class ExternalResource implements IExternalResource {
 
     return new Promise<ExternalResource>((resolve, reject) => {
       if (!that.dataUri) {
-        reject("There is no dataUri to fetch");
+        reject('There is no dataUri to fetch');
         return;
       }
 
@@ -365,15 +279,12 @@ export class ExternalResource implements IExternalResource {
 
         // xhr implementation
         const xhr: XMLHttpRequest = new XMLHttpRequest();
-        xhr.open("GET", that.probeService.id, true);
+        xhr.open('GET', that.probeService.id, true);
         // This has been disabled as the request should use the access token.
         xhr.withCredentials = false;
 
         if (accessToken) {
-          xhr.setRequestHeader(
-            "Authorization",
-            "Bearer " + accessToken.accessToken
-          );
+          xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken.accessToken);
         }
 
         xhr.onload = () => {
@@ -401,7 +312,7 @@ export class ExternalResource implements IExternalResource {
         // check if dataUri ends with info.json
         // if not issue a HEAD request.
 
-        let type: string = "GET";
+        let type: string = 'GET';
 
         if (!that.hasServiceDescriptor()) {
           // If access control is unnecessary, short circuit the process.
@@ -415,7 +326,7 @@ export class ExternalResource implements IExternalResource {
             resolve(that);
             return;
           }
-          type = "HEAD";
+          type = 'HEAD';
         }
 
         // leaving this in for reference until the XHR version is fully tested
@@ -478,10 +389,7 @@ export class ExternalResource implements IExternalResource {
         xhr.open(type, that.dataUri, true);
         xhr.withCredentials = false;
         if (accessToken) {
-          xhr.setRequestHeader(
-            "Authorization",
-            "Bearer " + accessToken.accessToken
-          );
+          xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken.accessToken);
         }
 
         xhr.onload = () => {
@@ -493,29 +401,25 @@ export class ExternalResource implements IExternalResource {
           } else {
             const data = JSON.parse(xhr.responseText);
             const status = xhr.status;
-            let uri: string = unescape(data["@id"] || data.id);
+            let uri: string = unescape(data['@id'] || data.id);
 
             that.data = data;
             that._parseAuthServices(that.data);
             that._parseDescriptorDimensions(that.data);
 
             // remove trailing /info.json
-            if (uri.endsWith("/info.json")) {
-              uri = uri.substr(0, uri.lastIndexOf("/"));
+            if (uri.endsWith('/info.json')) {
+              uri = uri.substr(0, uri.lastIndexOf('/'));
             }
 
             let dataUri: string | null = that.dataUri;
 
-            if (dataUri && dataUri.endsWith("/info.json")) {
-              dataUri = dataUri.substr(0, dataUri.lastIndexOf("/"));
+            if (dataUri && dataUri.endsWith('/info.json')) {
+              dataUri = dataUri.substr(0, dataUri.lastIndexOf('/'));
             }
 
             // if the request was redirected to a degraded version and there's a login service to get the full quality version
-            if (
-              status === HTTPStatusCode.OK &&
-              uri !== dataUri &&
-              (that.loginService || that.kioskService)
-            ) {
+            if (status === HTTPStatusCode.OK && uri !== dataUri && (that.loginService || that.kioskService)) {
               that.status = HTTPStatusCode.MOVED_TEMPORARILY;
             } else {
               that.status = status;

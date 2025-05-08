@@ -1,28 +1,25 @@
-import { IIIFEvents } from "../../IIIFEvents";
-import { BaseExtension } from "../../modules/uv-shared-module/BaseExtension";
-import { Bookmark } from "../../modules/uv-shared-module/Bookmark";
-import { DownloadDialogue } from "./DownloadDialogue";
-import { FooterPanel } from "../../modules/uv-shared-module/FooterPanel";
-import { IPDFExtension } from "./IPDFExtension";
-import { MoreInfoRightPanel } from "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel";
-import { PDFCenterPanel } from "../../modules/uv-pdfcenterpanel-module/PDFCenterPanel";
-import { PDFHeaderPanel } from "../../modules/uv-pdfheaderpanel-module/PDFHeaderPanel";
-import { FooterPanel as MobileFooterPanel } from "../../modules/uv-pdfmobilefooterpanel-module/MobileFooter";
-import { ResourcesLeftPanel } from "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel";
-import { SettingsDialogue } from "./SettingsDialogue";
-import { ShareDialogue } from "./ShareDialogue";
-import { ExternalResourceType } from "@iiif/vocabulary/dist-commonjs/";
-import { Bools } from "@edsilv/utils";
-import { Canvas, LanguageMap, Thumb } from "manifesto.js";
-import "./theme/theme.less";
-import defaultConfig from "./config/config.json";
-import { Events } from "../../../../Events";
-import { Config } from "./config/Config";
+import { IIIFEvents } from '../../IIIFEvents';
+import { BaseExtension } from '../../modules/uv-shared-module/BaseExtension';
+import { Bookmark } from '../../modules/uv-shared-module/Bookmark';
+import { DownloadDialogue } from './DownloadDialogue';
+import { FooterPanel } from '../../modules/uv-shared-module/FooterPanel';
+import { IPDFExtension } from './IPDFExtension';
+import { MoreInfoRightPanel } from '../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel';
+import { PDFCenterPanel } from '../../modules/uv-pdfcenterpanel-module/PDFCenterPanel';
+import { PDFHeaderPanel } from '../../modules/uv-pdfheaderpanel-module/PDFHeaderPanel';
+import { FooterPanel as MobileFooterPanel } from '../../modules/uv-pdfmobilefooterpanel-module/MobileFooter';
+import { ResourcesLeftPanel } from '../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel';
+import { SettingsDialogue } from './SettingsDialogue';
+import { ShareDialogue } from './ShareDialogue';
+import { ExternalResourceType } from '@iiif/vocabulary/dist-commonjs/';
+import { Bools } from '@edsilv/utils';
+import { Canvas, LanguageMap, Thumb } from 'manifesto.js';
+import './theme/theme.less';
+import defaultConfig from './config/config.json';
+import { Events } from '../../../../Events';
+import { Config } from './config/Config';
 
-export default class Extension
-  extends BaseExtension<Config>
-  implements IPDFExtension
-{
+export default class Extension extends BaseExtension<Config> implements IPDFExtension {
   $downloadDialogue: JQuery;
   $shareDialogue: JQuery;
   $helpDialogue: JQuery;
@@ -30,7 +27,7 @@ export default class Extension
   centerPanel: PDFCenterPanel;
   downloadDialogue: DownloadDialogue;
   shareDialogue: ShareDialogue;
-  footerPanel: FooterPanel<Config["modules"]["footerPanel"]>;
+  footerPanel: FooterPanel<Config['modules']['footerPanel']>;
   mobileFooterPanel: MobileFooterPanel;
   headerPanel: PDFHeaderPanel;
   leftPanel: ResourcesLeftPanel;
@@ -41,12 +38,9 @@ export default class Extension
   create(): void {
     super.create();
 
-    this.extensionHost.subscribe(
-      IIIFEvents.CANVAS_INDEX_CHANGE,
-      (canvasIndex: number) => {
-        this.viewCanvas(canvasIndex);
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.CANVAS_INDEX_CHANGE, (canvasIndex: number) => {
+      this.viewCanvas(canvasIndex);
+    });
 
     this.extensionHost.subscribe(IIIFEvents.THUMB_SELECTED, (thumb: Thumb) => {
       this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, thumb.index);
@@ -57,14 +51,11 @@ export default class Extension
       this.shell.$rightPanel.hide();
     });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.LEFTPANEL_COLLAPSE_FULL_FINISH,
-      () => {
-        this.shell.$centerPanel.show();
-        this.shell.$rightPanel.show();
-        this.resize();
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, () => {
+      this.shell.$centerPanel.show();
+      this.shell.$rightPanel.show();
+      this.resize();
+    });
 
     this.extensionHost.subscribe(Events.EXIT_FULLSCREEN, () => {
       setTimeout(() => {
@@ -78,13 +69,7 @@ export default class Extension
   }
 
   isHeaderPanelEnabled(): boolean {
-    return (
-      super.isHeaderPanelEnabled() &&
-      Bools.getBool(
-        this.data.config!.modules.pdfCenterPanel.options.usePdfJs,
-        true
-      )
-    );
+    return super.isHeaderPanelEnabled() && Bools.getBool(this.data.config!.modules.pdfCenterPanel.options.usePdfJs, true);
   }
 
   createModules(): void {
@@ -108,28 +93,20 @@ export default class Extension
 
     if (this.isFooterPanelEnabled()) {
       this.footerPanel = new FooterPanel(this.shell.$footerPanel);
-      this.mobileFooterPanel = new MobileFooterPanel(
-        this.shell.$mobileFooterPanel
-      );
+      this.mobileFooterPanel = new MobileFooterPanel(this.shell.$mobileFooterPanel);
     } else {
       this.shell.$footerPanel.hide();
     }
 
-    this.$downloadDialogue = $(
-      '<div class="overlay download" aria-hidden="true"></div>'
-    );
+    this.$downloadDialogue = $('<div class="overlay download" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$downloadDialogue);
     this.downloadDialogue = new DownloadDialogue(this.$downloadDialogue);
 
-    this.$shareDialogue = $(
-      '<div class="overlay share" aria-hidden="true"></div>'
-    );
+    this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$shareDialogue);
     this.shareDialogue = new ShareDialogue(this.$shareDialogue);
 
-    this.$settingsDialogue = $(
-      '<div class="overlay settings" aria-hidden="true"></div>'
-    );
+    this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$settingsDialogue);
     this.settingsDialogue = new SettingsDialogue(this.$settingsDialogue);
 
@@ -150,7 +127,7 @@ export default class Extension
 
     bookmark.index = this.helper.canvasIndex;
     bookmark.label = <string>LanguageMap.getValue(canvas.getLabel());
-    bookmark.thumb = canvas.getProperty("thumbnail");
+    bookmark.thumb = canvas.getProperty('thumbnail');
     bookmark.title = this.helper.getLabel();
     bookmark.trackingLabel = window.trackingLabel;
     bookmark.type = ExternalResourceType.DOCUMENT;
@@ -176,9 +153,6 @@ export default class Extension
   }
 
   isPdfJsEnabled(): boolean {
-    return Bools.getBool(
-      this.data.config!.modules.pdfCenterPanel.options.usePdfJs,
-      true
-    );
+    return Bools.getBool(this.data.config!.modules.pdfCenterPanel.options.usePdfJs, true);
   }
 }

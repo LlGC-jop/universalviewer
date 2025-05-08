@@ -1,14 +1,11 @@
-const $ = require("jquery");
-import { IIIFEvents } from "../../IIIFEvents";
-import { BaseView } from "./BaseView";
-import {
-  ExternalResourceType,
-  ViewingDirection,
-} from "@iiif/vocabulary/dist-commonjs/";
-import { Annotation, AnnotationBody, Canvas, Thumb } from "manifesto.js";
-import * as KeyCodes from "@edsilv/key-codes";
-import { Dates, Keyboard, Maths, Strings } from "@edsilv/utils";
-import { ExtendedLeftPanel } from "../../extensions/config/ExtendedLeftPanel";
+const $ = require('jquery');
+import { IIIFEvents } from '../../IIIFEvents';
+import { BaseView } from './BaseView';
+import { ExternalResourceType, ViewingDirection } from '@iiif/vocabulary/dist-commonjs/';
+import { Annotation, AnnotationBody, Canvas, Thumb } from 'manifesto.js';
+import * as KeyCodes from '@edsilv/key-codes';
+import { Dates, Keyboard, Maths, Strings } from '@edsilv/utils';
+import { ExtendedLeftPanel } from '../../extensions/config/ExtendedLeftPanel';
 
 export class ThumbsView<T extends ExtendedLeftPanel> extends BaseView<T> {
   private _$thumbsCache: JQuery | null;
@@ -27,12 +24,9 @@ export class ThumbsView<T extends ExtendedLeftPanel> extends BaseView<T> {
   create(): void {
     super.create();
 
-    this.extensionHost.subscribe(
-      IIIFEvents.CANVAS_INDEX_CHANGE,
-      (index: any) => {
-        this.selectIndex(parseInt(index));
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.CANVAS_INDEX_CHANGE, (index: any) => {
+      this.selectIndex(parseInt(index));
+    });
 
     this.extensionHost.subscribe(IIIFEvents.LOGIN, () => {
       this.loadThumbs();
@@ -45,9 +39,7 @@ export class ThumbsView<T extends ExtendedLeftPanel> extends BaseView<T> {
     this.$thumbs = $('<div class="thumbs"></div>');
     this.$element.append(this.$thumbs);
 
-    const viewingDirection: ViewingDirection =
-      this.extension.helper.getViewingDirection() ||
-      ViewingDirection.LEFT_TO_RIGHT;
+    const viewingDirection: ViewingDirection = this.extension.helper.getViewingDirection() || ViewingDirection.LEFT_TO_RIGHT;
 
     this.$thumbs.addClass(viewingDirection); // defaults to "left-to-right"
 
@@ -78,29 +70,24 @@ export class ThumbsView<T extends ExtendedLeftPanel> extends BaseView<T> {
         return extraHeight;
       },
       className: function () {
-        let className: string = "thumb";
+        let className: string = 'thumb';
 
         if (this.data.index === 0) {
-          className += " first";
+          className += ' first';
         }
 
         if (!this.data.uri) {
-          className += " placeholder";
+          className += ' placeholder';
         }
 
-        const viewingDirection: ViewingDirection | null =
-          that.extension.helper.getViewingDirection();
+        const viewingDirection: ViewingDirection | null = that.extension.helper.getViewingDirection();
 
-        if (
-          viewingDirection &&
-          (viewingDirection === ViewingDirection.LEFT_TO_RIGHT ||
-            viewingDirection === ViewingDirection.RIGHT_TO_LEFT)
-        ) {
-          className += " twoCol";
+        if (viewingDirection && (viewingDirection === ViewingDirection.LEFT_TO_RIGHT || viewingDirection === ViewingDirection.RIGHT_TO_LEFT)) {
+          className += ' twoCol';
         } else if (that.extension.helper.isPaged()) {
-          className += " twoCol";
+          className += ' twoCol';
         } else {
-          className += " oneCol";
+          className += ' oneCol';
         }
 
         return className;
@@ -110,30 +97,24 @@ export class ThumbsView<T extends ExtendedLeftPanel> extends BaseView<T> {
 
         if (searchResults) {
           if (searchResults > 1) {
-            return Strings.format(
-              that.content.searchResults,
-              searchResults.toString()
-            );
+            return Strings.format(that.content.searchResults, searchResults.toString());
           }
 
-          return Strings.format(
-            that.content.searchResult,
-            searchResults.toString()
-          );
+          return Strings.format(that.content.searchResult, searchResults.toString());
         }
 
-        return "";
+        return '';
       },
     });
 
     // use unevent to detect scroll stop.
     this.$element.on(
       // @ts-ignore
-      "scroll",
+      'scroll',
       () => {
         this.scrollStop();
       },
-      100
+      100,
     );
 
     this.resize();
@@ -170,9 +151,9 @@ export class ThumbsView<T extends ExtendedLeftPanel> extends BaseView<T> {
 
     this.$thumbs.link($.templates.thumbsTemplate, this.thumbs);
 
-    this.$thumbs.undelegate(".thumb", "click");
+    this.$thumbs.undelegate('.thumb', 'click');
 
-    this.$thumbs.delegate(".thumb", "click", function (e) {
+    this.$thumbs.delegate('.thumb', 'click', function (e) {
       e.preventDefault();
       const data = $.view(this).data;
       that.lastThumbClickedIndex = data.index;
@@ -181,13 +162,10 @@ export class ThumbsView<T extends ExtendedLeftPanel> extends BaseView<T> {
     });
 
     // Support keyboard navigation (spacebar / enter)
-    this.$thumbs.delegate(".thumb", "keydown", function (e: JQueryEventObject) {
+    this.$thumbs.delegate('.thumb', 'keydown', function (e: JQueryEventObject) {
       const originalEvent: KeyboardEvent = <KeyboardEvent>e.originalEvent;
       const charCode: number = Keyboard.getCharCode(originalEvent);
-      if (
-        charCode === KeyCodes.KeyDown.Spacebar ||
-        charCode === KeyCodes.KeyDown.Enter
-      ) {
+      if (charCode === KeyCodes.KeyDown.Spacebar || charCode === KeyCodes.KeyDown.Enter) {
         e.preventDefault();
         const data = $.view(this).data;
         that.lastThumbClickedIndex = data.index;
@@ -200,14 +178,9 @@ export class ThumbsView<T extends ExtendedLeftPanel> extends BaseView<T> {
   }
 
   scrollStop(): void {
-    let scrollPos: number =
-      1 /
-      ((this.$thumbs.height() - this.$element.height()) /
-        this.$element.scrollTop());
+    let scrollPos: number = 1 / ((this.$thumbs.height() - this.$element.height()) / this.$element.scrollTop());
     if (scrollPos > 1) scrollPos = 1;
-    const thumbRangeMid: number = Math.floor(
-      (this.thumbs.length - 1) * scrollPos
-    );
+    const thumbRangeMid: number = Math.floor((this.thumbs.length - 1) * scrollPos);
     this.loadThumbs(thumbRangeMid);
   }
 
@@ -237,12 +210,8 @@ export class ThumbsView<T extends ExtendedLeftPanel> extends BaseView<T> {
     const thumbLoadRange: number = this.options.thumbsLoadRange;
 
     const thumbRange: any = {
-      start:
-        thumbRangeMid > thumbLoadRange ? thumbRangeMid - thumbLoadRange : 0,
-      end:
-        thumbRangeMid < this.thumbs.length - 1 - thumbLoadRange
-          ? thumbRangeMid + thumbLoadRange
-          : this.thumbs.length - 1,
+      start: thumbRangeMid > thumbLoadRange ? thumbRangeMid - thumbLoadRange : 0,
+      end: thumbRangeMid < this.thumbs.length - 1 - thumbLoadRange ? thumbRangeMid + thumbLoadRange : this.thumbs.length - 1,
     };
 
     const fadeDuration: number = this.options.thumbsImageFadeInDuration;
@@ -250,41 +219,36 @@ export class ThumbsView<T extends ExtendedLeftPanel> extends BaseView<T> {
 
     for (let i = thumbRange.start; i <= thumbRange.end; i++) {
       const $thumb: JQuery = this.getThumbByIndex(i);
-      const $wrap: JQuery = $thumb.find(".wrap");
+      const $wrap: JQuery = $thumb.find('.wrap');
 
       // if no img has been added yet
-      if (!$wrap.hasClass("loading") && !$wrap.hasClass("loaded")) {
-        const visible: string = $thumb.attr("data-visible");
+      if (!$wrap.hasClass('loading') && !$wrap.hasClass('loaded')) {
+        const visible: string = $thumb.attr('data-visible');
 
-        if (visible !== "false") {
-          $wrap.removeClass("loadingFailed");
-          $wrap.addClass("loading");
+        if (visible !== 'false') {
+          $wrap.removeClass('loadingFailed');
+          $wrap.addClass('loading');
 
           if (thumbType) {
             $wrap.addClass(thumbType);
           }
 
-          let src: string = $thumb.attr("data-src");
-          if (
-            that.config.options.thumbsCacheInvalidation &&
-            that.config.options.thumbsCacheInvalidation.enabled
-          ) {
-            src += `${
-              that.config.options.thumbsCacheInvalidation.paramType
-            }t=${Dates.getTimeStamp()}`;
+          let src: string = $thumb.attr('data-src');
+          if (that.config.options.thumbsCacheInvalidation && that.config.options.thumbsCacheInvalidation.enabled) {
+            src += `${that.config.options.thumbsCacheInvalidation.paramType}t=${Dates.getTimeStamp()}`;
           }
           const $img: JQuery = $('<img src="' + src + '" alt=""/>');
           // fade in on load.
           $img.hide();
 
-          $img.on("load", function () {
+          $img.on('load', function () {
             $(this).fadeIn(fadeDuration, function () {
-              $(this).parent().switchClass("loading", "loaded");
+              $(this).parent().switchClass('loading', 'loaded');
             });
           });
 
-          $img.on("error", function () {
-            $(this).parent().switchClass("loading", "loadingFailed");
+          $img.on('error', function () {
+            $(this).parent().switchClass('loading', 'loadingFailed');
           });
 
           $wrap.append($img);
@@ -314,26 +278,26 @@ export class ThumbsView<T extends ExtendedLeftPanel> extends BaseView<T> {
     const type: ExternalResourceType | null = canvas.getType();
 
     if (type) {
-      return type.toString().includes("pdf");
+      return type.toString().includes('pdf');
     }
 
     return false;
   }
 
   setLabel(): void {
-    $(this.$thumbs).find("span.index").hide();
-    $(this.$thumbs).find("span.label").show();
+    $(this.$thumbs).find('span.index').hide();
+    $(this.$thumbs).find('span.label').show();
   }
 
   addSelectedClassToThumbs(index: number): void {
-    this.getThumbByIndex(index).addClass("selected");
+    this.getThumbByIndex(index).addClass('selected');
   }
 
   selectIndex(index: number): void {
     // may be authenticating
     if (index === -1) return;
     if (!this.thumbs || !this.thumbs.length) return;
-    this.getAllThumbs().removeClass("selected");
+    this.getAllThumbs().removeClass('selected');
     this.$selectedThumb = this.getThumbByIndex(index);
     this.addSelectedClassToThumbs(index);
     const indices: number[] = this.extension.getPagedIndices(index);
@@ -350,7 +314,7 @@ export class ThumbsView<T extends ExtendedLeftPanel> extends BaseView<T> {
 
   getAllThumbs(): JQuery {
     if (!this._$thumbsCache) {
-      this._$thumbsCache = this.$thumbs.find(".thumb");
+      this._$thumbsCache = this.$thumbs.find('.thumb');
     }
     return this._$thumbsCache;
   }

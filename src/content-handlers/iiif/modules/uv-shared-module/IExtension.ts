@@ -1,18 +1,10 @@
-import {
-  AnnotationBody,
-  Canvas,
-  Collection,
-  IExternalResource,
-  IExternalResourceData,
-  Range,
-  Manifest,
-} from "manifesto.js";
-import { ILocale } from "./ILocale";
-import { IIIFExtensionHost } from "../../IIIFExtensionHost";
-import { IUVData } from "../../../../IUVData";
-import { Shell } from "./Shell";
-import { Helper } from "@iiif/manifold";
-import { BaseConfig, MetricType } from "../../BaseConfig";
+import { AnnotationBody, Canvas, Collection, IExternalResource, IExternalResourceData, Range, Manifest } from 'manifesto.js';
+import { ILocale } from './ILocale';
+import { IIIFExtensionHost } from '../../IIIFExtensionHost';
+import { IUVData } from '../../../../IUVData';
+import { Shell } from './Shell';
+import { Helper } from '@iiif/manifold';
+import { BaseConfig, MetricType } from '../../BaseConfig';
 
 export type ExtensionLoader = { name: string; loader: () => Promise<any> };
 
@@ -39,9 +31,7 @@ export interface IExtension {
   getCurrentCanvases(): Canvas[];
   getCurrentCanvasRange(): Range | null;
   getDomain(): string;
-  getExternalResources(
-    resources?: IExternalResource[]
-  ): Promise<IExternalResourceData[]>;
+  getExternalResources(resources?: IExternalResource[]): Promise<IExternalResourceData[]>;
   getIIIFShareUrl(shareManifests?: boolean): string;
   getLocale(): string;
   getMediaFormats(canvas: Canvas): AnnotationBody[];
@@ -76,12 +66,7 @@ export interface IExtension {
   resize(): void;
   resources: IExternalResourceData[] | null;
   shifted: boolean;
-  showMessage(
-    message: string,
-    acceptCallback?: any,
-    buttonText?: string,
-    allowClose?: boolean
-  ): void;
+  showMessage(message: string, acceptCallback?: any, buttonText?: string, allowClose?: boolean): void;
   tabbing: boolean;
   render(): void;
   shell: Shell;

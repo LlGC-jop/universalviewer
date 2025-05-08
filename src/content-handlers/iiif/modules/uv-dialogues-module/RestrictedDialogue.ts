@@ -1,12 +1,10 @@
-const $ = require("jquery");
-import { BaseConfig } from "../../BaseConfig";
-import { IIIFEvents } from "../../IIIFEvents";
-import { Dialogue } from "../uv-shared-module/Dialogue";
-import { IExternalResource } from "manifesto.js";
+const $ = require('jquery');
+import { BaseConfig } from '../../BaseConfig';
+import { IIIFEvents } from '../../IIIFEvents';
+import { Dialogue } from '../uv-shared-module/Dialogue';
+import { IExternalResource } from 'manifesto.js';
 
-export class RestrictedDialogue extends Dialogue<
-  BaseConfig["modules"]["restrictedDialogue"]
-> {
+export class RestrictedDialogue extends Dialogue<BaseConfig['modules']['restrictedDialogue']> {
   $cancelButton: JQuery;
   $message: JQuery;
   $nextVisibleButton: JQuery;
@@ -20,7 +18,7 @@ export class RestrictedDialogue extends Dialogue<
   }
 
   create(): void {
-    this.setConfig("restrictedDialogue");
+    this.setConfig('restrictedDialogue');
 
     super.create();
 
@@ -48,22 +46,22 @@ export class RestrictedDialogue extends Dialogue<
                 <div class="buttons">\
                     <a class="cancel btn btn-primary" href="#" target="_parent"></a>\
                 </div>\
-            </div>'
+            </div>',
     );
 
-    this.$message = this.$content.find(".message");
+    this.$message = this.$content.find('.message');
     this.$message.targetBlank();
 
     // todo: revisit?
     //this.$nextVisibleButton = this.$content.find('.nextvisible');
     //this.$nextVisibleButton.text(this.content.nextVisibleItem);
 
-    this.$cancelButton = this.$content.find(".cancel");
+    this.$cancelButton = this.$content.find('.cancel');
     this.$cancelButton.text(this.content.cancel);
 
     this.$element.hide();
 
-    this.$cancelButton.on("click", (e) => {
+    this.$cancelButton.on('click', (e) => {
       e.preventDefault();
       this.close();
     });
@@ -74,18 +72,18 @@ export class RestrictedDialogue extends Dialogue<
 
     this.isAccepted = false;
 
-    let message: string = "";
+    let message: string = '';
 
     if (this.resource.restrictedService) {
-      this.$title.text(this.resource.restrictedService.getProperty("label"));
-      message = this.resource.restrictedService.getProperty("description");
+      this.$title.text(this.resource.restrictedService.getProperty('label'));
+      message = this.resource.restrictedService.getProperty('description');
     }
 
     this.$message.html(message);
     this.$message.targetBlank();
 
-    this.$message.find("a").on("click", function () {
-      var url: string = $(this).attr("href");
+    this.$message.find('a').on('click', function () {
+      var url: string = $(this).attr('href');
       this.extensionHost.publish(IIIFEvents.EXTERNAL_LINK_CLICKED, url);
     });
 

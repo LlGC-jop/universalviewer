@@ -10,9 +10,9 @@ export class TFragment {
   }
 
   static fromString(time: string): TFragment {
-    time = time.replace("t=", "");
-    if (time.includes(",")) {
-      const [start, end] = time.split(",");
+    time = time.replace('t=', '');
+    if (time.includes(',')) {
+      const [start, end] = time.split(',');
       return new TFragment([Number(start), Number(end)]);
     }
     return new TFragment(Number(time));

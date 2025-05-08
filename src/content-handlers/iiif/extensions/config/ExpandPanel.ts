@@ -1,4 +1,4 @@
-import { ModuleConfig } from "../../BaseConfig";
+import { ModuleConfig } from '../../BaseConfig';
 
 export type ExpandPanelOptions = {
   /** Determines if expand full is enabled */

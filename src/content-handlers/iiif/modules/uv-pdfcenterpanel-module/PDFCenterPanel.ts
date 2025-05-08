@@ -1,18 +1,16 @@
-const $ = require("jquery");
-import { IIIFEvents } from "../../IIIFEvents";
-import { CenterPanel } from "../uv-shared-module/CenterPanel";
-import { PDFExtensionEvents } from "../../extensions/uv-pdf-extension/Events";
-import { Bools } from "@edsilv/utils";
-import { AnnotationBody, Canvas, IExternalResource } from "manifesto.js";
-import { Events } from "../../../../Events";
-import { loadScripts } from "../../../../Utils";
-import { Config } from "../../extensions/uv-pdf-extension/config/Config";
+const $ = require('jquery');
+import { IIIFEvents } from '../../IIIFEvents';
+import { CenterPanel } from '../uv-shared-module/CenterPanel';
+import { PDFExtensionEvents } from '../../extensions/uv-pdf-extension/Events';
+import { Bools } from '@edsilv/utils';
+import { AnnotationBody, Canvas, IExternalResource } from 'manifesto.js';
+import { Events } from '../../../../Events';
+import { loadScripts } from '../../../../Utils';
+import { Config } from '../../extensions/uv-pdf-extension/config/Config';
 
 // declare var PDFJS: any;
 
-export class PDFCenterPanel extends CenterPanel<
-  Config["modules"]["pdfCenterPanel"]
-> {
+export class PDFCenterPanel extends CenterPanel<Config['modules']['pdfCenterPanel']> {
   // private _$spinner: JQuery;
   private _$canvas: JQuery;
   private _$nextButton: JQuery;
@@ -42,34 +40,30 @@ export class PDFCenterPanel extends CenterPanel<
   }
 
   create(): void {
-    this.setConfig("pdfCenterPanel");
+    this.setConfig('pdfCenterPanel');
 
     super.create();
 
     this._$pdfContainer = $('<div class="pdfContainer"></div>');
-    this._$canvas = $("<canvas></canvas>");
+    this._$canvas = $('<canvas></canvas>');
     // this._$spinner = $('<div class="spinner"></div>');
     this._$progress = $('<progress max="100" value="0"></progress>');
     this._canvas = <HTMLCanvasElement>this._$canvas[0];
-    this._ctx = this._canvas.getContext("2d");
+    this._ctx = this._canvas.getContext('2d');
     this._$prevButton = $(
       `<button class="btn btn-default paging prev" title="${this.content.previous}">
         <i class="uv-icon-prev" aria-hidden="true"></i>
         <span class="sr-only">${this.content.previous}</span>
-      </button>`
+      </button>`,
     );
     this._$nextButton = $(
       `<button class="btn btn-default paging next" title="${this.content.next}">
         <i class="uv-icon-next" aria-hidden="true"></i>
         <span class="sr-only">${this.content.next}</span>
-      </button>`
+      </button>`,
     );
-    this._$zoomInButton = $(
-      '<button class="btn zoomIn" tabindex="0"></button>'
-    );
-    this._$zoomOutButton = $(
-      '<button class="btn zoomOut" tabindex="0"></button>'
-    );
+    this._$zoomInButton = $('<button class="btn zoomIn" tabindex="0"></button>');
+    this._$zoomOutButton = $('<button class="btn zoomOut" tabindex="0"></button>');
 
     // Only attach PDF controls if we're using PDF.js; they have no meaning in
     // PDFObject. However, we still create the objects above so that references
@@ -87,12 +81,9 @@ export class PDFCenterPanel extends CenterPanel<
 
     this.$content.prepend(this._$pdfContainer);
 
-    this.extensionHost.subscribe(
-      IIIFEvents.OPEN_EXTERNAL_RESOURCE,
-      (resources: IExternalResource[]) => {
-        this.openMedia(resources);
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.OPEN_EXTERNAL_RESOURCE, (resources: IExternalResource[]) => {
+      this.openMedia(resources);
+    });
 
     this.extensionHost.subscribe(IIIFEvents.FIRST, () => {
       if (!this._pdfDoc) {
@@ -152,22 +143,19 @@ export class PDFCenterPanel extends CenterPanel<
       this._queueRenderPage(this._pageIndex);
     });
 
-    this.extensionHost.subscribe(
-      PDFExtensionEvents.SEARCH,
-      (pageIndex: number) => {
-        if (!this._pdfDoc) {
-          return;
-        }
-
-        if (pageIndex < 1 || pageIndex > this._pdfDoc.numPages) {
-          return;
-        }
-
-        this._pageIndex = pageIndex;
-
-        this._queueRenderPage(this._pageIndex);
+    this.extensionHost.subscribe(PDFExtensionEvents.SEARCH, (pageIndex: number) => {
+      if (!this._pdfDoc) {
+        return;
       }
-    );
+
+      if (pageIndex < 1 || pageIndex > this._pdfDoc.numPages) {
+        return;
+      }
+
+      this._pageIndex = pageIndex;
+
+      this._queueRenderPage(this._pageIndex);
+    });
 
     this.extensionHost.subscribe(PDFExtensionEvents.ZOOM_IN, () => {
       const newScale: number = this._scale + 0.5;
@@ -240,12 +228,12 @@ export class PDFCenterPanel extends CenterPanel<
 
   disablePrevButton(): void {
     this._prevButtonEnabled = false;
-    this._$prevButton.addClass("disabled");
+    this._$prevButton.addClass('disabled');
   }
 
   enablePrevButton(): void {
     this._prevButtonEnabled = true;
-    this._$prevButton.removeClass("disabled");
+    this._$prevButton.removeClass('disabled');
   }
 
   hidePrevButton(): void {
@@ -260,12 +248,12 @@ export class PDFCenterPanel extends CenterPanel<
 
   disableNextButton(): void {
     this._nextButtonEnabled = false;
-    this._$nextButton.addClass("disabled");
+    this._$nextButton.addClass('disabled');
   }
 
   enableNextButton(): void {
     this._nextButtonEnabled = true;
-    this._$nextButton.removeClass("disabled");
+    this._$nextButton.removeClass('disabled');
   }
 
   hideNextButton(): void {
@@ -285,8 +273,7 @@ export class PDFCenterPanel extends CenterPanel<
 
     let mediaUri: string | null = null;
     let canvas: Canvas = this.extension.helper.getCurrentCanvas();
-    const formats: AnnotationBody[] | null =
-      this.extension.getMediaFormats(canvas);
+    const formats: AnnotationBody[] | null = this.extension.getMediaFormats(canvas);
     const pdfUri: string = canvas.id;
 
     if (formats && formats.length) {
@@ -302,10 +289,8 @@ export class PDFCenterPanel extends CenterPanel<
     this._lastMediaUri = mediaUri;
 
     if (!Bools.getBool(this.options.usePdfJs, false)) {
-      window.PDFObject = await import(
-        /* webpackChunkName: "pdfobject" */ /* webpackMode: "lazy" */ "pdfobject"
-      );
-      window.PDFObject.embed(pdfUri, ".pdfContainer", { id: "PDF" });
+      window.PDFObject = await import(/* webpackChunkName: "pdfobject" */ /* webpackMode: "lazy" */ 'pdfobject');
+      window.PDFObject.embed(pdfUri, '.pdfContainer', { id: 'PDF' });
     } else {
       // PDFJS = await import(
       //   /* webpackChunkName: "pdfjs" */ /* webpackMode: "lazy" */ "pdfjs-dist"
@@ -315,14 +300,11 @@ export class PDFCenterPanel extends CenterPanel<
 
       // use pdfjs cdn, it just isn't working with webpack
       if (!this._pdfjsLib) {
-        await loadScripts([
-          "//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
-        ]);
-        this._pdfjsLib = window["pdfjs-dist/build/pdf"];
-        this._pdfjsLib.GlobalWorkerOptions.workerSrc =
-          "//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+        await loadScripts(['//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js']);
+        this._pdfjsLib = window['pdfjs-dist/build/pdf'];
+        this._pdfjsLib.GlobalWorkerOptions.workerSrc = '//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
       } else {
-        this._$progress[0].setAttribute("value", "0");
+        this._$progress[0].setAttribute('value', '0');
         this._$progress.show();
         this._$canvas.hide();
       }
@@ -335,7 +317,7 @@ export class PDFCenterPanel extends CenterPanel<
       const loadingTask = this._pdfjsLib.getDocument(parameter);
       loadingTask.onProgress = (progress) => {
         const percentLoaded = (progress.loaded / progress.total) * 100;
-        this._$progress[0].setAttribute("value", String(percentLoaded));
+        this._$progress[0].setAttribute('value', String(percentLoaded));
         if (percentLoaded === 100) {
           this._$progress.hide();
           this._$canvas.show();
@@ -371,7 +353,7 @@ export class PDFCenterPanel extends CenterPanel<
       this._$zoomInButton.disable();
     }
 
-    if (this.extension.isMetric("sm")) {
+    if (this.extension.isMetric('sm')) {
       this._$zoomOutButton.hide();
       this._$zoomInButton.hide();
     } else {
@@ -412,10 +394,7 @@ export class PDFCenterPanel extends CenterPanel<
       // Wait for rendering to finish
       this._renderTask.promise
         .then(() => {
-          this.extensionHost.publish(
-            PDFExtensionEvents.PAGE_INDEX_CHANGE,
-            this._pageIndex
-          );
+          this.extensionHost.publish(PDFExtensionEvents.PAGE_INDEX_CHANGE, this._pageIndex);
 
           this._pageRendering = false;
 
@@ -466,14 +445,8 @@ export class PDFCenterPanel extends CenterPanel<
     //   this.$content.width() / 2 - this._$spinner.width() / 2
     // );
 
-    this._$progress.css(
-      "top",
-      this.$content.height() / 2 - this._$progress.height() / 2
-    );
-    this._$progress.css(
-      "left",
-      this.$content.width() / 2 - this._$progress.width() / 2
-    );
+    this._$progress.css('top', this.$content.height() / 2 - this._$progress.height() / 2);
+    this._$progress.css('left', this.$content.width() / 2 - this._$progress.width() / 2);
 
     this._$prevButton.css({
       top: (this.$content.height() - this._$prevButton.height()) / 2,
@@ -482,9 +455,7 @@ export class PDFCenterPanel extends CenterPanel<
 
     this._$nextButton.css({
       top: (this.$content.height() - this._$nextButton.height()) / 2,
-      left:
-        this.$content.width() -
-        (this._$nextButton.width() + this._$nextButton.horizontalMargins()),
+      left: this.$content.width() - (this._$nextButton.width() + this._$nextButton.horizontalMargins()),
     });
 
     if (!this._viewport) {

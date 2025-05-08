@@ -1,26 +1,18 @@
-const $ = require("jquery");
-import { IIIFEvents } from "../../IIIFEvents";
-import { InformationArgs } from "./InformationArgs";
-import { InformationType } from "./InformationType";
-import { ILoginDialogueOptions } from "./ILoginDialogueOptions";
-import { LoginWarningMessages } from "./LoginWarningMessages";
-import {
-  IAccessToken,
-  IExternalResource,
-  StatusCode,
-  Utils,
-} from "manifesto.js";
-import { Storage, StorageType, StorageItem, Urls } from "@edsilv/utils";
-import * as HTTPStatusCode from "@edsilv/http-status-codes";
-import { Events } from "../../../../Events";
+const $ = require('jquery');
+import { IIIFEvents } from '../../IIIFEvents';
+import { InformationArgs } from './InformationArgs';
+import { InformationType } from './InformationType';
+import { ILoginDialogueOptions } from './ILoginDialogueOptions';
+import { LoginWarningMessages } from './LoginWarningMessages';
+import { IAccessToken, IExternalResource, StatusCode, Utils } from 'manifesto.js';
+import { Storage, StorageType, StorageItem, Urls } from '@edsilv/utils';
+import * as HTTPStatusCode from '@edsilv/http-status-codes';
+import { Events } from '../../../../Events';
 
 export class Auth09 {
   static publish: (event: string, args?: any) => void;
 
-  static loadExternalResources(
-    resourcesToLoad: IExternalResource[],
-    storageStrategy: string
-  ): Promise<IExternalResource[]> {
+  static loadExternalResources(resourcesToLoad: IExternalResource[], storageStrategy: string): Promise<IExternalResource[]> {
     return new Promise<IExternalResource[]>((resolve) => {
       Utils.loadExternalResourcesAuth09(
         resourcesToLoad,
@@ -31,12 +23,12 @@ export class Auth09 {
         Auth09.getAccessToken,
         Auth09.storeAccessToken,
         Auth09.getStoredAccessToken,
-        Auth09.handleExternalResourceResponse
+        Auth09.handleExternalResourceResponse,
       )
         .then((r: IExternalResource[]) => {
           resolve(r);
         })
-        ["catch"]((error: any) => {
+        ['catch']((error: any) => {
           switch (error.name) {
             case StatusCode.AUTHORIZATION_FAILED.toString():
               Auth09.publish(IIIFEvents.LOGIN_FAILED);
@@ -61,9 +53,7 @@ export class Auth09 {
           resource: resource,
           acceptCallback: () => {
             if (resource.clickThroughService) {
-              const win: Window | null = window.open(
-                resource.clickThroughService.id
-              );
+              const win: Window | null = window.open(resource.clickThroughService.id);
 
               const pollTimer: number = window.setInterval(() => {
                 if (win && win.closed) {
@@ -102,16 +92,14 @@ export class Auth09 {
         options.showCancelButton = true;
       }
 
-      console.log("login");
+      console.log('login');
 
       Auth09.publish(IIIFEvents.SHOW_LOGIN_DIALOGUE, [
         {
           resource: resource,
           loginCallback: () => {
             if (resource.loginService) {
-              const win: Window | null = window.open(
-                resource.loginService.id + "?t=" + new Date().getTime()
-              );
+              const win: Window | null = window.open(resource.loginService.id + '?t=' + new Date().getTime());
               const pollTimer: number = window.setInterval(function () {
                 if (win && win.closed) {
                   window.clearInterval(pollTimer);
@@ -123,9 +111,7 @@ export class Auth09 {
           },
           logoutCallback: () => {
             if (resource.logoutService) {
-              const win: Window | null = window.open(
-                resource.logoutService.id + "?t=" + new Date().getTime()
-              );
+              const win: Window | null = window.open(resource.logoutService.id + '?t=' + new Date().getTime());
               const pollTimer: number = window.setInterval(function () {
                 if (win && win.closed) {
                   window.clearInterval(pollTimer);
@@ -141,21 +127,16 @@ export class Auth09 {
     });
   }
 
-  static getAccessToken(
-    resource: IExternalResource,
-    rejectOnError: boolean
-  ): Promise<IAccessToken> {
+  static getAccessToken(resource: IExternalResource, rejectOnError: boolean): Promise<IAccessToken> {
     return new Promise<IAccessToken>((resolve, reject) => {
       if (resource.tokenService) {
         const serviceUri: string = resource.tokenService.id;
 
         // pick an identifier for this message. We might want to keep track of sent messages
-        const msgId: string = serviceUri + "|" + new Date().getTime();
+        const msgId: string = serviceUri + '|' + new Date().getTime();
 
-        const receiveAccessToken: EventListenerOrEventListenerObject = (
-          e: any
-        ) => {
-          window.removeEventListener("message", receiveAccessToken);
+        const receiveAccessToken: EventListenerOrEventListenerObject = (e: any) => {
+          window.removeEventListener('message', receiveAccessToken);
           const token: any = e.data;
           if (token.error) {
             if (rejectOnError) {
@@ -168,40 +149,28 @@ export class Auth09 {
           }
         };
 
-        window.addEventListener("message", receiveAccessToken, false);
+        window.addEventListener('message', receiveAccessToken, false);
 
-        const tokenUri: string = serviceUri + "?messageId=" + msgId;
-        $("#commsFrame").prop("src", tokenUri);
+        const tokenUri: string = serviceUri + '?messageId=' + msgId;
+        $('#commsFrame').prop('src', tokenUri);
       } else {
-        reject("Token service not found");
+        reject('Token service not found');
       }
     });
   }
 
-  static storeAccessToken(
-    resource: IExternalResource,
-    token: IAccessToken,
-    storageStrategy: StorageType
-  ): Promise<void> {
+  static storeAccessToken(resource: IExternalResource, token: IAccessToken, storageStrategy: StorageType): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       if (resource.tokenService) {
-        Storage.set(
-          resource.tokenService.id,
-          token,
-          token.expiresIn,
-          storageStrategy
-        );
+        Storage.set(resource.tokenService.id, token, token.expiresIn, storageStrategy);
         resolve();
       } else {
-        reject("Token service not found");
+        reject('Token service not found');
       }
     });
   }
 
-  static getStoredAccessToken(
-    resource: IExternalResource,
-    storageStrategy: StorageType
-  ): Promise<IAccessToken> {
+  static getStoredAccessToken(resource: IExternalResource, storageStrategy: StorageType): Promise<IAccessToken> {
     return new Promise<IAccessToken>((resolve, _reject) => {
       let foundItems: StorageItem[] = [];
       let item: StorageItem | null = null;
@@ -215,9 +184,7 @@ export class Auth09 {
         foundItems.push(item);
       } else {
         // find an access token for the domain
-        const domain: string = Urls.getUrlParts(
-          <string>resource.dataUri
-        ).hostname;
+        const domain: string = Urls.getUrlParts(<string>resource.dataUri).hostname;
         const items: StorageItem[] = Storage.getItems(storageStrategy);
 
         for (let i = 0; i < items.length; i++) {
@@ -243,9 +210,7 @@ export class Auth09 {
     });
   }
 
-  static handleExternalResourceResponse(
-    resource: IExternalResource
-  ): Promise<any> {
+  static handleExternalResourceResponse(resource: IExternalResource): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       resource.isResponseHandled = true;
 
@@ -255,10 +220,7 @@ export class Auth09 {
         resolve(resource);
         Auth09.publish(IIIFEvents.RESOURCE_DEGRADED, [resource]);
       } else {
-        if (
-          resource.error.status === HTTPStatusCode.UNAUTHORIZED ||
-          resource.error.status === HTTPStatusCode.INTERNAL_SERVER_ERROR
-        ) {
+        if (resource.error.status === HTTPStatusCode.UNAUTHORIZED || resource.error.status === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
           // if the browser doesn't support CORS
           // if (!Modernizr.cors) {
           //     const informationArgs: InformationArgs = new InformationArgs(InformationType.AUTH_CORS_ERROR, null);
@@ -270,7 +232,7 @@ export class Auth09 {
           //}
         } else if (resource.error.status === HTTPStatusCode.FORBIDDEN) {
           const error: Error = new Error();
-          error.message = "Forbidden";
+          error.message = 'Forbidden';
           error.name = StatusCode.FORBIDDEN.toString();
           reject(error);
         } else {
@@ -281,10 +243,7 @@ export class Auth09 {
   }
 
   static handleDegraded(resource: IExternalResource): void {
-    const informationArgs: InformationArgs = new InformationArgs(
-      InformationType.DEGRADED_RESOURCE,
-      resource
-    );
+    const informationArgs: InformationArgs = new InformationArgs(InformationType.DEGRADED_RESOURCE, resource);
     Auth09.publish(IIIFEvents.SHOW_INFORMATION, [informationArgs]);
   }
 }

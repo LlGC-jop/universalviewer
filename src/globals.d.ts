@@ -52,12 +52,7 @@ declare var requirejs: any;
 interface Window {
   configExtensionCallback: any;
   browserDetect: any;
-  trackEvent(
-    category: string,
-    action: string,
-    label: string,
-    value?: any
-  ): void;
+  trackEvent(category: string, action: string, label: string, value?: any): void;
   trackVariable(slot: number, name: string, value: string, scope: number): void;
   trackingLabel: string;
   $: JQueryStatic;
@@ -88,12 +83,7 @@ interface Array<T> {
 }
 
 // google
-declare function trackEvent(
-  category: string,
-  action: string,
-  label: string,
-  value?: any
-): void;
+declare function trackEvent(category: string, action: string, label: string, value?: any): void;
 
 declare var YT: any;
 

@@ -1,13 +1,11 @@
-const $ = require("jquery");
-import { IIIFEvents } from "../../IIIFEvents";
-import { PDFExtensionEvents } from "../../extensions/uv-pdf-extension/Events";
-import { Config } from "../../extensions/uv-pdf-extension/config/Config";
-import { HeaderPanel } from "../uv-shared-module/HeaderPanel";
-import { Strings } from "@edsilv/utils";
+const $ = require('jquery');
+import { IIIFEvents } from '../../IIIFEvents';
+import { PDFExtensionEvents } from '../../extensions/uv-pdf-extension/Events';
+import { Config } from '../../extensions/uv-pdf-extension/config/Config';
+import { HeaderPanel } from '../uv-shared-module/HeaderPanel';
+import { Strings } from '@edsilv/utils';
 
-export class PDFHeaderPanel extends HeaderPanel<
-  Config["modules"]["pdfHeaderPanel"]
-> {
+export class PDFHeaderPanel extends HeaderPanel<Config['modules']['pdfHeaderPanel']> {
   $firstButton: JQuery;
   $lastButton: JQuery;
   $nextButton: JQuery;
@@ -32,24 +30,18 @@ export class PDFHeaderPanel extends HeaderPanel<
   }
 
   create(): void {
-    this.setConfig("pdfHeaderPanel");
+    this.setConfig('pdfHeaderPanel');
 
     super.create();
 
-    this.extensionHost.subscribe(
-      PDFExtensionEvents.PAGE_INDEX_CHANGE,
-      (pageIndex: number) => {
-        this._pageIndex = pageIndex;
-        this.render();
-      }
-    );
+    this.extensionHost.subscribe(PDFExtensionEvents.PAGE_INDEX_CHANGE, (pageIndex: number) => {
+      this._pageIndex = pageIndex;
+      this.render();
+    });
 
-    this.extensionHost.subscribe(
-      PDFExtensionEvents.PDF_LOADED,
-      (pdfDoc: any) => {
-        this._pdfDoc = pdfDoc;
-      }
-    );
+    this.extensionHost.subscribe(PDFExtensionEvents.PDF_LOADED, (pdfDoc: any) => {
+      this._pdfDoc = pdfDoc;
+    });
 
     this.$prevOptions = $('<div class="prevOptions"></div>');
     this.$centerOptions.append(this.$prevOptions);
@@ -75,21 +67,13 @@ export class PDFHeaderPanel extends HeaderPanel<
     this.$search = $('<div class="search"></div>');
     this.$centerOptions.append(this.$search);
 
-    this.$searchText = $(
-      '<input class="searchText" maxlength="50" type="text" tabindex="0" aria-label="' +
-        this.content.pageSearchLabel +
-        '"/>'
-    );
+    this.$searchText = $('<input class="searchText" maxlength="50" type="text" tabindex="0" aria-label="' + this.content.pageSearchLabel + '"/>');
     this.$search.append(this.$searchText);
 
     this.$total = $('<span class="total"></span>');
     this.$search.append(this.$total);
 
-    this.$searchButton = $(
-      '<button class="go btn btn-primary" tabindex="0">' +
-        this.content.go +
-        "</button>"
-    );
+    this.$searchButton = $('<button class="go btn btn-primary" tabindex="0">' + this.content.go + '</button>');
     this.$search.append(this.$searchButton);
     this.$searchButton.disable();
 
@@ -162,26 +146,26 @@ export class PDFHeaderPanel extends HeaderPanel<
 
     if (this._pageIndex === 1) {
       this.$firstButton.disable();
-      this.$firstButton.attr("disabled", "disabled");
+      this.$firstButton.attr('disabled', 'disabled');
       this.$prevButton.disable();
-      this.$prevButton.attr("disabled", "disabled");
+      this.$prevButton.attr('disabled', 'disabled');
     } else {
       this.$firstButton.enable();
-      this.$firstButton.removeAttr("disabled");
+      this.$firstButton.removeAttr('disabled');
       this.$prevButton.enable();
-      this.$prevButton.removeAttr("disabled");
+      this.$prevButton.removeAttr('disabled');
     }
 
     if (this._pageIndex === this._pdfDoc.numPages) {
       this.$lastButton.disable();
-      this.$lastButton.attr("disabled", "disabled");
+      this.$lastButton.attr('disabled', 'disabled');
       this.$nextButton.disable();
-      this.$nextButton.attr("disabled", "disabled");
+      this.$nextButton.attr('disabled', 'disabled');
     } else {
       this.$lastButton.enable();
-      this.$lastButton.removeAttr("disabled");
+      this.$lastButton.removeAttr('disabled');
       this.$nextButton.enable();
-      this.$nextButton.removeAttr("disabled");
+      this.$nextButton.removeAttr('disabled');
     }
   }
 
@@ -194,10 +178,7 @@ export class PDFHeaderPanel extends HeaderPanel<
     let index: number = parseInt(this.$searchText.val(), 10);
 
     if (isNaN(index)) {
-      this.extension.showMessage(
-        this.extension.data.config!.modules.genericDialogue.content
-          .invalidNumber
-      );
+      this.extension.showMessage(this.extension.data.config!.modules.genericDialogue.content.invalidNumber);
       return;
     }
 

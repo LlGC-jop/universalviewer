@@ -1,19 +1,19 @@
-import { IUVData } from "./IUVData";
-const filterXSS = require("xss");
-export const merge = require("lodash/merge");
+import { IUVData } from './IUVData';
+const filterXSS = require('xss');
+export const merge = require('lodash/merge');
 
 export const sanitize = (html: string) => {
   return filterXSS(html, {
     whiteList: {
-      a: ["href", "title", "target", "class", "data-uv-navigate"],
+      a: ['href', 'title', 'target', 'class', 'data-uv-navigate'],
       b: [],
       br: [],
       em: [],
       i: [],
-      img: ["src", "alt"],
+      img: ['src', 'alt'],
       p: [],
       small: [],
-      span: ["data-uv-navigate"],
+      span: ['data-uv-navigate'],
       strong: [],
       sub: [],
       sup: [],
@@ -22,7 +22,7 @@ export const sanitize = (html: string) => {
 };
 
 export const isValidUrl = (value: string): boolean => {
-  const a = document.createElement("a");
+  const a = document.createElement('a');
   a.href = value;
   return !!a.host && a.host !== window.location.host;
 };
@@ -36,11 +36,7 @@ export const debounce = (callback: (args: any) => void, wait: number) => {
   };
 };
 
-export const propertiesChanged = (
-  newData: IUVData<any>,
-  currentData: IUVData<any>,
-  properties: string[]
-): boolean => {
+export const propertiesChanged = (newData: IUVData<any>, currentData: IUVData<any>, properties: string[]): boolean => {
   let propChanged: boolean = false;
 
   for (var i = 0; i < properties.length; i++) {
@@ -53,17 +49,13 @@ export const propertiesChanged = (
   return propChanged;
 };
 
-export const propertyChanged = (
-  newData: IUVData<any>,
-  currentData: IUVData<any>,
-  propertyName: string
-): boolean => {
+export const propertyChanged = (newData: IUVData<any>, currentData: IUVData<any>, propertyName: string): boolean => {
   return currentData[propertyName] !== newData[propertyName];
 };
 
 function appendScript(src: string) {
   return new Promise<void>((resolve) => {
-    const script = document.createElement("script");
+    const script = document.createElement('script');
     script.src = src;
     script.onload = () => resolve();
     document.head.appendChild(script);
@@ -72,8 +64,8 @@ function appendScript(src: string) {
 
 function appendCSS(src: string) {
   return new Promise<void>((resolve) => {
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
     link.href = src;
     link.onload = () => resolve();
     document.head.appendChild(link);
@@ -84,7 +76,7 @@ export const loadScripts = async (sources: string[]) => {
   await Promise.all(
     sources.map(async (src: string) => {
       await appendScript(src);
-    })
+    }),
   );
 };
 
@@ -92,17 +84,17 @@ export const loadCSS = async (sources: string[]) => {
   await Promise.all(
     sources.map(async (src: string) => {
       await appendCSS(src);
-    })
+    }),
   );
 };
 
 export const isVisible = (el: JQuery) => {
   // return el.css("visibility") !== "hidden"
-  return el.is(":visible");
+  return el.is(':visible');
 };
 
 export const defaultLocale = {
-  name: "en-GB",
+  name: 'en-GB',
 };
 
 export const getUUID = () => {
@@ -126,9 +118,7 @@ export class Storage {
     }
   }
 
-  public static clearExpired(
-    storageType: StorageType = StorageType.MEMORY
-  ): void {
+  public static clearExpired(storageType: StorageType = StorageType.MEMORY): void {
     const items: StorageItem[] = this.getItems(storageType);
 
     for (let i = 0; i < items.length; i++) {
@@ -140,10 +130,7 @@ export class Storage {
     }
   }
 
-  public static get(
-    key: string,
-    storageType: StorageType = StorageType.MEMORY
-  ): StorageItem | null {
+  public static get(key: string, storageType: StorageType = StorageType.MEMORY): StorageItem | null {
     let data: string | null = null;
 
     switch (storageType) {
@@ -186,9 +173,7 @@ export class Storage {
     return true;
   }
 
-  public static getItems(
-    storageType: StorageType = StorageType.MEMORY
-  ): StorageItem[] {
+  public static getItems(storageType: StorageType = StorageType.MEMORY): StorageItem[] {
     const items: StorageItem[] = [];
 
     switch (storageType) {
@@ -196,10 +181,7 @@ export class Storage {
         const keys: string[] = Object.keys(this._memoryStorage);
 
         for (let i = 0; i < keys.length; i++) {
-          const item: StorageItem | null = this.get(
-            keys[i],
-            StorageType.MEMORY
-          );
+          const item: StorageItem | null = this.get(keys[i], StorageType.MEMORY);
 
           if (item) {
             items.push(item);
@@ -238,10 +220,7 @@ export class Storage {
     return items;
   }
 
-  public static remove(
-    key: string,
-    storageType: StorageType = StorageType.MEMORY
-  ) {
+  public static remove(key: string, storageType: StorageType = StorageType.MEMORY) {
     switch (storageType) {
       case StorageType.MEMORY:
         delete this._memoryStorage[key];
@@ -255,12 +234,7 @@ export class Storage {
     }
   }
 
-  public static set(
-    key: string,
-    value: any,
-    expirationSecs: number,
-    storageType: StorageType = StorageType.MEMORY
-  ): StorageItem {
+  public static set(key: string, value: any, expirationSecs: number, storageType: StorageType = StorageType.MEMORY): StorageItem {
     const expirationMS: number = expirationSecs * 1000;
 
     const record: StorageItem = new StorageItem();
@@ -290,7 +264,7 @@ export class StorageItem {
 }
 
 export enum StorageType {
-  MEMORY = "memory",
-  SESSION = "session",
-  LOCAL = "local",
+  MEMORY = 'memory',
+  SESSION = 'session',
+  LOCAL = 'local',
 }

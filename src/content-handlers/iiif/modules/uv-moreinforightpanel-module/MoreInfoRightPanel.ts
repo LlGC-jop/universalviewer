@@ -1,12 +1,12 @@
-const $ = require("jquery");
-import { IIIFEvents } from "../../IIIFEvents";
-import { RightPanel } from "../uv-shared-module/RightPanel";
-import { sanitize } from "../../../../Utils";
-import { Bools, Urls } from "@edsilv/utils";
-import { Range } from "manifesto.js";
-import { UriLabeller } from "@iiif/manifold";
-import { MetadataComponent, LimitType } from "@iiif/iiif-metadata-component";
-import { MoreInfoRightPanel as MoreInfoRightPanelConfig } from "../../BaseConfig";
+const $ = require('jquery');
+import { IIIFEvents } from '../../IIIFEvents';
+import { RightPanel } from '../uv-shared-module/RightPanel';
+import { sanitize } from '../../../../Utils';
+import { Bools, Urls } from '@edsilv/utils';
+import { Range } from 'manifesto.js';
+import { UriLabeller } from '@iiif/manifold';
+import { MetadataComponent, LimitType } from '@iiif/iiif-metadata-component';
+import { MoreInfoRightPanel as MoreInfoRightPanelConfig } from '../../BaseConfig';
 
 export class MoreInfoRightPanel extends RightPanel<MoreInfoRightPanelConfig> {
   metadataComponent: any;
@@ -19,7 +19,7 @@ export class MoreInfoRightPanel extends RightPanel<MoreInfoRightPanelConfig> {
   }
 
   create(): void {
-    this.setConfig("moreInfoRightPanel");
+    this.setConfig('moreInfoRightPanel');
 
     super.create();
 
@@ -42,19 +42,15 @@ export class MoreInfoRightPanel extends RightPanel<MoreInfoRightPanelConfig> {
     });
 
     this.metadataComponent.on(
-      "iiifViewerLinkClicked",
+      'iiifViewerLinkClicked',
       (href: string) => {
         // Range change.
-        const rangeId: string | null = Urls.getHashParameterFromString(
-          "rid",
-          href
-        );
+        const rangeId: string | null = Urls.getHashParameterFromString('rid', href);
         // Time change.
-        const time: string | null = Urls.getHashParameterFromString("t", href);
+        const time: string | null = Urls.getHashParameterFromString('t', href);
 
         if (rangeId && time === null) {
-          const range: Range | null =
-            this.extension.helper.getRangeById(rangeId);
+          const range: Range | null = this.extension.helper.getRangeById(rangeId);
 
           if (range) {
             this.extensionHost.publish(IIIFEvents.RANGE_CHANGE, range);
@@ -66,8 +62,7 @@ export class MoreInfoRightPanel extends RightPanel<MoreInfoRightPanelConfig> {
           if (!Number.isNaN(timeAsNumber)) {
             if (rangeId) {
               // We want to make the time change RELATIVE to the start of the range.
-              const range: Range | null =
-                this.extension.helper.getRangeById(rangeId);
+              const range: Range | null = this.extension.helper.getRangeById(rangeId);
               if (range) {
                 this.extensionHost.publish(IIIFEvents.RANGE_TIME_CHANGE, {
                   rangeId: range.id,
@@ -75,15 +70,12 @@ export class MoreInfoRightPanel extends RightPanel<MoreInfoRightPanelConfig> {
                 });
               }
             } else {
-              this.extensionHost.publish(
-                IIIFEvents.CURRENT_TIME_CHANGE,
-                timeAsNumber
-              );
+              this.extensionHost.publish(IIIFEvents.CURRENT_TIME_CHANGE, timeAsNumber);
             }
           }
         }
       },
-      false
+      false,
     );
   }
 
@@ -111,14 +103,9 @@ export class MoreInfoRightPanel extends RightPanel<MoreInfoRightPanelConfig> {
       canvasLabels: this.extension.getCanvasLabels(this.content.page),
       content: this.config.content,
       copiedMessageDuration: 2000,
-      copyToClipboardEnabled: Bools.getBool(
-        this.config.options.copyToClipboardEnabled,
-        false
-      ),
+      copyToClipboardEnabled: Bools.getBool(this.config.options.copyToClipboardEnabled, false),
       helper: this.extension.helper,
-      licenseFormatter: new UriLabeller(
-        this.content.license ? this.content.license : {}
-      ),
+      licenseFormatter: new UriLabeller(this.content.license ? this.content.license : {}),
       limit: this.config.options.textLimit || 4,
       limitType: LimitType.LINES,
       limitToRange: Bools.getBool(this.config.options.limitToRange, false),
@@ -136,21 +123,19 @@ export class MoreInfoRightPanel extends RightPanel<MoreInfoRightPanelConfig> {
   resize(): void {
     super.resize();
 
-    this.$main.height(
-      this.$element.height() - this.$top.height() - this.$main.verticalMargins()
-    );
+    this.$main.height(this.$element.height() - this.$top.height() - this.$main.verticalMargins());
 
     // always put tabindex on, so the main is focusable,
     // just in case there's something wrong with the height
     // comparison below
-    this.$main.attr("tabindex", 0);
-    this.$main.attr("aria-label", this.config.content.title);
+    this.$main.attr('tabindex', 0);
+    this.$main.attr('aria-label', this.config.content.title);
 
     // if metadata's height lte main's, no scroll, so no focus needed
     // and no aria label either
     if (this.$metadata.height() <= this.$main.height()) {
-      this.$main.removeAttr("tabindex");
-      this.$main.removeAttr("aria-label");
+      this.$main.removeAttr('tabindex');
+      this.$main.removeAttr('aria-label');
     }
   }
 }

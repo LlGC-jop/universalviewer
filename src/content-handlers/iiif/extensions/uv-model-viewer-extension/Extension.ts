@@ -1,25 +1,25 @@
-import { IIIFEvents } from "../../IIIFEvents";
-import { BaseExtension } from "../../modules/uv-shared-module/BaseExtension";
-import { Bookmark } from "../../modules/uv-shared-module/Bookmark";
-import { ContentLeftPanel } from "../../modules/uv-contentleftpanel-module/ContentLeftPanel";
-import { DownloadDialogue } from "./DownloadDialogue";
-import { FooterPanel } from "../../modules/uv-shared-module/FooterPanel";
-import { FooterPanel as MobileFooterPanel } from "../../modules/uv-modelviewermobilefooterpanel-module/MobileFooter";
-import { HeaderPanel } from "../../modules/uv-shared-module/HeaderPanel";
-import { HelpDialogue } from "../../modules/uv-dialogues-module/HelpDialogue";
-import { MoreInfoRightPanel } from "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel";
-import { SettingsDialogue } from "./SettingsDialogue";
-import { ShareDialogue } from "./ShareDialogue";
-import { ModelViewerCenterPanel } from "../../modules/uv-modelviewercenterpanel-module/ModelViewerCenterPanel";
-import { ExternalResourceType } from "@iiif/vocabulary/dist-commonjs/";
-import { Canvas, LanguageMap } from "manifesto.js";
-import { ModelViewerExtensionEvents } from "./Events";
-import { Orbit } from "./Orbit";
-import "./theme/theme.less";
-import defaultConfig from "./config/config.json";
-import { AnnotationGroup } from "@iiif/manifold";
-import { AnnotationResults } from "../../modules/uv-shared-module/AnnotationResults";
-import { Config } from "./config/Config";
+import { IIIFEvents } from '../../IIIFEvents';
+import { BaseExtension } from '../../modules/uv-shared-module/BaseExtension';
+import { Bookmark } from '../../modules/uv-shared-module/Bookmark';
+import { ContentLeftPanel } from '../../modules/uv-contentleftpanel-module/ContentLeftPanel';
+import { DownloadDialogue } from './DownloadDialogue';
+import { FooterPanel } from '../../modules/uv-shared-module/FooterPanel';
+import { FooterPanel as MobileFooterPanel } from '../../modules/uv-modelviewermobilefooterpanel-module/MobileFooter';
+import { HeaderPanel } from '../../modules/uv-shared-module/HeaderPanel';
+import { HelpDialogue } from '../../modules/uv-dialogues-module/HelpDialogue';
+import { MoreInfoRightPanel } from '../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel';
+import { SettingsDialogue } from './SettingsDialogue';
+import { ShareDialogue } from './ShareDialogue';
+import { ModelViewerCenterPanel } from '../../modules/uv-modelviewercenterpanel-module/ModelViewerCenterPanel';
+import { ExternalResourceType } from '@iiif/vocabulary/dist-commonjs/';
+import { Canvas, LanguageMap } from 'manifesto.js';
+import { ModelViewerExtensionEvents } from './Events';
+import { Orbit } from './Orbit';
+import './theme/theme.less';
+import defaultConfig from './config/config.json';
+import { AnnotationGroup } from '@iiif/manifold';
+import { AnnotationResults } from '../../modules/uv-shared-module/AnnotationResults';
+import { Config } from './config/Config';
 
 export default class ModelViewerExtension extends BaseExtension<Config> {
   $downloadDialogue: JQuery;
@@ -28,11 +28,11 @@ export default class ModelViewerExtension extends BaseExtension<Config> {
   $settingsDialogue: JQuery;
   centerPanel: ModelViewerCenterPanel;
   downloadDialogue: DownloadDialogue;
-  footerPanel: FooterPanel<Config["modules"]["footerPanel"]>;
-  headerPanel: HeaderPanel<Config["modules"]["headerPanel"]>;
+  footerPanel: FooterPanel<Config['modules']['footerPanel']>;
+  headerPanel: HeaderPanel<Config['modules']['headerPanel']>;
   helpDialogue: HelpDialogue;
   leftPanel: ContentLeftPanel;
-  mobileFooterPanel: FooterPanel<Config["modules"]["footerPanel"]>;
+  mobileFooterPanel: FooterPanel<Config['modules']['footerPanel']>;
   rightPanel: MoreInfoRightPanel;
   settingsDialogue: SettingsDialogue;
   shareDialogue: ShareDialogue;
@@ -41,30 +41,21 @@ export default class ModelViewerExtension extends BaseExtension<Config> {
   create(): void {
     super.create();
 
-    this.extensionHost.subscribe(
-      IIIFEvents.CANVAS_INDEX_CHANGE,
-      (canvasIndex: number) => {
-        this.viewCanvas(canvasIndex);
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.CANVAS_INDEX_CHANGE, (canvasIndex: number) => {
+      this.viewCanvas(canvasIndex);
+    });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.THUMB_SELECTED,
-      (canvasIndex: number) => {
-        this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, canvasIndex);
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.THUMB_SELECTED, (canvasIndex: number) => {
+      this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, canvasIndex);
+    });
 
-    this.extensionHost.subscribe(
-      ModelViewerExtensionEvents.CAMERA_CHANGE,
-      (orbit: Orbit) => {
-        const canvas: Canvas = this.helper.getCurrentCanvas();
-        if (canvas) {
-          this.data.target = canvas.id + "#" + `orbit=${orbit.toString()}`;
-          this.fire(IIIFEvents.TARGET_CHANGE, this.data.target);
-        }
+    this.extensionHost.subscribe(ModelViewerExtensionEvents.CAMERA_CHANGE, (orbit: Orbit) => {
+      const canvas: Canvas = this.helper.getCurrentCanvas();
+      if (canvas) {
+        this.data.target = canvas.id + '#' + `orbit=${orbit.toString()}`;
+        this.fire(IIIFEvents.TARGET_CHANGE, this.data.target);
       }
-    );
+    });
   }
 
   createModules(): void {
@@ -88,28 +79,20 @@ export default class ModelViewerExtension extends BaseExtension<Config> {
 
     if (this.isFooterPanelEnabled()) {
       this.footerPanel = new FooterPanel(this.shell.$footerPanel);
-      this.mobileFooterPanel = new MobileFooterPanel(
-        this.shell.$mobileFooterPanel
-      );
+      this.mobileFooterPanel = new MobileFooterPanel(this.shell.$mobileFooterPanel);
     } else {
       this.shell.$footerPanel.hide();
     }
 
-    this.$downloadDialogue = $(
-      '<div class="overlay download" aria-hidden="true"></div>'
-    );
+    this.$downloadDialogue = $('<div class="overlay download" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$downloadDialogue);
     this.downloadDialogue = new DownloadDialogue(this.$downloadDialogue);
 
-    this.$shareDialogue = $(
-      '<div class="overlay share" aria-hidden="true"></div>'
-    );
+    this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$shareDialogue);
     this.shareDialogue = new ShareDialogue(this.$shareDialogue);
 
-    this.$settingsDialogue = $(
-      '<div class="overlay settings" aria-hidden="true"></div>'
-    );
+    this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$settingsDialogue);
     this.settingsDialogue = new SettingsDialogue(this.$settingsDialogue);
 
@@ -136,7 +119,7 @@ export default class ModelViewerExtension extends BaseExtension<Config> {
   checkForTarget(): void {
     if (this.data.target) {
       // Split target into canvas id and selector
-      const components: string[] = this.data.target.split("#");
+      const components: string[] = this.data.target.split('#');
       const canvasId: string = components[0];
 
       // get canvas index of canvas id and trigger CANVAS_INDEX_CHANGE (if different)
@@ -148,10 +131,7 @@ export default class ModelViewerExtension extends BaseExtension<Config> {
 
       // trigger SET_TARGET which sets the camera-orbit attribute in ModelViewerCenterPanel
       const selector: string = components[1];
-      this.extensionHost.publish(
-        IIIFEvents.SET_TARGET,
-        Orbit.fromString(selector)
-      );
+      this.extensionHost.publish(IIIFEvents.SET_TARGET, Orbit.fromString(selector));
     }
   }
 
@@ -164,9 +144,7 @@ export default class ModelViewerExtension extends BaseExtension<Config> {
 
       if (Array.isArray(annotations)) {
         // using the Web Annotation Data Model
-        groupedAnnotations = this.groupWebAnnotationsByTarget(
-          this.data.annotations
-        );
+        groupedAnnotations = this.groupWebAnnotationsByTarget(this.data.annotations);
       }
 
       this.annotate(groupedAnnotations);
@@ -177,11 +155,9 @@ export default class ModelViewerExtension extends BaseExtension<Config> {
     this.annotations = annotations;
 
     // sort the annotations by canvasIndex
-    this.annotations = annotations.sort(
-      (a: AnnotationGroup, b: AnnotationGroup) => {
-        return a.canvasIndex - b.canvasIndex;
-      }
-    );
+    this.annotations = annotations.sort((a: AnnotationGroup, b: AnnotationGroup) => {
+      return a.canvasIndex - b.canvasIndex;
+    });
 
     const annotationResults: AnnotationResults = new AnnotationResults();
     annotationResults.terms = terms;
@@ -199,14 +175,11 @@ export default class ModelViewerExtension extends BaseExtension<Config> {
     for (let i = 0; i < annotations.length; i++) {
       const annotation = annotations[i];
       const canvasId: string = annotation.target.match(/(.*)#/)[1];
-      const canvasIndex: number | null =
-        this.helper.getCanvasIndexById(canvasId);
+      const canvasIndex: number | null = this.helper.getCanvasIndexById(canvasId);
       const annotationGroup: AnnotationGroup = new AnnotationGroup(canvasId);
       annotationGroup.canvasIndex = canvasIndex as number;
 
-      const match: AnnotationGroup = groupedAnnotations.filter(
-        (x) => x.canvasId === annotationGroup.canvasId
-      )[0];
+      const match: AnnotationGroup = groupedAnnotations.filter((x) => x.canvasId === annotationGroup.canvasId)[0];
 
       // if there's already an annotation for that target, add a rect to it, otherwise create a new AnnotationGroup
       if (match) {
@@ -236,7 +209,7 @@ export default class ModelViewerExtension extends BaseExtension<Config> {
 
     bookmark.index = this.helper.canvasIndex;
     bookmark.label = <string>LanguageMap.getValue(canvas.getLabel());
-    bookmark.thumb = canvas.getProperty("thumbnail");
+    bookmark.thumb = canvas.getProperty('thumbnail');
     bookmark.title = this.helper.getLabel();
     bookmark.trackingLabel = window.trackingLabel;
     bookmark.type = ExternalResourceType.PHYSICAL_OBJECT;

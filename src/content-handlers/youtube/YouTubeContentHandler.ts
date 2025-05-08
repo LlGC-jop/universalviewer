@@ -1,9 +1,9 @@
-import BaseContentHandler, { EventListener } from "../../BaseContentHandler";
-import { IUVOptions } from "../../UniversalViewer";
-import { YouTubeData } from "./YouTubeData";
-import { Events } from "../../Events";
-import { YouTubeEvents } from "./YouTubeEvents";
-import { UVAdapter } from "@/UVAdapter";
+import BaseContentHandler, { EventListener } from '../../BaseContentHandler';
+import { IUVOptions } from '../../UniversalViewer';
+import { YouTubeData } from './YouTubeData';
+import { Events } from '../../Events';
+import { YouTubeEvents } from './YouTubeEvents';
+import { UVAdapter } from '@/UVAdapter';
 
 interface Player {
   id: string;
@@ -19,19 +19,15 @@ export default class YouTubeContentHandler extends BaseContentHandler<YouTubeDat
   private _id: string;
   public config: YouTubeConfig;
 
-  constructor(
-    public options: IUVOptions,
-    public adapter?: UVAdapter,
-    eventListeners?: EventListener[]
-  ) {
+  constructor(public options: IUVOptions, public adapter?: UVAdapter, eventListeners?: EventListener[]) {
     super(options, adapter, eventListeners);
     // console.log("create YouTubeContentHandler");
     this._init(this.options.data);
   }
 
   private _getYouTubeVideoId(id: string): string {
-    if (id.indexOf("v=")) {
-      id = id.split("v=")[1];
+    if (id.indexOf('v=')) {
+      id = id.split('v=')[1];
     }
     return id;
   }
@@ -41,7 +37,7 @@ export default class YouTubeContentHandler extends BaseContentHandler<YouTubeDat
       window.youTubePlayers = [];
     }
 
-    this._id = "YTPlayer-" + new Date().getTime();
+    this._id = 'YTPlayer-' + new Date().getTime();
 
     window.youTubePlayers.push({
       id: this._id,
@@ -51,13 +47,13 @@ export default class YouTubeContentHandler extends BaseContentHandler<YouTubeDat
 
     this._el.id = this._id;
 
-    const existingScriptTag = document.getElementById("youtube-iframe-api");
+    const existingScriptTag = document.getElementById('youtube-iframe-api');
 
     if (!existingScriptTag) {
-      const scriptTag = document.createElement("script");
-      scriptTag.id = "youtube-iframe-api";
-      scriptTag.src = "//www.youtube.com/iframe_api";
-      const firstScriptTag = document.getElementsByTagName("script")[0];
+      const scriptTag = document.createElement('script');
+      scriptTag.id = 'youtube-iframe-api';
+      scriptTag.src = '//www.youtube.com/iframe_api';
+      const firstScriptTag = document.getElementsByTagName('script')[0];
       firstScriptTag.parentNode!.insertBefore(scriptTag, firstScriptTag);
     }
 
@@ -73,8 +69,8 @@ export default class YouTubeContentHandler extends BaseContentHandler<YouTubeDat
             })
             .then((config: YouTubeConfig) => {
               window[player.id] = new YT.Player(player.id, {
-                height: "100%",
-                width: "100%",
+                height: '100%',
+                width: '100%',
                 videoId: this._getYouTubeVideoId(player.data.youTubeVideoId!),
                 playerVars: {
                   playsinline: 1,
@@ -94,9 +90,7 @@ export default class YouTubeContentHandler extends BaseContentHandler<YouTubeDat
                     // const duration = YTPlayer.getDuration();
 
                     // get the ref to the associated content handler
-                    const handler: Player = window.youTubePlayers.find(
-                      (p) => p.id === id
-                    );
+                    const handler: Player = window.youTubePlayers.find((p) => p.id === id);
 
                     if (handler) {
                       handler.ref.config = config;
@@ -113,9 +107,7 @@ export default class YouTubeContentHandler extends BaseContentHandler<YouTubeDat
                     const duration = YTPlayer.getDuration();
 
                     // get the ref to the associated content handler
-                    const handler: Player = window.youTubePlayers.find(
-                      (p) => p.id === id
-                    );
+                    const handler: Player = window.youTubePlayers.find((p) => p.id === id);
 
                     if (handler) {
                       switch (event.data) {
@@ -203,8 +195,8 @@ export default class YouTubeContentHandler extends BaseContentHandler<YouTubeDat
   public exitFullScreen(): void {}
 
   public resize(): void {
-    const width = this._el.clientWidth + "px";
-    const height = this._el.clientHeight + "px";
+    const width = this._el.clientWidth + 'px';
+    const height = this._el.clientHeight + 'px';
     this._el.style.width = width;
     this._el.style.height = height;
   }
@@ -213,8 +205,6 @@ export default class YouTubeContentHandler extends BaseContentHandler<YouTubeDat
     // console.log("dispose YouTubeContentHandler");
     super.dispose();
     // remove from window.youTubePlayers where hostId === this._id
-    window.youTubePlayers = window.youTubePlayers.filter(
-      (p) => p.id !== this._id
-    );
+    window.youTubePlayers = window.youTubePlayers.filter((p) => p.id !== this._id);
   }
 }

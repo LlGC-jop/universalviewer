@@ -1,40 +1,28 @@
-import { IIIFEvents } from "../../IIIFEvents";
-import { BaseExtension } from "../../modules/uv-shared-module/BaseExtension";
-import { Bookmark } from "../../modules/uv-shared-module/Bookmark";
-import { DownloadDialogue } from "./DownloadDialogue";
-import { MediaElementExtensionEvents } from "./Events";
-import { FooterPanel } from "../../modules/uv-shared-module/FooterPanel";
-import { FooterPanel as MobileFooterPanel } from "../../modules/uv-mediaelementmobilefooterpanel-module/MobileFooter";
-import { HeaderPanel } from "../../modules/uv-shared-module/HeaderPanel";
-import { HelpDialogue } from "../../modules/uv-dialogues-module/HelpDialogue";
-import { IMediaElementExtension } from "./IMediaElementExtension";
-import { MediaElementCenterPanel } from "../../modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel";
-import { MoreInfoRightPanel } from "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel";
-import { ResourcesLeftPanel } from "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel";
-import { SettingsDialogue } from "./SettingsDialogue";
-import { ShareDialogue } from "./ShareDialogue";
-import { Bools } from "@edsilv/utils";
-import {
-  ExternalResourceType,
-  MediaType,
-} from "@iiif/vocabulary/dist-commonjs/";
-import {
-  LanguageMap,
-  Thumb,
-  Canvas,
-  Annotation,
-  AnnotationBody,
-} from "manifesto.js";
-import { TFragment } from "../../modules/uv-shared-module/TFragment";
-import "./theme/theme.less";
-import defaultConfig from "./config/config.json";
-import { Events } from "../../../../Events";
-import { Config } from "./config/Config";
+import { IIIFEvents } from '../../IIIFEvents';
+import { BaseExtension } from '../../modules/uv-shared-module/BaseExtension';
+import { Bookmark } from '../../modules/uv-shared-module/Bookmark';
+import { DownloadDialogue } from './DownloadDialogue';
+import { MediaElementExtensionEvents } from './Events';
+import { FooterPanel } from '../../modules/uv-shared-module/FooterPanel';
+import { FooterPanel as MobileFooterPanel } from '../../modules/uv-mediaelementmobilefooterpanel-module/MobileFooter';
+import { HeaderPanel } from '../../modules/uv-shared-module/HeaderPanel';
+import { HelpDialogue } from '../../modules/uv-dialogues-module/HelpDialogue';
+import { IMediaElementExtension } from './IMediaElementExtension';
+import { MediaElementCenterPanel } from '../../modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel';
+import { MoreInfoRightPanel } from '../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel';
+import { ResourcesLeftPanel } from '../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel';
+import { SettingsDialogue } from './SettingsDialogue';
+import { ShareDialogue } from './ShareDialogue';
+import { Bools } from '@edsilv/utils';
+import { ExternalResourceType, MediaType } from '@iiif/vocabulary/dist-commonjs/';
+import { LanguageMap, Thumb, Canvas, Annotation, AnnotationBody } from 'manifesto.js';
+import { TFragment } from '../../modules/uv-shared-module/TFragment';
+import './theme/theme.less';
+import defaultConfig from './config/config.json';
+import { Events } from '../../../../Events';
+import { Config } from './config/Config';
 
-export default class Extension
-  extends BaseExtension<Config>
-  implements IMediaElementExtension
-{
+export default class Extension extends BaseExtension<Config> implements IMediaElementExtension {
   $downloadDialogue: JQuery;
   $shareDialogue: JQuery;
   $helpDialogue: JQuery;
@@ -42,9 +30,9 @@ export default class Extension
   centerPanel: MediaElementCenterPanel;
   downloadDialogue: DownloadDialogue;
   shareDialogue: ShareDialogue;
-  footerPanel: FooterPanel<Config["modules"]["footerPanel"]>;
+  footerPanel: FooterPanel<Config['modules']['footerPanel']>;
   mobileFooterPanel: MobileFooterPanel;
-  headerPanel: HeaderPanel<Config["modules"]["headerPanel"]>;
+  headerPanel: HeaderPanel<Config['modules']['headerPanel']>;
   helpDialogue: HelpDialogue;
   leftPanel: ResourcesLeftPanel;
   rightPanel: MoreInfoRightPanel;
@@ -55,20 +43,17 @@ export default class Extension
     super.create();
 
     // listen for mediaelement enter/exit fullscreen events.
-    $(window).bind("enterfullscreen", () => {
+    $(window).bind('enterfullscreen', () => {
       this.extensionHost.publish(Events.TOGGLE_FULLSCREEN);
     });
 
-    $(window).bind("exitfullscreen", () => {
+    $(window).bind('exitfullscreen', () => {
       this.extensionHost.publish(Events.TOGGLE_FULLSCREEN);
     });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.CANVAS_INDEX_CHANGE,
-      (canvasIndex: number) => {
-        this.viewCanvas(canvasIndex);
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.CANVAS_INDEX_CHANGE, (canvasIndex: number) => {
+      this.viewCanvas(canvasIndex);
+    });
 
     this.extensionHost.subscribe(IIIFEvents.THUMB_SELECTED, (thumb: Thumb) => {
       this.extensionHost.publish(IIIFEvents.CANVAS_INDEX_CHANGE, thumb.index);
@@ -79,46 +64,31 @@ export default class Extension
       this.shell.$rightPanel.hide();
     });
 
-    this.extensionHost.subscribe(
-      IIIFEvents.LEFTPANEL_COLLAPSE_FULL_FINISH,
-      () => {
-        this.shell.$centerPanel.show();
-        this.shell.$rightPanel.show();
-        this.resize();
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, () => {
+      this.shell.$centerPanel.show();
+      this.shell.$rightPanel.show();
+      this.resize();
+    });
 
-    this.extensionHost.subscribe(
-      MediaElementExtensionEvents.MEDIA_ENDED,
-      () => {
-        this.fire(MediaElementExtensionEvents.MEDIA_ENDED);
-      }
-    );
+    this.extensionHost.subscribe(MediaElementExtensionEvents.MEDIA_ENDED, () => {
+      this.fire(MediaElementExtensionEvents.MEDIA_ENDED);
+    });
 
-    this.extensionHost.subscribe(
-      MediaElementExtensionEvents.MEDIA_PAUSED,
-      () => {
-        this.fire(MediaElementExtensionEvents.MEDIA_PAUSED);
-      }
-    );
+    this.extensionHost.subscribe(MediaElementExtensionEvents.MEDIA_PAUSED, () => {
+      this.fire(MediaElementExtensionEvents.MEDIA_PAUSED);
+    });
 
-    this.extensionHost.subscribe(
-      MediaElementExtensionEvents.MEDIA_PLAYED,
-      () => {
-        this.fire(MediaElementExtensionEvents.MEDIA_PLAYED);
-      }
-    );
+    this.extensionHost.subscribe(MediaElementExtensionEvents.MEDIA_PLAYED, () => {
+      this.fire(MediaElementExtensionEvents.MEDIA_PLAYED);
+    });
 
-    this.extensionHost.subscribe(
-      MediaElementExtensionEvents.MEDIA_TIME_UPDATE,
-      (t: number) => {
-        const canvas: Canvas = this.helper.getCurrentCanvas();
-        if (canvas) {
-          this.data.target = canvas.id + "#" + `t=${t}`;
-          this.fire(IIIFEvents.TARGET_CHANGE, this.data.target);
-        }
+    this.extensionHost.subscribe(MediaElementExtensionEvents.MEDIA_TIME_UPDATE, (t: number) => {
+      const canvas: Canvas = this.helper.getCurrentCanvas();
+      if (canvas) {
+        this.data.target = canvas.id + '#' + `t=${t}`;
+        this.fire(IIIFEvents.TARGET_CHANGE, this.data.target);
       }
-    );
+    });
   }
 
   createModules(): void {
@@ -142,34 +112,24 @@ export default class Extension
 
     if (this.isFooterPanelEnabled()) {
       this.footerPanel = new FooterPanel(this.shell.$footerPanel);
-      this.mobileFooterPanel = new MobileFooterPanel(
-        this.shell.$mobileFooterPanel
-      );
+      this.mobileFooterPanel = new MobileFooterPanel(this.shell.$mobileFooterPanel);
     } else {
       this.shell.$footerPanel.hide();
     }
 
-    this.$helpDialogue = $(
-      '<div class="overlay help" aria-hidden="true"></div>'
-    );
+    this.$helpDialogue = $('<div class="overlay help" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$helpDialogue);
     this.helpDialogue = new HelpDialogue(this.$helpDialogue);
 
-    this.$downloadDialogue = $(
-      '<div class="overlay download" aria-hidden="true"></div>'
-    );
+    this.$downloadDialogue = $('<div class="overlay download" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$downloadDialogue);
     this.downloadDialogue = new DownloadDialogue(this.$downloadDialogue);
 
-    this.$shareDialogue = $(
-      '<div class="overlay share" aria-hidden="true"></div>'
-    );
+    this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$shareDialogue);
     this.shareDialogue = new ShareDialogue(this.$shareDialogue);
 
-    this.$settingsDialogue = $(
-      '<div class="overlay settings" aria-hidden="true"></div>'
-    );
+    this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$settingsDialogue);
     this.settingsDialogue = new SettingsDialogue(this.$settingsDialogue);
 
@@ -192,7 +152,7 @@ export default class Extension
   checkForTarget(): void {
     if (this.data.target) {
       // Split target into canvas id and selector
-      const components: string[] = this.data.target.split("#");
+      const components: string[] = this.data.target.split('#');
       const canvasId: string = components[0];
 
       // get canvas index of canvas id and trigger CANVAS_INDEX_CHANGE (if different)
@@ -204,10 +164,7 @@ export default class Extension
 
       // trigger SET_TARGET which calls fitToBounds(xywh) in OpenSeadragonCenterPanel
       const selector: string = components[1];
-      this.extensionHost.publish(
-        IIIFEvents.SET_TARGET,
-        TFragment.fromString(selector)
-      );
+      this.extensionHost.publish(IIIFEvents.SET_TARGET, TFragment.fromString(selector));
     }
   }
 
@@ -216,12 +173,7 @@ export default class Extension
   }
 
   isLeftPanelEnabled(): boolean {
-    return (
-      Bools.getBool(this.data.config!.options.leftPanelEnabled, true) &&
-      (this.helper.isMultiCanvas() ||
-        this.helper.isMultiSequence() ||
-        this.helper.hasResources())
-    );
+    return Bools.getBool(this.data.config!.options.leftPanelEnabled, true) && (this.helper.isMultiCanvas() || this.helper.isMultiSequence() || this.helper.hasResources());
   }
 
   bookmark(): void {
@@ -232,7 +184,7 @@ export default class Extension
 
     bookmark.index = this.helper.canvasIndex;
     bookmark.label = LanguageMap.getValue(canvas.getLabel());
-    bookmark.thumb = canvas.getProperty("thumbnail");
+    bookmark.thumb = canvas.getProperty('thumbnail');
     bookmark.title = this.helper.getLabel();
     bookmark.trackingLabel = window.trackingLabel;
 
@@ -262,7 +214,7 @@ export default class Extension
     const canvas: Canvas = this.helper.getCurrentCanvas();
 
     // if there's an accompanying canvas, use that.
-    const accompanyingCanvas: any = canvas.getProperty("accompanyingCanvas");
+    const accompanyingCanvas: any = canvas.getProperty('accompanyingCanvas');
 
     if (accompanyingCanvas) {
       if (accompanyingCanvas.items && accompanyingCanvas.items.length) {
@@ -276,9 +228,9 @@ export default class Extension
       const annotations: Annotation[] = canvas.getContent();
 
       if (annotations && annotations.length) {
-        posterUri = annotations[0].getProperty("thumbnail");
+        posterUri = annotations[0].getProperty('thumbnail');
       } else {
-        posterUri = canvas.getProperty("thumbnail");
+        posterUri = canvas.getProperty('thumbnail');
       }
     }
 
@@ -317,6 +269,6 @@ export default class Extension
       }
     }
 
-    throw new Error("Unable to determine media type");
+    throw new Error('Unable to determine media type');
   }
 }

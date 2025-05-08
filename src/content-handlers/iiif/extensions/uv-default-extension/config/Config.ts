@@ -9,7 +9,7 @@ import {
   SettingsDialogueOptions,
   ShareDialogueContent,
   ShareDialogueOptions,
-} from "@/content-handlers/iiif/BaseConfig";
+} from '@/content-handlers/iiif/BaseConfig';
 
 type FileLinkCenterPanelOptions = CenterPanelOptions & {};
 

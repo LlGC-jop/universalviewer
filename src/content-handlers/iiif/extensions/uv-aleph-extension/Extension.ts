@@ -1,32 +1,29 @@
-import { AlephCenterPanel } from "../../modules/uv-alephcenterpanel-module/AlephCenterPanel";
-import { IIIFEvents } from "../../IIIFEvents";
-import { BaseExtension } from "../../modules/uv-shared-module/BaseExtension";
-import { DownloadDialogue } from "./DownloadDialogue";
-import { FooterPanel } from "../../modules/uv-shared-module/FooterPanel";
-import { FooterPanel as MobileFooterPanel } from "../../modules/uv-avmobilefooterpanel-module/MobileFooter";
-import { HeaderPanel } from "../../modules/uv-shared-module/HeaderPanel";
-import { IAlephExtension } from "./IAlephExtension";
-import { MoreInfoRightPanel } from "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel";
-import { SettingsDialogue } from "./SettingsDialogue";
-import { ShareDialogue } from "./ShareDialogue";
-import { AlephLeftPanel } from "../../modules/uv-alephleftpanel-module/AlephLeftPanel";
-import { Bools } from "@edsilv/utils";
-import "./theme/theme.less";
-import defaultConfig from "./config/config.json";
-import { Config } from "./config/Config";
+import { AlephCenterPanel } from '../../modules/uv-alephcenterpanel-module/AlephCenterPanel';
+import { IIIFEvents } from '../../IIIFEvents';
+import { BaseExtension } from '../../modules/uv-shared-module/BaseExtension';
+import { DownloadDialogue } from './DownloadDialogue';
+import { FooterPanel } from '../../modules/uv-shared-module/FooterPanel';
+import { FooterPanel as MobileFooterPanel } from '../../modules/uv-avmobilefooterpanel-module/MobileFooter';
+import { HeaderPanel } from '../../modules/uv-shared-module/HeaderPanel';
+import { IAlephExtension } from './IAlephExtension';
+import { MoreInfoRightPanel } from '../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel';
+import { SettingsDialogue } from './SettingsDialogue';
+import { ShareDialogue } from './ShareDialogue';
+import { AlephLeftPanel } from '../../modules/uv-alephleftpanel-module/AlephLeftPanel';
+import { Bools } from '@edsilv/utils';
+import './theme/theme.less';
+import defaultConfig from './config/config.json';
+import { Config } from './config/Config';
 
-export default class Extension
-  extends BaseExtension<Config>
-  implements IAlephExtension
-{
+export default class Extension extends BaseExtension<Config> implements IAlephExtension {
   $downloadDialogue: JQuery;
   $multiSelectDialogue: JQuery;
   $settingsDialogue: JQuery;
   $shareDialogue: JQuery;
   centerPanel: AlephCenterPanel;
   downloadDialogue: DownloadDialogue;
-  footerPanel: FooterPanel<Config["modules"]["footerPanel"]>;
-  headerPanel: HeaderPanel<Config["modules"]["headerPanel"]>;
+  footerPanel: FooterPanel<Config['modules']['footerPanel']>;
+  headerPanel: HeaderPanel<Config['modules']['headerPanel']>;
   leftPanel: AlephLeftPanel;
   mobileFooterPanel: MobileFooterPanel;
   rightPanel: MoreInfoRightPanel;
@@ -37,12 +34,9 @@ export default class Extension
   create(): void {
     super.create();
 
-    this.extensionHost.subscribe(
-      IIIFEvents.CANVAS_INDEX_CHANGE,
-      (canvasIndex: number) => {
-        this.viewCanvas(canvasIndex);
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.CANVAS_INDEX_CHANGE, (canvasIndex: number) => {
+      this.viewCanvas(canvasIndex);
+    });
   }
 
   async createModules(): Promise<void> {
@@ -70,28 +64,20 @@ export default class Extension
 
     if (this.isFooterPanelEnabled()) {
       this.footerPanel = new FooterPanel(this.shell.$footerPanel);
-      this.mobileFooterPanel = new MobileFooterPanel(
-        this.shell.$mobileFooterPanel
-      );
+      this.mobileFooterPanel = new MobileFooterPanel(this.shell.$mobileFooterPanel);
     } else {
       this.shell.$footerPanel.hide();
     }
 
-    this.$shareDialogue = $(
-      '<div class="overlay share" aria-hidden="true"></div>'
-    );
+    this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$shareDialogue);
     this.shareDialogue = new ShareDialogue(this.$shareDialogue);
 
-    this.$downloadDialogue = $(
-      '<div class="overlay download" aria-hidden="true"></div>'
-    );
+    this.$downloadDialogue = $('<div class="overlay download" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$downloadDialogue);
     this.downloadDialogue = new DownloadDialogue(this.$downloadDialogue);
 
-    this.$settingsDialogue = $(
-      '<div class="overlay settings" aria-hidden="true"></div>'
-    );
+    this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
     this.shell.$overlays.append(this.$settingsDialogue);
     this.settingsDialogue = new SettingsDialogue(this.$settingsDialogue);
 

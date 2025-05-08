@@ -1,11 +1,9 @@
-import { Bools } from "@edsilv/utils";
-import { BaseConfig } from "../../BaseConfig";
-import { IIIFEvents } from "../../IIIFEvents";
-import { BaseExpandPanel } from "./BaseExpandPanel";
+import { Bools } from '@edsilv/utils';
+import { BaseConfig } from '../../BaseConfig';
+import { IIIFEvents } from '../../IIIFEvents';
+import { BaseExpandPanel } from './BaseExpandPanel';
 
-export class LeftPanel<
-  T extends BaseConfig["modules"]["leftPanel"]
-> extends BaseExpandPanel<T> {
+export class LeftPanel<T extends BaseConfig['modules']['leftPanel']> extends BaseExpandPanel<T> {
   constructor($element: JQuery) {
     super($element, false, false);
   }
@@ -25,10 +23,7 @@ export class LeftPanel<
   init(): void {
     super.init();
 
-    const shouldOpenPanel: boolean = Bools.getBool(
-      this.extension.getSettings().leftPanelOpen,
-      this.options.panelOpen && !this.extension.isMetric("sm")
-    );
+    const shouldOpenPanel: boolean = Bools.getBool(this.extension.getSettings().leftPanelOpen, this.options.panelOpen && !this.extension.isMetric('sm'));
 
     if (shouldOpenPanel) {
       this.toggle(true);
@@ -39,13 +34,13 @@ export class LeftPanel<
     });
 
     this.extensionHost.subscribe(IIIFEvents.TOGGLE_RIGHT_PANEL, () => {
-      if (this.extension.isMetric("sm") && this.isExpanded) {
+      if (this.extension.isMetric('sm') && this.isExpanded) {
         this.toggle(true);
       }
     });
 
     this.extensionHost.subscribe(IIIFEvents.THUMB_SELECTED, () => {
-      if (this.extension.isMetric("sm")) {
+      if (this.extension.isMetric('sm')) {
         this.toggle();
       }
     });
@@ -73,7 +68,7 @@ export class LeftPanel<
     }
     this.extension.updateSettings({ leftPanelOpen: this.isExpanded });
 
-    this.$element.toggleClass("open-finished");
+    this.$element.toggleClass('open-finished');
   }
 
   resize(): void {
@@ -82,22 +77,22 @@ export class LeftPanel<
 
   toggle(autoToggled?: boolean): void {
     if (this.isExpanded) {
-      this.$element.parent().removeClass("leftPanelOpen");
+      this.$element.parent().removeClass('leftPanelOpen');
     } else {
-      this.$element.parent().addClass("leftPanelOpen");
+      this.$element.parent().addClass('leftPanelOpen');
     }
 
     super.toggle(autoToggled);
   }
 
   expandFull(): void {
-    this.$element.parent().addClass("leftPanelOpenFull");
-    this.$element.addClass("open");
+    this.$element.parent().addClass('leftPanelOpenFull');
+    this.$element.addClass('open');
     super.expandFull();
   }
 
   collapseFull(): void {
-    this.$element.parent().removeClass("leftPanelOpenFull");
+    this.$element.parent().removeClass('leftPanelOpenFull');
 
     // Collapsing the fully open left panel doesn't actually close it,
     // it puts it back to the normal open state.
@@ -105,8 +100,8 @@ export class LeftPanel<
     // the .mainPanel (parent of .leftPanel) won't have the class leftPanelOpen
     // which is required when the panel is in a normal open state (for the css grid to be set correctly).
     // So we check for this and add the class if necessary.
-    if (!this.$element.parent().hasClass("leftPanelOpen")) {
-      this.$element.parent().addClass("leftPanelOpen");
+    if (!this.$element.parent().hasClass('leftPanelOpen')) {
+      this.$element.parent().addClass('leftPanelOpen');
     }
 
     super.collapseFull();

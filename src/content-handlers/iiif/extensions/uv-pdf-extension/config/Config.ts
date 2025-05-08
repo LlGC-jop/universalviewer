@@ -13,7 +13,7 @@ import {
   SettingsDialogueOptions,
   ShareDialogueContent,
   ShareDialogueOptions,
-} from "@/content-handlers/iiif/BaseConfig";
+} from '@/content-handlers/iiif/BaseConfig';
 
 type PDFCenterPanelOptions = CenterPanelOptions & {
   /** Determines if PDF.js should be used for PDF rendering */

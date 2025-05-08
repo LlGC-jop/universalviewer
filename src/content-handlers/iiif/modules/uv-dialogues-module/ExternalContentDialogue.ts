@@ -1,11 +1,9 @@
-const $ = require("jquery");
-import { IIIFEvents } from "../../IIIFEvents";
-import { Config } from "../../extensions/uv-openseadragon-extension/config/Config";
-import { Dialogue } from "../uv-shared-module/Dialogue";
+const $ = require('jquery');
+import { IIIFEvents } from '../../IIIFEvents';
+import { Config } from '../../extensions/uv-openseadragon-extension/config/Config';
+import { Dialogue } from '../uv-shared-module/Dialogue';
 
-export class ExternalContentDialogue extends Dialogue<
-  Config["modules"]["multiSelectDialogue"]
-> {
+export class ExternalContentDialogue extends Dialogue<Config['modules']['multiSelectDialogue']> {
   $iframe: JQuery;
 
   constructor($element: JQuery) {
@@ -13,7 +11,7 @@ export class ExternalContentDialogue extends Dialogue<
   }
 
   create(): void {
-    this.setConfig("externalContentDialogue");
+    this.setConfig('externalContentDialogue');
 
     super.create();
 
@@ -22,14 +20,14 @@ export class ExternalContentDialogue extends Dialogue<
 
     this.extensionHost.subscribe(this.openCommand, (params: any) => {
       this.open();
-      this.$iframe.prop("src", params.uri);
+      this.$iframe.prop('src', params.uri);
     });
 
     this.extensionHost.subscribe(this.closeCommand, () => {
       this.close();
     });
 
-    this.$iframe = $("<iframe></iframe>");
+    this.$iframe = $('<iframe></iframe>');
     this.$content.append(this.$iframe);
 
     this.$element.hide();

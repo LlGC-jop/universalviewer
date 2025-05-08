@@ -1,22 +1,20 @@
-const $ = require("jquery");
+const $ = require('jquery');
 // import "@webcomponents/webcomponentsjs/webcomponents-bundle.js";
 // import "@google/model-viewer/dist/model-viewer-legacy";
-import "@google/model-viewer/dist/model-viewer";
-import { AnnotationBody, Canvas, IExternalResource } from "manifesto.js";
-import { sanitize, debounce } from "../../../../Utils";
-import { IIIFEvents } from "../../IIIFEvents";
-import { CenterPanel } from "../uv-shared-module/CenterPanel";
-import { ModelViewerExtensionEvents } from "../../extensions/uv-model-viewer-extension/Events";
-import { Orbit } from "../../extensions/uv-model-viewer-extension/Orbit";
-import { Async } from "@edsilv/utils";
-import { AnnotationGroup } from "@iiif/manifold";
-import ModelViewerExtension from "../../extensions/uv-model-viewer-extension/Extension";
-import { Events } from "../../../../Events";
-import { Config } from "../../extensions/uv-model-viewer-extension/config/Config";
+import '@google/model-viewer/dist/model-viewer';
+import { AnnotationBody, Canvas, IExternalResource } from 'manifesto.js';
+import { sanitize, debounce } from '../../../../Utils';
+import { IIIFEvents } from '../../IIIFEvents';
+import { CenterPanel } from '../uv-shared-module/CenterPanel';
+import { ModelViewerExtensionEvents } from '../../extensions/uv-model-viewer-extension/Events';
+import { Orbit } from '../../extensions/uv-model-viewer-extension/Orbit';
+import { Async } from '@edsilv/utils';
+import { AnnotationGroup } from '@iiif/manifold';
+import ModelViewerExtension from '../../extensions/uv-model-viewer-extension/Extension';
+import { Events } from '../../../../Events';
+import { Config } from '../../extensions/uv-model-viewer-extension/config/Config';
 
-export class ModelViewerCenterPanel extends CenterPanel<
-  Config["modules"]["modelViewerCenterPanel"]
-> {
+export class ModelViewerCenterPanel extends CenterPanel<Config['modules']['modelViewerCenterPanel']> {
   $modelviewer: JQuery;
   $spinner: JQuery;
 
@@ -27,18 +25,15 @@ export class ModelViewerCenterPanel extends CenterPanel<
   }
 
   create(): void {
-    this.setConfig("modelViewerCenterPanel");
+    this.setConfig('modelViewerCenterPanel');
 
     super.create();
 
     const that = this;
 
-    this.extensionHost.subscribe(
-      IIIFEvents.OPEN_EXTERNAL_RESOURCE,
-      (resources: IExternalResource[]) => {
-        that.openMedia(resources);
-      }
-    );
+    this.extensionHost.subscribe(IIIFEvents.OPEN_EXTERNAL_RESOURCE, (resources: IExternalResource[]) => {
+      that.openMedia(resources);
+    });
 
     this.extensionHost.subscribe(IIIFEvents.SET_TARGET, (target: Orbit) => {
       this.whenLoaded(() => {
@@ -58,51 +53,35 @@ export class ModelViewerCenterPanel extends CenterPanel<
 
     this.$modelviewer = $(
       `<model-viewer 
-        ${this.config.options.autoRotateEnabled ? "auto-rotate" : ""} 
-        ${
-          this.config.options.interactionPromptEnabled
-            ? 'interaction-prompt="auto"'
-            : 'interaction-prompt="none"'
-        }
+        ${this.config.options.autoRotateEnabled ? 'auto-rotate' : ''} 
+        ${this.config.options.interactionPromptEnabled ? 'interaction-prompt="auto"' : 'interaction-prompt="none"'}
         camera-controls 
-        style="background-color: unset;"></model-viewer>`
+        style="background-color: unset;"></model-viewer>`,
     );
 
     this.$content.prepend(this.$modelviewer);
 
-    this.$modelviewer[0].addEventListener("model-visibility", () => {
+    this.$modelviewer[0].addEventListener('model-visibility', () => {
       this.isLoaded = true;
-      this.$content.removeClass("loading");
+      this.$content.removeClass('loading');
       this.$spinner.hide();
       this.extensionHost.publish(Events.LOAD);
-      this.extensionHost.publish(
-        ModelViewerExtensionEvents.CAMERA_CHANGE,
-        this.getCameraOrbit()
-      );
+      this.extensionHost.publish(ModelViewerExtensionEvents.CAMERA_CHANGE, this.getCameraOrbit());
     });
 
     const debouncedCameraChange = debounce((obj: any) => {
       if (this.isLoaded) {
         //if (obj.detail.source === "user-interaction") {
-        this.extensionHost.publish(
-          ModelViewerExtensionEvents.CAMERA_CHANGE,
-          this.getCameraOrbit()
-        );
+        this.extensionHost.publish(ModelViewerExtensionEvents.CAMERA_CHANGE, this.getCameraOrbit());
         //}
       }
     }, this.config.options.cameraChangeDelay);
 
-    this.$modelviewer[0].addEventListener(
-      "camera-change",
-      debouncedCameraChange
-    );
+    this.$modelviewer[0].addEventListener('camera-change', debouncedCameraChange);
 
-    this.$modelviewer[0].addEventListener("dblclick", (e: any) => {
+    this.$modelviewer[0].addEventListener('dblclick', (e: any) => {
       if (this.config.options.doubleClickAnnotationEnabled) {
-        const point = (this.$modelviewer[0] as any).positionAndNormalFromPoint(
-          e.clientX,
-          e.clientY
-        );
+        const point = (this.$modelviewer[0] as any).positionAndNormalFromPoint(e.clientX, e.clientY);
         const canvas: Canvas = that.extension.helper.getCurrentCanvas();
         this.extensionHost.publish(ModelViewerExtensionEvents.DOUBLECLICK, {
           target: `${canvas.id}#xyz=${point.position.x},${point.position.y},${point.position.z}&nxyz=${point.normal.x},${point.normal.y},${point.normal.z}`,
@@ -121,28 +100,23 @@ export class ModelViewerCenterPanel extends CenterPanel<
     // clear existing annotations
     this.clearAnnotations();
 
-    const annotationGroups: AnnotationGroup[] | null = (
-      this.extension as ModelViewerExtension
-    ).annotations;
+    const annotationGroups: AnnotationGroup[] | null = (this.extension as ModelViewerExtension).annotations;
 
     annotationGroups.forEach((annoGroup) => {
       annoGroup.points3D.forEach((point, index) => {
-        const div = document.createElement("DIV");
-        div.id = "annotation-" + point.canvasIndex + "-" + index;
+        const div = document.createElement('DIV');
+        div.id = 'annotation-' + point.canvasIndex + '-' + index;
 
         div.title = sanitize(point.bodyValue);
-        div.className = "annotationPin";
-        div.setAttribute("slot", `hotspot-${index}`);
-        div.setAttribute("data-position", `${point.x} ${point.y} ${point.z}`);
-        div.setAttribute("data-normal", `${point.nx} ${point.ny} ${point.nz}`);
+        div.className = 'annotationPin';
+        div.setAttribute('slot', `hotspot-${index}`);
+        div.setAttribute('data-position', `${point.x} ${point.y} ${point.z}`);
+        div.setAttribute('data-normal', `${point.nx} ${point.ny} ${point.nz}`);
         div.onclick = (e: any) => {
           e.preventDefault();
-          this.extensionHost.publish(
-            IIIFEvents.PINPOINT_ANNOTATION_CLICKED,
-            index
-          );
+          this.extensionHost.publish(IIIFEvents.PINPOINT_ANNOTATION_CLICKED, index);
         };
-        const span: HTMLSpanElement = document.createElement("SPAN");
+        const span: HTMLSpanElement = document.createElement('SPAN');
         span.innerText = String(index + 1);
         div.appendChild(span);
         this.$modelviewer[0].appendChild(div);
@@ -151,7 +125,7 @@ export class ModelViewerCenterPanel extends CenterPanel<
   }
 
   private clearAnnotations(): void {
-    const nodes = this.$modelviewer[0].querySelectorAll(".annotationPin");
+    const nodes = this.$modelviewer[0].querySelectorAll('.annotationPin');
     [].forEach.call(nodes, (node) => {
       node.parentNode.removeChild(node);
     });
@@ -172,8 +146,7 @@ export class ModelViewerCenterPanel extends CenterPanel<
 
     let mediaUri: string | null = null;
     let canvas: Canvas = this.extension.helper.getCurrentCanvas();
-    const formats: AnnotationBody[] | null =
-      this.extension.getMediaFormats(canvas);
+    const formats: AnnotationBody[] | null = this.extension.getMediaFormats(canvas);
 
     if (formats && formats.length) {
       mediaUri = formats[0].id;
@@ -181,7 +154,7 @@ export class ModelViewerCenterPanel extends CenterPanel<
       mediaUri = canvas.id;
     }
 
-    this.$modelviewer.attr("src", mediaUri);
+    this.$modelviewer.attr('src', mediaUri);
 
     // todo: look for choice of usdz, if found, add ar attribute or hide ar button using --ar-button-display
     // use choice for this? https://github.com/edsilv/biiif/issues/13#issuecomment-383504734
@@ -193,14 +166,8 @@ export class ModelViewerCenterPanel extends CenterPanel<
   resize() {
     super.resize();
 
-    this.$spinner.css(
-      "top",
-      this.$content.height() / 2 - this.$spinner.height() / 2
-    );
-    this.$spinner.css(
-      "left",
-      this.$content.width() / 2 - this.$spinner.width() / 2
-    );
+    this.$spinner.css('top', this.$content.height() / 2 - this.$spinner.height() / 2);
+    this.$spinner.css('left', this.$content.width() / 2 - this.$spinner.width() / 2);
 
     if (this.title) {
       this.$title.text(sanitize(this.title));

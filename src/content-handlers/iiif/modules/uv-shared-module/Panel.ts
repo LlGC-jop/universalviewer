@@ -1,6 +1,6 @@
-import { IIIFExtensionHost } from "../../IIIFExtensionHost";
-import { Async } from "@edsilv/utils";
-import { Events } from "../../../../Events";
+import { IIIFExtensionHost } from '../../IIIFExtensionHost';
+import { Async } from '@edsilv/utils';
+import { Events } from '../../../../Events';
 
 export class Panel {
   extensionHost: IIIFExtensionHost;
@@ -9,11 +9,7 @@ export class Panel {
   fitToParentHeight: boolean;
   isResized: boolean = false;
 
-  constructor(
-    $element: JQuery,
-    fitToParentWidth?: boolean,
-    fitToParentHeight?: boolean
-  ) {
+  constructor($element: JQuery, fitToParentWidth?: boolean, fitToParentHeight?: boolean) {
     this.$element = $element;
     this.fitToParentWidth = fitToParentWidth || false;
     this.fitToParentHeight = fitToParentHeight || false;
@@ -33,22 +29,17 @@ export class Panel {
     }, cb);
   }
 
-  onAccessibleClick(
-    el: JQuery,
-    callback: (e: JQueryEventObject) => void,
-    withClick = true,
-    treatAsButton = false
-  ) {
+  onAccessibleClick(el: JQuery, callback: (e: JQueryEventObject) => void, withClick = true, treatAsButton = false) {
     if (withClick) {
-      el.on("click", (e) => {
+      el.on('click', (e) => {
         callback(e);
       });
     }
 
-    el.on("keydown", (e) => {
+    el.on('keydown', (e) => {
       // by passing treatAsButton  as true this will become false
       // and so an anchor won't be excluded from Space presses
-      let isAnchor = e.target.nodeName === "A" && !treatAsButton;
+      let isAnchor = e.target.nodeName === 'A' && !treatAsButton;
 
       // 13 = Enter, 32 = Space
       if ((e.which === 32 && !isAnchor) || e.which === 13) {

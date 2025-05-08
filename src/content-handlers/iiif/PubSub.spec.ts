@@ -1,10 +1,10 @@
-import { PubSub } from "./PubSub";
+import { PubSub } from './PubSub';
 
-describe("PubSub", () => {
-  it("subscribes to an event", () => {
+describe('PubSub', () => {
+  it('subscribes to an event', () => {
     const pubsub = new PubSub();
 
-    const eventName = "test-event";
+    const eventName = 'test-event';
     let eventArgs = undefined;
     let handled = false;
 
@@ -15,10 +15,10 @@ describe("PubSub", () => {
 
     pubsub.subscribe(eventName, handler);
 
-    pubsub.publish(eventName, "test");
+    pubsub.publish(eventName, 'test');
 
     expect(handled).toEqual(true);
-    expect(eventArgs).toEqual("test");
+    expect(eventArgs).toEqual('test');
 
     // test unsubscribe
 
