@@ -141,11 +141,9 @@
                 margin: 7px 0 0 0;
             }
 
-            /* commented out as it's empty, but leaving selector
-            in case anyone needs it in the future - LlGC-jop */
-            /* .thumbsView .thumbs .thumb.twoCol .label {
-                
-            } */
+            .thumbsView .thumbs .thumb.twoCol .label {
+                max-width: 98px !important;   
+            }
 
             .thumbsView .thumbs .thumb.twoCol .wrap {
                 width: 98px;
@@ -177,7 +175,7 @@
             .thumbsView .thumbs.paged {
                 display: grid;
                 grid-template-columns: repeat(2, 1fr);
-                gap: 7px 14px;
+                gap: 7px 7px;
             }
 
             .thumbsView .thumbs.paged .thumb-container:nth-child(1) {
