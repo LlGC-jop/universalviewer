@@ -136,7 +136,11 @@ const Thumbnails = ({
       })}
     >
       {thumbs.map((thumb, index) => (
-        <span key={`thumb-${index}`} id={`thumb-${index}`} className="thumb-container">
+        <span
+          key={`thumb-${index}`}
+          id={`thumb-${index}`}
+          className="thumb-container"
+        >
           <ThumbImage
             first={index === firstNonPagedIndex}
             onClick={onClick}
