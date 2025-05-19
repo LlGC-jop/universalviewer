@@ -1,0 +1,18 @@
+{
+  "customSyntax": "postcss-less",
+  "extends": ["stylelint-config-standard-less"],
+  "plugins": ["stylelint-less"],
+  "rules": {
+    "block-no-empty": true,
+    "at-rule-no-unknown": null,
+    "color-no-invalid-hex": true,
+    "less/color-no-invalid-hex": null,
+    "rule-empty-line-before": null,
+    "selector-class-pattern": null,
+    "selector-id-pattern": null,
+    "declaration-empty-line-before": null,
+    "property-no-vendor-prefix": null,
+    "no-duplicate-selectors": null,
+    "no-descending-specificity": null
+  }
+}
