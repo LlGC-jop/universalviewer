@@ -18,5 +18,11 @@
   "editor.codeActionsOnSave": {
     "source.organizeImports": "never",
     "source.sortImports": "never"
-  }
+  },
+  "eslint.validate": [
+    "typescript",
+    "typescriptreact",
+    "javascript",
+    "javascriptreact"
+  ]
 }
