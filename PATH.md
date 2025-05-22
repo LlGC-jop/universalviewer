@@ -1,5 +1,5 @@
 <!-- omit from toc -->
-# Universal Viewer Execution Path
+# Universal Viewer Architecture / Execution Path
 
 - [Background](#background)
 - [Entrypoint](#entrypoint)
@@ -7,9 +7,22 @@
   - [Resizing](#resizing)
   - [Fullscreen](#fullscreen)
 - [UniversalViewer](#universalviewer)
-- [Content Handler](#content-handler)
+- [Content Handler \& Extension](#content-handler--extension)
+  - [Choosing the Content Handler](#choosing-the-content-handler)
+  - [Loading the Extension](#loading-the-extension)
+    - [Extension default config](#extension-default-config)
+    - [Config loading \& localisation](#config-loading--localisation)
   - [YouTubeContentHandler](#youtubecontenthandler)
 - [Extension](#extension)
+- [Modules](#modules)
+- [Components](#components)
+- [Events](#events)
+  - [External](#external)
+  - [Internal (IIIF)](#internal-iiif)
+  - [YouTube](#youtube)
+- [Config](#config)
+  - [Loading from LocalStorage](#loading-from-localstorage)
+  - [Dynamically updating at runtime](#dynamically-updating-at-runtime)
 
 ## Background
 
@@ -120,32 +133,74 @@ It also provides access to the following public functions. Calls to these functi
   1. Content type has changed - creates a new handler
   2. Content type is the same - calls `set()` on the Content Handler
 
-## Content Handler
+## Content Handler & Extension
 
-Like the UniversalViewer class, Content Handlers *extend BaseContentHandler* 
+Content Handlers *extend BaseContentHandler* 
 
-This section will mainly focus on the `IIIFContentHandler` class.
+This section will mainly focus on the `IIIFContentHandler` class. 
 
-THe key part of this class is `_init()`, which in turn calls `set()`, which the (on the first load) calls `_reload()`.
+It also covers the creation and configuration of Extensions, as the code for these is quite tightly coupled.
 
-The _reload function uses Manifold and Manifesto to parse the manifest, and based on the media type, rendering format, or external resource type found in the IIIF manifest, it selects an appropriate UV extension (e.g., OpenSeadragon, PDF, etc.).
+### Choosing the Content Handler
 
-The relevant Extension class is then dynamically imported.
+The constructor calls `_init()`, which in turn calls `set()`, which then (if first load) calls `_reload()`.
 
-When an extension is instantiated its config comes initially from `defaultConfig` at `./config/config.json`.
+After `set()`, `resize()` is called which calls `extension.resize()`.
 
-This config file contains markers prefixed with `$` which are used for replacing locale strings 
+`_reload()` uses Manifold and Manifesto to parse the manifest, and based on the media type, rendering format, or external resource type found in the IIIF manifest, selects an appropriate UV extension (e.g., OpenSeadragon, PDF, etc.) to load.
 
- and `_loadAndApplyConfigToExtension()` is called.
+### Loading the Extension
 
-When
+The relevant Extension class is dynamically imported and instantiated.
 
- This loads the relevant config file for the current locale 
+#### Extension default config
 
-Finally, in _createExtension, the IIIFContentHandler is assigned as the extension's extensionHost, the data variable from init is set in the extension, as is the Manifesto Helper object.
+Each extension has its own `./config/config.json` file. These configs appear to cover most of the basics required to configure the UV, plus anything relevant as a default for that extension and the modules/components it uses.
 
+#### Config loading & localisation
+
+After the extension is created, `_loadAndApplyConfigToExtension()` is called. 
+
+This first calls `BaseExtension#loadConfig()` which then calls `BaseExtension#translateLocale()` to load the relevant locale file from `src/locales` and replace translation markers with the correct language strings in the extension's default config.
+
+This config is then returned to the Content Handler which then passes it to `BaseExtension#configure()` which resolves any configs passed externally via the "**configure**" event and merges them with config, overwriting any existing values.
+
+Finally, in `_createExtension`, the `IIIFContentHandler` is assigned as the extension's `extensionHost`, the `data` variable that now contains the full config is set in the extension, as is the Manifesto `Helper` object.
+
+Config is now available in the extension as `this.data.config.options|modules`.
 
 ### YouTubeContentHandler
 
+TODO: Any differences between this and IIIFContentHandler apart from the obvious (manifest)
+
 ## Extension
 
+## Modules
+
+TODO: Document each module, what it does, which events it interacts with, and what dependencies it has.
+
+## Components
+
+TODO
+
+## Events
+
+### External
+
+TODO: Refer back to `BaseContentHandler#on()` and `#fire()` plus document when/where called.
+
+### Internal (IIIF)
+
+TODO: Document IIIF Events, how and where they're defined/registered, subscribed to, and published & called.
+
+Refer to PubSub class in IIIFContentHandler
+
+### YouTube
+
+## Config
+
+### Loading from LocalStorage
+
+### Dynamically updating at runtime
+
+TODO: e.g. changing animation setting - which events are triggered etc.
