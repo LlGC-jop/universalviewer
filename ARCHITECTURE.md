@@ -8,6 +8,8 @@ uv.on("openseadragonExtension.animationFinish", function (someArg) {
 });
 ```
 
+Sometimes events are also 'pushed' outside by having .fire called inside an extension. This calls fire() function in BaseExtension which in turns calls it in the Extension Host aka BaseContentHandler which has access to the events array set by its on() function.
+
 <!-- omit in toc -->
 # Architectural Overview of the Universal Viewer
 
@@ -17,11 +19,12 @@ uv.on("openseadragonExtension.animationFinish", function (someArg) {
     - [1.2.1 `YouTubeContentHandler`](#121-youtubecontenthandler)
     - [1.2.2 `IIIFContentHandler`](#122-iiifcontenthandler)
   - [1.3 Content Extensions](#13-content-extensions)
-  - [1.4 Content Handling](#14-content-handling)
-  - [1.5 UI Panels](#15-ui-panels)
-    - [1.5.1 Dialogs](#151-dialogs)
-  - [1.6 Event Handling](#16-event-handling)
-  - [1.7 Localisation](#17-localisation)
+    - [1.3.1 `BaseExtension`](#131-baseextension)
+    - [1.3.2 Content Specific `Extension`](#132-content-specific-extension)
+  - [1.4 Modules / UI Panels](#14-modules--ui-panels)
+    - [1.4.1 Dialogues](#141-dialogues)
+  - [1.5 Event Handling](#15-event-handling)
+  - [1.6 Localisation](#16-localisation)
 - [2. Source Code Structure \& Execution Flow](#2-source-code-structure--execution-flow)
   - [2.1 Initialisation](#21-initialisation)
   - [2.2 Configuration loading \& passing](#22-configuration-loading--passing)
@@ -31,8 +34,15 @@ uv.on("openseadragonExtension.animationFinish", function (someArg) {
       - [2.3.2.1 YouTubeEvents](#2321-youtubeevents)
       - [2.3.2.2 IIIFEvents](#2322-iiifevents)
 - [3. Extensions](#3-extensions)
-  - [3.1 OpenSeaDragon](#31-openseadragon)
-    - [3.1.1 Extension Specific Config](#311-extension-specific-config)
+  - [3.1 Aleph (3D)](#31-aleph-3d)
+    - [3.1.1 Aleph Config](#311-aleph-config)
+  - [3.2 AV](#32-av)
+  - [3.3 Default](#33-default)
+  - [3.4 Ebook](#34-ebook)
+  - [3.5 Media Element](#35-media-element)
+  - [3.6 Model Viewer](#36-model-viewer)
+  - [3.7 Open Seagdraon](#37-open-seagdraon)
+  - [3.8 PDF](#38-pdf)
 
 <!-- omit in toc -->
 ## High-Level Summary
@@ -55,6 +65,7 @@ The core system is built around a central `UniversalViewer` class orchestrating 
 
 ### 1.2 Content Handling: `BaseContentHandler` 
 - **Role:** Abstract class for loading the content handler and firing external events.
+- **Design Pattern:** Lazy-loaded modules via dynamic `import()` statements.
 - **Responsibilities:**
   - Handle content lifecycle: set, resize, dispose.
   - Communicate with the core container via events (`Events`, `IIIFEvents`, `YouTubeEvents`).
@@ -70,21 +81,43 @@ The core system is built around a central `UniversalViewer` class orchestrating 
 
 #### 1.2.2 `IIIFContentHandler`
 - **Role:** Parse the IIIF manifest and load & configure the correct Content Extension
+- **Design Pattern:** Lazy-loaded modules via dynamic `import()` statements.
 - **Responsibilities:**
-  - Provide PubSub pattern for event handling
-  - 
+  - Provide PubSub pattern for event handling.
+  - Create and configure the required Extension.
+- **Details:**
+  - Assigns itself to the Extension as `extensionHost`.
+  - Provides `publish` and `subscribe` API functions to give Extensions access to PubSub.
 
 ### 1.3 Content Extensions
 
-### 1.4 Content Handling 
+#### 1.3.1 `BaseExtension`
+- **Role:** Abstract Extension class.
+- **Responsibilities:**
+  - Locale loading and replacement of locale string in default config.
+  - Setup of general events e.g. arrow key presses.
+  - Creation of Shell and common Modules
 
-### 1.5 UI Panels
+#### 1.3.2 Content Specific `Extension`
+- **Role:** Content-type specific implementation of a 'Viewer'
+- **Responsibilities:**
+  - Load and display specific content types.
+  - Manage content-specific UI and controls.
+  - Provision of events to interact with content viewer.
 
-#### 1.5.1 Dialogs
+### 1.4 Modules / UI Panels
+- **Panel types:**
+  - UV Shared Panels.
+  - Header, Footer, Left, Right, Center main layout panels.
+  - Extension-specific panels.
+- **Center Panel:**
+  - Key panel, contains content viewer.
 
-### 1.6 Event Handling
+#### 1.4.1 Dialogues
 
-### 1.7 Localisation
+### 1.5 Event Handling
+
+### 1.6 Localisation
 
 ## 2. Source Code Structure & Execution Flow
 
@@ -94,9 +127,11 @@ The core system is built around a central `UniversalViewer` class orchestrating 
 
 ### 2.3 Events
 
+TODO: Separate docs for these, similar to Options
+
 #### 2.3.1 External Events
 
-- CONFIGURE
+<!-- - CONFIGURE
 - CREATED
 - DROP
 - ERROR
@@ -106,22 +141,22 @@ The core system is built around a central `UniversalViewer` class orchestrating 
 - LOAD_FAILED
 - RELOAD
 - RESIZE
-- TOGGLE_FULLSCREEN
+- TOGGLE_FULLSCREEN -->
 
 #### 2.3.2 Internal Events
 
 ##### 2.3.2.1 YouTubeEvents
 
-- UNSTARTED
+<!-- - UNSTARTED
 - ENDED
 - PLAYING
 - PAUSED
 - BUFFERING
-- CUED
+- CUED -->
   
 ##### 2.3.2.2 IIIFEvents
 
-- ACCEPT_TERMS
+<!-- - ACCEPT_TERMS
 - ANNOTATION_CANVAS_CHANGE
 - ANNOTATION_CHANGE
 - ANNOTATIONS_CLEARED
@@ -239,13 +274,30 @@ The core system is built around a central `UniversalViewer` class orchestrating 
 - VIEW_FULL_TERMS
 - WINDOW_UNLOAD
 - SHOW_ADJUSTIMAGE_DIALOGUE
-- HIDE_ADJUSTIMAGE_DIALOGUE
+- HIDE_ADJUSTIMAGE_DIALOGUE -->
 
 ## 3. Extensions
 
-### 3.1 OpenSeaDragon
-- **Role**
-- Class
+TODO: Details on each extension, any specific dependencies it uses, refs to ext. specific config options, how they affect things, and how to use.
+
+### 3.1 Aleph (3D)
 
 <!--omit in toc -->
-#### 3.1.1 Extension Specific Config
+#### 3.1.1 Aleph Config
+
+### 3.2 AV
+
+### 3.3 Default
+
+### 3.4 Ebook
+
+### 3.5 Media Element
+
+### 3.6 Model Viewer
+
+### 3.7 Open Seagdraon
+
+### 3.8 PDF
+
+
+

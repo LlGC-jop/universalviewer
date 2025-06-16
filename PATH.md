@@ -30,7 +30,7 @@ The purpose of this document it to provide an overview of the key structural poi
 
 Certain functions may be only mentioned in passing, or omitted entirely, if they are not key to understanding how the UV works or if their code is simple enough to understand without higher-level knowledge of Java/TypeScript or the UV.
 
-This document makes the assumption that implementation of the viewer matches the example HTML file i.e. UV loaded via `<script>` and `UV.init(<elementId>, { configJSON })` is called.
+This document makes the assumption that implementation of the viewer matches the example HTML file i.e. UV loaded via `<script>` and `UV.init(<elementId>, { configJSON })` is called, with added config coming from the URL Adapter.
 
 ```
 <script>
