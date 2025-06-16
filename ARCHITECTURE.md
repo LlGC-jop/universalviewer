@@ -62,6 +62,7 @@ The core system is built around a central `UniversalViewer` class orchestrating 
   - Provides an API for setting content of, resizing of, and disposing of, the `assignedContentHandler`.
 - **Details:**
   - Extends `BaseContentHandler`, inheriting event management and lifecycle.
+  - Receives `target` HTMLElement and configuration `data` from the `init` function
 
 ### 1.2 Content Handling: `BaseContentHandler` 
 - **Role:** Abstract class for loading the content handler and firing external events.
@@ -106,12 +107,15 @@ The core system is built around a central `UniversalViewer` class orchestrating 
   - Provision of events to interact with content viewer.
 
 ### 1.4 Modules / UI Panels
+- **Role:** Provide interface elements related to displayed content or UV settings.
 - **Panel types:**
   - UV Shared Panels.
   - Header, Footer, Left, Right, Center main layout panels.
   - Extension-specific panels.
 - **Center Panel:**
   - Key panel, contains content viewer.
+- **Details:**
+  - `Shell` class creates panel and dialogue containers and adds them to the `target` element.
 
 #### 1.4.1 Dialogues
 
