@@ -63,7 +63,8 @@ The core system is built around a central `UniversalViewer` class orchestrating 
   - Extends `BaseContentHandler`, inheriting event management and lifecycle.
   - Receives `target` HTMLElement and configuration `data` from the `init` function
 
-### 1.2 Content Handling: `BaseContentHandler` 
+### 1.2 Content Handling: `BaseContentHandler`
+
 - **Role:** Abstract class for loading the content handler and firing external events.
 - **Design Pattern:** Lazy-loaded modules via dynamic `import()` statements.
 - **Responsibilities:**
@@ -173,7 +174,6 @@ TODO: Separate docs for these, similar to Options
 - PAUSED
 - BUFFERING
 - CUED -->
-  
 ##### 2.3.2.2 IIIFEvents
 
 <!-- - ACCEPT_TERMS
@@ -318,6 +318,3 @@ TODO: Details on each extension, any specific dependencies it uses, refs to ext.
 ### 3.7 Open Seagdraon
 
 ### 3.8 PDF
-
-
-
