@@ -35,7 +35,6 @@ Sometimes events are also 'pushed' outside by having .fire called inside an exte
       - [2.3.2.2 IIIFEvents](#2322-iiifevents)
 - [3. Extensions](#3-extensions)
   - [3.1 Aleph (3D)](#31-aleph-3d)
-    - [3.1.1 Aleph Config](#311-aleph-config)
   - [3.2 AV](#32-av)
   - [3.3 Default](#33-default)
   - [3.4 Ebook](#34-ebook)
@@ -118,6 +117,23 @@ The core system is built around a central `UniversalViewer` class orchestrating 
   - `Shell` class creates panel and dialogue containers and adds them to the `target` element.
 
 #### 1.4.1 Dialogues
+
+- **Role:** Provide pop-up dialogue boxes (a.k.a. 'overlays') in the UI displaying various features and information
+- **Dialogue types:**
+  - genericDialogue: displays messages e.g. the authorisation failed message
+  - adjustImage: shows image adjustment settings: contrast, brightness, saturation
+  - auth: redirects user to an external auth page, e.g. this manifest: https://iiifauth.digtest.co.uk/manifest/01_standard-login; dialogue content is provided by the auth service
+  - download: displays options for downloading content
+  - clickthrough: displays terms and conditions the user must acknowledge; determined by the auth service via the Auth09 module
+  - login: shows a login window defined by the login service in Auth09
+  - help: displays a title and text content that can be set in the config
+  - restricted: shows restrictions put on the content
+  - multiselect: select multiple images for download
+  - share: provides URLs for the current viewer state, the manifest, and an embed snippet
+  - settings: provides user settings for the viewer
+  - externalContent: displays an iframe allowing external content to be rendered in the viewer
+- **Details:**
+  - Most dialogues are common to the Extensions and found in modules/uv-dialogues-module; Share and Settings are specific to each Extension and so are found in the relevant extensions folder; the multiSelect dialogue has its own folder in the modules.
 
 ### 1.5 Event Handling
 
@@ -286,7 +302,7 @@ TODO: Details on each extension, any specific dependencies it uses, refs to ext.
 
 ### 3.1 Aleph (3D)
 
-<!--omit in toc -->
+<!-- omit in toc -->
 #### 3.1.1 Aleph Config
 
 ### 3.2 AV
