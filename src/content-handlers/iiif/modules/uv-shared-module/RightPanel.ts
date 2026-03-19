@@ -21,7 +21,7 @@ export class RightPanel<T extends ExpandPanel> extends BaseExpandPanel<T> {
     );
 
     if (shouldOpenPanel) {
-      this.toggle(true);
+      this.toggle(true, true);
     }
 
     this.extensionHost.subscribe(IIIFEvents.TOGGLE_EXPAND_RIGHT_PANEL, () => {
@@ -77,14 +77,14 @@ export class RightPanel<T extends ExpandPanel> extends BaseExpandPanel<T> {
     super.resize();
   }
 
-  toggle(autoToggled?: boolean): void {
+  toggle(autoToggled?: boolean, noFocusOnAuto?: boolean): void {
     if (this.isExpanded) {
       this.$element.parent().removeClass("rightPanelOpen");
     } else {
       this.$element.parent().addClass("rightPanelOpen");
     }
 
-    super.toggle(autoToggled);
+    super.toggle(autoToggled, noFocusOnAuto);
   }
 
   expandFull(): void {

@@ -9,6 +9,7 @@ export class BaseExpandPanel<T extends ExpandPanel> extends BaseView<T> {
   isUnopened: boolean = true;
   autoToggled: boolean = false;
   expandFullEnabled: boolean = true;
+  noFocusOnAuto: boolean = false;
 
   $closed: JQuery;
   $closedTitle: JQuery;
@@ -105,7 +106,7 @@ export class BaseExpandPanel<T extends ExpandPanel> extends BaseView<T> {
     this.$closedTitle.text(title);
   }
 
-  toggle(autoToggled?: boolean): void {
+  toggle(autoToggled?: boolean, noFocusOnAuto?: boolean): void {
     const settings = this.extension.getSettings();
     const isReducedAnimation = settings.reducedAnimation;
 
@@ -121,6 +122,7 @@ export class BaseExpandPanel<T extends ExpandPanel> extends BaseView<T> {
     }
 
     autoToggled ? (this.autoToggled = true) : (this.autoToggled = false);
+    noFocusOnAuto ? (this.noFocusOnAuto = true) : (this.noFocusOnAuto = false);
 
     this.$element.toggleClass("open");
 
@@ -274,24 +276,26 @@ export class BaseExpandPanel<T extends ExpandPanel> extends BaseView<T> {
     return 0;
   }
 
-  toggleStart(): void {}
+  toggleStart(): void { }
 
   toggleFinish(): void {
     if (this.isExpanded && !this.autoToggled) {
       this.focusCollapseButton();
     } else {
-      this.focusExpandButton();
+      if (!this.noFocusOnAuto) {
+        this.focusExpandButton();
+      }
     }
   }
 
-  expandFullStart(): void {}
+  expandFullStart(): void { }
 
   expandFullFinish(): void {
     this.isFullyExpanded = true;
     this.$expandFullButton.hide();
   }
 
-  collapseFullStart(): void {}
+  collapseFullStart(): void { }
 
   collapseFullFinish(): void {
     this.isFullyExpanded = false;
