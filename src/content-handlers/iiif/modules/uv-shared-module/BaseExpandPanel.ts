@@ -9,7 +9,6 @@ export class BaseExpandPanel<T extends ExpandPanel> extends BaseView<T> {
   isUnopened: boolean = true;
   autoToggled: boolean = false;
   expandFullEnabled: boolean = true;
-  noFocusOnAuto: boolean = false;
 
   $closed: JQuery;
   $closedTitle: JQuery;
@@ -106,7 +105,7 @@ export class BaseExpandPanel<T extends ExpandPanel> extends BaseView<T> {
     this.$closedTitle.text(title);
   }
 
-  toggle(autoToggled?: boolean, noFocusOnAuto?: boolean): void {
+  toggle(autoToggled?: boolean): void {
     const settings = this.extension.getSettings();
     const isReducedAnimation = settings.reducedAnimation;
 
@@ -122,7 +121,6 @@ export class BaseExpandPanel<T extends ExpandPanel> extends BaseView<T> {
     }
 
     autoToggled ? (this.autoToggled = true) : (this.autoToggled = false);
-    noFocusOnAuto ? (this.noFocusOnAuto = true) : (this.noFocusOnAuto = false);
 
     this.$element.toggleClass("open");
 
@@ -276,26 +274,30 @@ export class BaseExpandPanel<T extends ExpandPanel> extends BaseView<T> {
     return 0;
   }
 
-  toggleStart(): void {}
+  toggleStart(): void { }
 
   toggleFinish(): void {
+    // if auto toggled and we don't allow steal focus, don't focus anything to prevent unexpected behaviour
+    // e.g. browser jumping page to the focused element
+    if (this.autoToggled && !this.extension.data.config!.options.allowStealFocus) {
+      return;
+    }
+
     if (this.isExpanded && !this.autoToggled) {
       this.focusCollapseButton();
     } else {
-      if (!this.noFocusOnAuto) {
-        this.focusExpandButton();
-      }
+      this.focusExpandButton();
     }
   }
 
-  expandFullStart(): void {}
+  expandFullStart(): void { }
 
   expandFullFinish(): void {
     this.isFullyExpanded = true;
     this.$expandFullButton.hide();
   }
 
-  collapseFullStart(): void {}
+  collapseFullStart(): void { }
 
   collapseFullFinish(): void {
     this.isFullyExpanded = false;
